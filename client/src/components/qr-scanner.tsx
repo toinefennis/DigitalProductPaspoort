@@ -12,7 +12,7 @@ interface QRScannerProps {
 
 export function QRScanner({ onScan, onManualEntry }: QRScannerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const scannerRef = useRef<RealScanner | null>(null);
+  const scannerRef = useRef<CameraScanner | null>(null);
   const [isScanning, setIsScanning] = useState(false);
   const [hasFlash, setHasFlash] = useState(false);
   const [flashOn, setFlashOn] = useState(false);
@@ -29,7 +29,7 @@ export function QRScanner({ onScan, onManualEntry }: QRScannerProps) {
     if (!videoRef.current) return;
 
     try {
-      scannerRef.current = new RealScanner();
+      scannerRef.current = new CameraScanner();
       
       await scannerRef.current.startScanning(
         videoRef.current,

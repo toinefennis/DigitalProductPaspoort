@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Camera, Flashlight, RotateCcw, Keyboard } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { CameraScanner, type ScanResult } from "@/lib/camera-scanner";
+import { AutoScanner, type ScanResult } from "@/lib/auto-scanner";
 
 interface QRScannerProps {
   onScan: (data: string, type: 'barcode' | 'qr') => void;
@@ -12,7 +12,7 @@ interface QRScannerProps {
 
 export function QRScanner({ onScan, onManualEntry }: QRScannerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const scannerRef = useRef<CameraScanner | null>(null);
+  const scannerRef = useRef<AutoScanner | null>(null);
   const [isScanning, setIsScanning] = useState(false);
   const [hasFlash, setHasFlash] = useState(false);
   const [flashOn, setFlashOn] = useState(false);
@@ -29,7 +29,7 @@ export function QRScanner({ onScan, onManualEntry }: QRScannerProps) {
     if (!videoRef.current) return;
 
     try {
-      scannerRef.current = new CameraScanner();
+      scannerRef.current = new AutoScanner();
       
       await scannerRef.current.startScanning(
         videoRef.current,

@@ -102,8 +102,13 @@ export class AutoScanner {
           const code = result.codeResult.code;
           const format = result.codeResult.format;
 
-          // Validate GTIN
+          console.log('Detected code:', code, 'format:', format);
+
+          // Validate GTIN and stop scanning immediately after first valid detection
           if (this.isValidGTIN(code)) {
+            this.scanning = false; // Stop further detections
+            Quagga.stop(); // Stop Quagga
+            
             onScan({
               code: code,
               format: format,

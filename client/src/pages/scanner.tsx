@@ -14,20 +14,25 @@ export default function Scanner() {
   const { toast } = useToast();
 
   const handleScan = async (gtin: string, type: 'barcode' | 'qr') => {
+    console.log('handleScan called with GTIN:', gtin, 'type:', type);
+    
     try {
       // First check if product exists
       const response = await fetch(`/api/products/gtin/${gtin}`);
       
       if (response.ok) {
         // Product exists, go to product detail
+        console.log('Product exists, navigating to detail page');
         setLocation(`/product/gtin/${gtin}`);
       } else if (response.status === 404) {
         // Product doesn't exist, redirect to add product with GTIN pre-filled
-        setLocation(`/add-product?gtin=${gtin}&scanType=${type}`);
+        console.log('Product not found, navigating to add-product with GTIN:', gtin);
+        setLocation(`/add-product?gtin=${encodeURIComponent(gtin)}&scanType=${type}`);
       } else {
         throw new Error('Failed to check product');
       }
     } catch (error) {
+      console.error('Error in handleScan:', error);
       toast({
         title: "Fout bij zoeken",
         description: "Kon product niet ophalen. Probeer het opnieuw.",

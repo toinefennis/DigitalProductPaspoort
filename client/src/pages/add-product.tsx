@@ -288,6 +288,16 @@ export default function AddProduct() {
             />
           </div>
 
+          {/* Collection */}
+          <div>
+            <Label htmlFor="collection">Collectie</Label>
+            <Input
+              id="collection"
+              {...register("collection")}
+              placeholder="Bijv. Winter 2024, Sportkleding"
+            />
+          </div>
+
           {/* Material */}
           <div>
             <Label htmlFor="material">Hoofdmateriaal</Label>

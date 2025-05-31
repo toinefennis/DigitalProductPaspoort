@@ -33,12 +33,13 @@ export default function AddProduct() {
   const queryClient = useQueryClient();
 
   // Parse URL parameters for pre-filled data from scanner
-  const currentLocation = location;
-  const urlParams = new URLSearchParams(currentLocation.split('?')[1] || '');
+  const [currentLocation] = useLocation();
+  const urlParams = new URLSearchParams(window.location.search);
   const prefilledGtin = urlParams.get('gtin') || '';
   const scanType = urlParams.get('scanType') || 'barcode';
   
   console.log('Current location:', currentLocation);
+  console.log('Window location search:', window.location.search);
   console.log('URL params:', urlParams.toString());
   console.log('Extracted GTIN:', prefilledGtin);
 

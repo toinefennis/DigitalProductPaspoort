@@ -123,6 +123,17 @@ export default function AddProduct() {
     }
   };
 
+  const handleAdditionalPhotosSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []);
+    if (files.length > 0) {
+      setAdditionalPhotos(prev => [...prev, ...files]);
+    }
+  };
+
+  const removeAdditionalPhoto = (index: number) => {
+    setAdditionalPhotos(prev => prev.filter((_, i) => i !== index));
+  };
+
   const addInputSource = () => {
     if (newInputSource.trim() && !inputSources.includes(newInputSource.trim())) {
       const updatedSources = [...inputSources, newInputSource.trim()];
@@ -225,6 +236,51 @@ export default function AddProduct() {
             </div>
           </div>
 
+          {/* Additional Photos */}
+          <div>
+            <Label className="block text-sm font-medium mb-2">Extra foto's</Label>
+            <div className="space-y-2">
+              {/* Additional photos preview */}
+              {additionalPhotos.length > 0 && (
+                <div className="grid grid-cols-3 gap-2">
+                  {additionalPhotos.map((photo, index) => (
+                    <div key={index} className="relative">
+                      <img 
+                        src={URL.createObjectURL(photo)} 
+                        alt={`Extra foto ${index + 1}`}
+                        className="w-full h-20 object-cover rounded border"
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0"
+                        onClick={() => removeAdditionalPhoto(index)}
+                      >
+                        ×
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {/* Add more photos button */}
+              <div className="border-2 border-dashed border-gray-300 rounded-lg h-20 flex items-center justify-center bg-gray-50 relative">
+                <div className="text-center">
+                  <Camera className="h-6 w-6 text-gray-400 mx-auto mb-1" />
+                  <p className="text-xs text-gray-600">Voeg extra foto's toe</p>
+                </div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleAdditionalPhotosSelect}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+              </div>
+            </div>
+          </div>
+
           {/* Product Name */}
           <div>
             <Label htmlFor="name">Productnaam *</Label>
@@ -260,6 +316,7 @@ export default function AddProduct() {
                 <SelectItem value="kledingstuk">Kledingstuk</SelectItem>
                 <SelectItem value="materiaal">Materiaalbatch</SelectItem>
                 <SelectItem value="remake">Remake Artikel</SelectItem>
+                <SelectItem value="overig">Overig</SelectItem>
               </SelectContent>
             </Select>
             {errors.type && (

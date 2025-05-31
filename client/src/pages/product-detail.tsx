@@ -1,15 +1,49 @@
-import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation, useParams } from "wouter";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Tag, QrCode, Wrench, Clock, CheckCircle } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ArrowLeft, Tag, QrCode, Wrench, Clock, CheckCircle, Edit3, Save, X, Leaf, Globe, Droplets } from "lucide-react";
 import { EventTimeline } from "@/components/event-timeline";
-import type { ProductWithEvents } from "@shared/schema";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
+import type { ProductWithEvents, InsertProduct } from "@shared/schema";
+
+const editFormSchema = z.object({
+  name: z.string().min(1, "Naam is verplicht"),
+  description: z.string().optional(),
+  brand: z.string().optional(),
+  material: z.string().optional(),
+  status: z.string(),
+  collection: z.string().optional(),
+  story: z.string().optional(),
+  origin: z.string().optional(),
+  washingInstructions: z.string().optional(),
+  co2Footprint: z.string().optional(),
+  esgScore: z.string().optional(),
+  materialComposition: z.string().optional(),
+  materialWeight: z.string().optional(),
+  materialDurability: z.string().optional(),
+  materialRecyclability: z.string().optional(),
+  materialCertifications: z.string().optional(),
+});
+
+type EditFormData = z.infer<typeof editFormSchema>;
 
 export default function ProductDetail() {
   const params = useParams();
   const [, setLocation] = useLocation();
+  const [isEditing, setIsEditing] = useState(false);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   
   const productId = params.id;
   const gtin = params.gtin;
@@ -18,6 +52,103 @@ export default function ProductDetail() {
     queryKey: gtin ? [`/api/products/gtin/${gtin}`] : [`/api/products/${productId}`],
     enabled: !!(productId || gtin),
   });
+
+  const editForm = useForm<EditFormData>({
+    resolver: zodResolver(editFormSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+      brand: "",
+      material: "",
+      status: "beschikbaar",
+      collection: "",
+      story: "",
+      origin: "",
+      washingInstructions: "",
+      co2Footprint: "",
+      esgScore: "",
+      materialComposition: "",
+      materialWeight: "",
+      materialDurability: "",
+      materialRecyclability: "",
+      materialCertifications: "",
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async (data: EditFormData) => {
+      // Process material properties
+      const materialProperties = {
+        composition: data.materialComposition || undefined,
+        weight: data.materialWeight || undefined,
+        durability: data.materialDurability || undefined,
+        recyclability: data.materialRecyclability || undefined,
+        certifications: data.materialCertifications ? data.materialCertifications.split(',').map(c => c.trim()).filter(c => c) : undefined,
+      };
+
+      const updateData = {
+        ...data,
+        materialProperties: Object.keys(materialProperties).some(key => materialProperties[key as keyof typeof materialProperties]) 
+          ? materialProperties 
+          : undefined,
+      };
+
+      // Remove individual material property fields
+      delete updateData.materialComposition;
+      delete updateData.materialWeight;
+      delete updateData.materialDurability;
+      delete updateData.materialRecyclability;
+      delete updateData.materialCertifications;
+
+      return await apiRequest("PATCH", `/api/products/${product!.id}`, updateData);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Product succesvol bijgewerkt!",
+      });
+      queryClient.invalidateQueries({ queryKey: [`/api/products/${productId}`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/products/gtin/${gtin}`] });
+      queryClient.invalidateQueries({ queryKey: ["/api/products"] });
+      setIsEditing(false);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Er is een fout opgetreden bij het bijwerken.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Update form when product data loads
+  useEffect(() => {
+    if (product && !isEditing) {
+      const materialProps = product.materialProperties || {};
+      editForm.reset({
+        name: product.name || "",
+        description: product.description || "",
+        brand: product.brand || "",
+        material: product.material || "",
+        status: product.status || "beschikbaar",
+        collection: product.collection || "",
+        story: product.story || "",
+        origin: product.origin || "",
+        washingInstructions: product.washingInstructions || "",
+        co2Footprint: product.co2Footprint || "",
+        esgScore: product.esgScore || "",
+        materialComposition: materialProps.composition || "",
+        materialWeight: materialProps.weight || "",
+        materialDurability: materialProps.durability || "",
+        materialRecyclability: materialProps.recyclability || "",
+        materialCertifications: materialProps.certifications?.join(', ') || "",
+      });
+    }
+  }, [product, isEditing]);
+
+  const onSubmit = (data: EditFormData) => {
+    updateMutation.mutate(data);
+  };
 
   if (isLoading) {
     return (
@@ -91,27 +222,378 @@ export default function ProductDetail() {
         >
           <ArrowLeft className="h-5 w-5" />
         </Button>
+
+        {/* Edit button overlay */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute top-4 right-4 bg-black bg-opacity-50 text-white hover:bg-black hover:bg-opacity-70"
+          onClick={() => setIsEditing(!isEditing)}
+        >
+          {isEditing ? <X className="h-5 w-5" /> : <Edit3 className="h-5 w-5" />}
+        </Button>
       </div>
 
       {/* Product Information */}
       <div className="p-4 space-y-6">
-        {/* Basic Info */}
-        <div>
-          <h1 className="text-2xl font-medium mb-2">{product.name}</h1>
-          <div className="flex items-center space-x-4 text-sm text-gray-600 mb-4">
-            <span className="flex items-center">
-              <Tag className="h-4 w-4 mr-1" />
-              {product.type}
-            </span>
-            <span className="flex items-center">
-              <QrCode className="h-4 w-4 mr-1" />
-              {product.gtin}
-            </span>
+        {isEditing ? (
+          /* Edit Form */
+          <form onSubmit={editForm.handleSubmit(onSubmit)} className="space-y-4">
+            {/* Basic Info - Edit Mode */}
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="name">Productnaam *</Label>
+                <Input
+                  id="name"
+                  {...editForm.register("name")}
+                  placeholder="Productnaam"
+                />
+                {editForm.formState.errors.name && (
+                  <p className="text-sm text-red-500 mt-1">{editForm.formState.errors.name.message}</p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="description">Beschrijving</Label>
+                <Textarea
+                  id="description"
+                  {...editForm.register("description")}
+                  rows={3}
+                  placeholder="Productbeschrijving"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label htmlFor="brand">Merk</Label>
+                  <Input
+                    id="brand"
+                    {...editForm.register("brand")}
+                    placeholder="Merk"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="status">Status</Label>
+                  <Select onValueChange={(value) => editForm.setValue("status", value)} value={editForm.watch("status")}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecteer status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="beschikbaar">Beschikbaar</SelectItem>
+                      <SelectItem value="uitgeleend">Uitgeleend</SelectItem>
+                      <SelectItem value="in_reparatie">In Reparatie</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="material">Hoofdmateriaal</Label>
+                <Input
+                  id="material"
+                  {...editForm.register("material")}
+                  placeholder="Bijv. 80% Gerecycled Polyester, 20% Katoen"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="collection">Collectie</Label>
+                <Input
+                  id="collection"
+                  {...editForm.register("collection")}
+                  placeholder="Bijv. Winter 2024, Sportkleding"
+                />
+              </div>
+            </div>
+
+            {/* Sustainability Fields */}
+            <div className="space-y-4 border-t pt-4">
+              <h3 className="font-medium text-lg flex items-center">
+                <Leaf className="h-5 w-5 mr-2 text-green-600" />
+                Duurzaamheid & Herkomst
+              </h3>
+
+              <div>
+                <Label htmlFor="story">Productverhaal</Label>
+                <Textarea
+                  id="story"
+                  {...editForm.register("story")}
+                  rows={3}
+                  placeholder="Vertel het verhaal achter dit product..."
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label htmlFor="origin">Herkomst</Label>
+                  <Input
+                    id="origin"
+                    {...editForm.register("origin")}
+                    placeholder="Bijv. Nederland, Bangladesh"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="co2Footprint">CO2 Voetafdruk</Label>
+                  <Input
+                    id="co2Footprint"
+                    {...editForm.register("co2Footprint")}
+                    placeholder="Bijv. 5.2 kg CO2eq"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="washingInstructions">Wasinstructies</Label>
+                <Textarea
+                  id="washingInstructions"
+                  {...editForm.register("washingInstructions")}
+                  rows={2}
+                  placeholder="Wasvoorschriften en verzorgingsinstructies..."
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="esgScore">ESG/CSRD Score</Label>
+                <Input
+                  id="esgScore"
+                  {...editForm.register("esgScore")}
+                  placeholder="Bijv. A+, 85/100, Goud"
+                />
+              </div>
+            </div>
+
+            {/* Material Properties */}
+            <div className="space-y-4 border-t pt-4">
+              <h3 className="font-medium text-lg">Materiaaleigenschappen</h3>
+              
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label htmlFor="materialComposition" className="text-xs">Samenstelling</Label>
+                  <Input
+                    id="materialComposition"
+                    {...editForm.register("materialComposition")}
+                    placeholder="100% Katoen"
+                    className="text-sm"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="materialWeight" className="text-xs">Gewicht</Label>
+                  <Input
+                    id="materialWeight"
+                    {...editForm.register("materialWeight")}
+                    placeholder="250g/m²"
+                    className="text-sm"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label htmlFor="materialDurability" className="text-xs">Duurzaamheid</Label>
+                  <Input
+                    id="materialDurability"
+                    {...editForm.register("materialDurability")}
+                    placeholder="Hoog, Gemiddeld, Laag"
+                    className="text-sm"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="materialRecyclability" className="text-xs">Recycleerbaarheid</Label>
+                  <Input
+                    id="materialRecyclability"
+                    {...editForm.register("materialRecyclability")}
+                    placeholder="100% Recycleerbaar"
+                    className="text-sm"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="materialCertifications" className="text-xs">Certificeringen</Label>
+                <Input
+                  id="materialCertifications"
+                  {...editForm.register("materialCertifications")}
+                  placeholder="GOTS, OEKO-TEX, Cradle to Cradle"
+                  className="text-sm"
+                />
+              </div>
+            </div>
+
+            {/* Save/Cancel buttons */}
+            <div className="flex space-x-3 pt-4 border-t">
+              <Button
+                type="button"
+                variant="outline"
+                className="flex-1"
+                onClick={() => setIsEditing(false)}
+              >
+                Annuleren
+              </Button>
+              <Button
+                type="submit"
+                className="flex-1 bg-gwc-primary hover:bg-gwc-primary/90 text-white"
+                disabled={updateMutation.isPending}
+              >
+                {updateMutation.isPending ? (
+                  <>
+                    <Save className="h-4 w-4 mr-2 animate-spin" />
+                    Opslaan...
+                  </>
+                ) : (
+                  <>
+                    <Save className="h-4 w-4 mr-2" />
+                    Opslaan
+                  </>
+                )}
+              </Button>
+            </div>
+          </form>
+        ) : (
+          /* View Mode */
+          <div>
+            {/* Basic Info - View Mode */}
+            <div>
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h1 className="text-2xl font-medium mb-2">{product.name}</h1>
+                  <div className="flex items-center space-x-4 text-sm text-gray-600">
+                    <span className="flex items-center">
+                      <Tag className="h-4 w-4 mr-1" />
+                      {product.type}
+                    </span>
+                    <span className="flex items-center">
+                      <QrCode className="h-4 w-4 mr-1" />
+                      {product.gtin}
+                    </span>
+                  </div>
+                </div>
+                {getStatusBadge(product.status)}
+              </div>
+              
+              {product.description && (
+                <p className="text-gray-700 mb-4">{product.description}</p>
+              )}
+
+              {product.brand && (
+                <div className="mb-4">
+                  <span className="text-sm font-medium text-gray-500">Merk: </span>
+                  <span className="text-sm">{product.brand}</span>
+                </div>
+              )}
+
+              {product.collection && (
+                <div className="mb-4">
+                  <span className="text-sm font-medium text-gray-500">Collectie: </span>
+                  <span className="text-sm">{product.collection}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Product Story */}
+            {product.story && (
+              <Card className="bg-blue-50">
+                <CardContent className="p-4">
+                  <h3 className="font-medium mb-2 flex items-center text-blue-700">
+                    <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M19,3H5C3.9,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.9 20.1,3 19,3M5,19V5H19V19H5Z"/>
+                    </svg>
+                    Productverhaal
+                  </h3>
+                  <p className="text-sm text-gray-700">{product.story}</p>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Sustainability Info */}
+            {(product.origin || product.co2Footprint || product.esgScore || product.washingInstructions) && (
+              <Card className="bg-green-50">
+                <CardContent className="p-4">
+                  <h3 className="font-medium mb-3 flex items-center text-green-700">
+                    <Leaf className="h-5 w-5 mr-2" />
+                    Duurzaamheid & Herkomst
+                  </h3>
+                  <div className="space-y-2">
+                    {product.origin && (
+                      <div className="flex items-center">
+                        <Globe className="h-4 w-4 mr-2 text-green-600" />
+                        <span className="text-sm font-medium text-gray-500 mr-2">Herkomst:</span>
+                        <span className="text-sm">{product.origin}</span>
+                      </div>
+                    )}
+                    {product.co2Footprint && (
+                      <div className="flex items-center">
+                        <span className="text-sm font-medium text-gray-500 mr-2">CO2 Voetafdruk:</span>
+                        <span className="text-sm">{product.co2Footprint}</span>
+                      </div>
+                    )}
+                    {product.esgScore && (
+                      <div className="flex items-center">
+                        <span className="text-sm font-medium text-gray-500 mr-2">ESG Score:</span>
+                        <span className="text-sm">{product.esgScore}</span>
+                      </div>
+                    )}
+                    {product.washingInstructions && (
+                      <div className="mt-3">
+                        <div className="flex items-center mb-1">
+                          <Droplets className="h-4 w-4 mr-2 text-blue-600" />
+                          <span className="text-sm font-medium text-gray-700">Wasinstructies:</span>
+                        </div>
+                        <p className="text-sm text-gray-600 ml-6">{product.washingInstructions}</p>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Material Properties */}
+            {product.materialProperties && Object.keys(product.materialProperties).some(key => product.materialProperties![key as keyof typeof product.materialProperties]) && (
+              <Card className="bg-orange-50">
+                <CardContent className="p-4">
+                  <h3 className="font-medium mb-3 text-orange-700">Materiaaleigenschappen</h3>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    {product.materialProperties.composition && (
+                      <div>
+                        <span className="font-medium text-gray-500">Samenstelling:</span>
+                        <p className="text-gray-700">{product.materialProperties.composition}</p>
+                      </div>
+                    )}
+                    {product.materialProperties.weight && (
+                      <div>
+                        <span className="font-medium text-gray-500">Gewicht:</span>
+                        <p className="text-gray-700">{product.materialProperties.weight}</p>
+                      </div>
+                    )}
+                    {product.materialProperties.durability && (
+                      <div>
+                        <span className="font-medium text-gray-500">Duurzaamheid:</span>
+                        <p className="text-gray-700">{product.materialProperties.durability}</p>
+                      </div>
+                    )}
+                    {product.materialProperties.recyclability && (
+                      <div>
+                        <span className="font-medium text-gray-500">Recycleerbaarheid:</span>
+                        <p className="text-gray-700">{product.materialProperties.recyclability}</p>
+                      </div>
+                    )}
+                  </div>
+                  {product.materialProperties.certifications && product.materialProperties.certifications.length > 0 && (
+                    <div className="mt-3 pt-3 border-t border-orange-200">
+                      <span className="font-medium text-gray-500 text-sm">Certificeringen:</span>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {product.materialProperties.certifications.map((cert, index) => (
+                          <Badge key={index} variant="secondary" className="text-xs">
+                            {cert}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
           </div>
-          {product.description && (
-            <p className="text-gray-700">{product.description}</p>
-          )}
-        </div>
+        )}
 
         {/* Material Info */}
         {product.material && (

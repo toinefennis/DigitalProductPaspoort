@@ -140,6 +140,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update product
+  app.patch("/api/products/:id", async (req, res) => {
+    try {
+      const productId = parseInt(req.params.id);
+      if (isNaN(productId)) {
+        return res.status(400).json({ message: "Invalid product ID" });
+      }
+
+      // Parse materialProperties if it exists
+      const updateData = { ...req.body };
+      if (updateData.materialProperties && typeof updateData.materialProperties === 'string') {
+        updateData.materialProperties = JSON.parse(updateData.materialProperties);
+      }
+
+      const updatedProduct = await storage.updateProduct(productId, updateData);
+      res.json(updatedProduct);
+    } catch (error) {
+      console.error("Error updating product:", error);
+      res.status(500).json({ message: "Failed to update product" });
+    }
+  });
+
   // Create new event
   app.post("/api/events", upload.single("photo"), async (req, res) => {
     try {

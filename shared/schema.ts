@@ -7,7 +7,7 @@ export const products = pgTable("products", {
   id: serial("id").primaryKey(),
   gtin: text("gtin").notNull().unique(),
   name: text("name").notNull(),
-  type: text("type").notNull(), // 'kledingstuk', 'materiaal', 'remake'
+  type: text("type").notNull(), // 'kledingstuk', 'materiaal', 'remake', 'overig'
   description: text("description"),
   brand: text("brand"),
   material: text("material"),
@@ -16,6 +16,21 @@ export const products = pgTable("products", {
   sourceGtins: jsonb("source_gtins").$type<string[]>().default([]),
   status: text("status").notNull().default("beschikbaar"), // 'beschikbaar', 'uitgeleend', 'in_reparatie'
   collection: text("collection"), // User-defined collection
+  
+  // Extended fields for sustainability and product information
+  story: text("story"), // Product story/narrative
+  origin: text("origin"), // Herkomst/origin
+  washingInstructions: text("washing_instructions"), // Wasinstructies
+  co2Footprint: text("co2_footprint"), // CO2 footprint
+  esgScore: text("esg_score"), // ESG/CSRD waarden
+  materialProperties: jsonb("material_properties").$type<{
+    composition?: string;
+    weight?: string;
+    durability?: string;
+    recyclability?: string;
+    certifications?: string[];
+  }>().default({}),
+  
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

@@ -2,15 +2,21 @@ import { useQuery } from "@tanstack/react-query";
 import { ProductCard } from "@/components/product-card";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { useLocation } from "wouter";
 import { Search } from "lucide-react";
 import type { Product } from "@shared/schema";
 
 export default function Products() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [, setLocation] = useLocation();
 
   const { data: products, isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
   });
+
+  const handleProductClick = (product: Product) => {
+    setLocation(`/product/${product.id}`);
+  };
 
   const filteredProducts = products?.filter(product =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -53,7 +59,11 @@ export default function Products() {
           </div>
         ) : (
           filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard 
+              key={product.id} 
+              product={product} 
+              onClick={() => handleProductClick(product)}
+            />
           ))
         )}
       </div>

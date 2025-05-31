@@ -18,6 +18,11 @@ import { insertProductSchema } from "@shared/schema";
 const formSchema = insertProductSchema.extend({
   photo: z.instanceof(File).optional(),
   sourceGtinsInput: z.string().optional(),
+  materialComposition: z.string().optional(),
+  materialWeight: z.string().optional(),
+  materialDurability: z.string().optional(),
+  materialRecyclability: z.string().optional(),
+  materialCertifications: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -379,6 +384,115 @@ export default function AddProduct() {
               {...register("material")}
               placeholder="Bijv. 80% Gerecycled Polyester, 20% Katoen"
             />
+          </div>
+
+          {/* Product Story */}
+          <div>
+            <Label htmlFor="story">Productverhaal</Label>
+            <Textarea
+              id="story"
+              {...register("story")}
+              rows={3}
+              placeholder="Vertel het verhaal achter dit product..."
+            />
+          </div>
+
+          {/* Origin */}
+          <div>
+            <Label htmlFor="origin">Herkomst</Label>
+            <Input
+              id="origin"
+              {...register("origin")}
+              placeholder="Bijv. Nederland, Bangladesh, Italië"
+            />
+          </div>
+
+          {/* Washing Instructions */}
+          <div>
+            <Label htmlFor="washingInstructions">Wasinstructies</Label>
+            <Textarea
+              id="washingInstructions"
+              {...register("washingInstructions")}
+              rows={2}
+              placeholder="Wasvoorschriften en verzorgingsinstructies..."
+            />
+          </div>
+
+          {/* CO2 Footprint */}
+          <div>
+            <Label htmlFor="co2Footprint">CO2 Voetafdruk</Label>
+            <Input
+              id="co2Footprint"
+              {...register("co2Footprint")}
+              placeholder="Bijv. 5.2 kg CO2eq"
+            />
+          </div>
+
+          {/* ESG Score */}
+          <div>
+            <Label htmlFor="esgScore">ESG/CSRD Score</Label>
+            <Input
+              id="esgScore"
+              {...register("esgScore")}
+              placeholder="Bijv. A+, 85/100, Goud"
+            />
+          </div>
+
+          {/* Material Properties */}
+          <div className="space-y-3">
+            <Label className="block text-sm font-medium">Materiaaleigenschappen</Label>
+            
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label htmlFor="materialComposition" className="text-xs">Samenstelling</Label>
+                <Input
+                  id="materialComposition"
+                  {...register("materialComposition")}
+                  placeholder="100% Katoen"
+                  className="text-sm"
+                />
+              </div>
+              <div>
+                <Label htmlFor="materialWeight" className="text-xs">Gewicht</Label>
+                <Input
+                  id="materialWeight"
+                  {...register("materialWeight")}
+                  placeholder="250g/m²"
+                  className="text-sm"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label htmlFor="materialDurability" className="text-xs">Duurzaamheid</Label>
+                <Input
+                  id="materialDurability"
+                  {...register("materialDurability")}
+                  placeholder="Hoog, Gemiddeld, Laag"
+                  className="text-sm"
+                />
+              </div>
+              <div>
+                <Label htmlFor="materialRecyclability" className="text-xs">Recycleerbaarheid</Label>
+                <Input
+                  id="materialRecyclability"
+                  {...register("materialRecyclability")}
+                  placeholder="100% Recycleerbaar"
+                  className="text-sm"
+                />
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="materialCertifications" className="text-xs">Certificeringen</Label>
+              <Input
+                id="materialCertifications"
+                {...register("materialCertifications")}
+                placeholder="GOTS, OEKO-TEX, Cradle to Cradle"
+                className="text-sm"
+              />
+            </div>
           </div>
 
           {/* Input Sources (for remakes/batches) */}

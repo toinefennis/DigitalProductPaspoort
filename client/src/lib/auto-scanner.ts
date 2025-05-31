@@ -158,9 +158,9 @@ export class AutoScanner {
   }
 
   private isValidGTIN(code: string): boolean {
-    // GTIN validation - check if it's 8, 12, 13, or 14 digits
+    // GTIN validation - only accept 13-digit EAN codes
     const cleanCode = code.replace(/\D/g, '');
-    return /^(\d{8}|\d{12}|\d{13}|\d{14})$/.test(cleanCode) && this.validateGTINChecksum(cleanCode);
+    return /^(\d{13})$/.test(cleanCode) && this.validateGTINChecksum(cleanCode);
   }
 
   private validateGTINChecksum(gtin: string): boolean {

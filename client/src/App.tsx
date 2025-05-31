@@ -11,6 +11,8 @@ import Scanner from "@/pages/scanner";
 import ProductDetail from "@/pages/product-detail";
 import AddProduct from "@/pages/add-product";
 import EventLog from "@/pages/event-log";
+import Products from "@/pages/products";
+import Settings from "@/pages/settings";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -18,6 +20,8 @@ function Router() {
     <Switch>
       <Route path="/" component={Dashboard} />
       <Route path="/scanner" component={Scanner} />
+      <Route path="/products" component={Products} />
+      <Route path="/settings" component={Settings} />
       <Route path="/product/:id" component={ProductDetail} />
       <Route path="/product/gtin/:gtin" component={ProductDetail} />
       <Route path="/add-product" component={AddProduct} />

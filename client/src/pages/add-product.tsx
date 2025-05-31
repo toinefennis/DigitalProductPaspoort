@@ -155,15 +155,34 @@ export default function AddProduct() {
   };
 
   const onSubmit = (data: FormData) => {
+    // Process material properties into the correct format
+    const materialProperties = {
+      composition: data.materialComposition || undefined,
+      weight: data.materialWeight || undefined,
+      durability: data.materialDurability || undefined,
+      recyclability: data.materialRecyclability || undefined,
+      certifications: data.materialCertifications ? data.materialCertifications.split(',').map(c => c.trim()).filter(c => c) : undefined,
+    };
+
     const submitData = {
       ...data,
       sourceGtins: inputSources,
+      materialProperties: Object.keys(materialProperties).some(key => materialProperties[key as keyof typeof materialProperties]) 
+        ? materialProperties 
+        : undefined,
     };
+    
+    // Remove the individual material property fields since they're now in materialProperties
+    delete submitData.materialComposition;
+    delete submitData.materialWeight;
+    delete submitData.materialDurability;
+    delete submitData.materialRecyclability;
+    delete submitData.materialCertifications;
     
     // Create FormData for file upload
     const formData = new FormData();
     Object.entries(submitData).forEach(([key, value]) => {
-      if (key === "sourceGtins") {
+      if (key === "sourceGtins" || key === "materialProperties") {
         formData.append(key, JSON.stringify(value));
       } else if (value !== undefined && value !== null) {
         formData.append(key, value.toString());

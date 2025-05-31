@@ -1,0 +1,83 @@
+Opgemaakt. Eerst zal ik de API-referentie van GS1 analyseren om te bepalen welke componenten essentieel zijn voor een Minimum Viable Product (MVP). Vervolgens stel ik een afgeslankt functioneel ontwerp op, specifiek voor de pilot van Stichting Groningen werkt Circulair (GWC).
+Op basis van de analyse van de GS1 API-documentatie en de specifieke behoeften van de GWC-pilot, stel ik het volgende functionele ontwerp voor een Minimum Viable Product (MVP) op.
+
+Dit ontwerp is bewust afgeslankt om de pilot snel en kostenefficiënt te kunnen lanceren, terwijl de kernfunctionaliteiten worden gevalideerd.
+
+---
+
+### **Functioneel Ontwerp: MVP voor de GWC DPP App**
+
+**Versie:** MVP 1.0
+**Datum:** 31 mei 2025
+**Doel:** Het technisch en functioneel valideren van de meest kritieke use cases voor de pilot van Stichting Groningen werkt Circulair: reparatie, uitleen en de creatie van remake/batch-producten.
+
+**1. MVP-Principes**
+
+* **Focus op de Kern:** Alleen de functionaliteiten die absoluut nodig zijn voor de pilot worden geïmplementeerd.
+* **Geen Complexe Workflows:** Goedkeuringsprocessen en meervoudige gebruikersrollen worden vereenvoudigd.
+* **Eigen Database als Bron:** Voor de pilot fungeert de eigen database van de app als de "source of truth". De complexe en kostbare synchronisatie met het GS1 GDSN-netwerk wordt in deze fase *niet* geïmplementeerd.
+* **Simulatie van Resolvers:** We gebruiken QR-codes die direct naar onze eigen pilot-applicatie linken, in plaats van de officiële GS1 Digital Link resolver. Dit bespaart implementatietijd en kosten.
+
+**2. Gebruikersrollen in de MVP**
+
+Om de complexiteit te beperken, definiëren we slechts twee rollen:
+
+1.  **Beheerder (GWC Medewerker/Partner):** Een 'supergebruiker' die de primaire acties binnen de pilot uitvoert. Deze rol kan:
+    * Nieuwe DPP's aanmaken (voor kleding, garen, remakes).
+    * Events loggen (Reparatie, Uitleen, Retour).
+2.  **Lezer (Iedereen):** Iedereen met een smartphone die een QR-code scant en de productinformatie en historie kan bekijken. Deze rol vereist geen login.
+
+**3. Kernfunctionaliteiten van de MVP**
+
+**3.1. DPP Creatie (Vereenvoudigd)**
+De Beheerder kan een nieuw product registreren via een simpele flow in de app:
+1.  De Beheerder scant een nieuwe, unieke QR-code.
+2.  Een beknopt formulier wordt geopend met de volgende velden:
+    * `Productnaam` (bv. "Blauwe Jas" of "Batch Circulair Denim Garen #B001").
+    * `Type` (Keuzelijst: "Kledingstuk", "Materiaalbatch", "Remake Artikel").
+    * `Korte Omschrijving`.
+    * `Hoofdmateriaal`.
+    * `Foto` (Uploaden vanuit de app).
+    * **(Optioneel) Input Bronnen:** Een veld waar de Beheerder de unieke codes kan scannen of intypen van de producten die als input dienden voor een batch of remake.
+3.  Na het opslaan is het DPP direct 'live' en opvraagbaar via de QR-code.
+
+**3.2. DPP Bekijken**
+Elke Lezer die de QR-code scant, krijgt een eenvoudige, mobielvriendelijke webpagina te zien met twee duidelijke secties:
+* **Productinformatie:** Toont de data die bij de creatie is ingevoerd (naam, foto, materiaal, etc.). Indien het een remake/batch is, worden de `Input Bronnen` hier als klikbare links getoond.
+* **Producthistorie:** Een chronologische tijdlijn met alle gelogde events (zie 3.3).
+
+**3.3. Event Logging (Reparatie & Uitleen)**
+De Beheerder kan, na het scannen van een bestaand product, eenvoudig een nieuw event toevoegen.
+1.  Scan de QR-code van het product.
+2.  Klik op "Nieuw Event Toevoegen".
+3.  Kies het type event:
+    * **Reparatie:** Een formulier met velden voor `Omschrijving van de reparatie` en een optionele `Foto`.
+    * **Uitleen:** Een formulier met een veld voor `Uitgeleend aan (referentie)`.
+    * **Retour:** Een knop die het product als "Beschikbaar" markeert.
+4.  Na het opslaan is het event direct zichtbaar in de Producthistorie.
+
+**4. Technische Architectuur & API-keuzes voor de MVP**
+
+* **Frontend:** Mobiele app (React Native) voor de Beheerder. Een publieke web-interface voor de Lezers.
+* **Backend:** Node.js met een PostgreSQL database. **Deze database is de master voor de pilot.**
+* **GS1 API Integratie (MVP Scope):**
+    * **GS1 Digital Link Connect:** *Niet geïmplementeerd in de MVP.* In plaats hiervan genereren we QR-codes die direct naar onze eigen server wijzen (bv. `https://pilot.gwc.nl/dpp/12345`). Dit is een standaard MVP-aanpak om complexiteit te vermijden. In een eventuele live-versie kan dit worden omgezet naar de officiële GS1 resolver.
+    * **GS1 Data Source / GDSN:** *Niet geïmplementeerd in de MVP.* We gebruiken de GS1-standaarden voor de *structuur* van onze data (bv. het gebruik van GTIN als unieke identifier), maar we synchroniseren deze data *niet* met het GDSN-netwerk. Dit is de grootste en belangrijkste versimpeling voor de pilotfase.
+    * **Verified by GS1:** *Niet geïmplementeerd in de MVP.* Verificatie van producteigenaarschap is voor de gesloten pilotomgeving niet noodzakelijk.
+
+**5. Datamodel (MVP)**
+
+* **Tabel `Products`:**
+    * `id` (Unieke identifier)
+    * `gtin` (De GS1-code van de QR)
+    * `name`, `type`, `description`, `material`, `photo_url`
+    * `source_gtins` (Een array van tekstvelden om de input-GTINs voor remakes/batches op te slaan)
+* **Tabel `Events`:**
+    * `id`
+    * `product_id` (Foreign key naar `Products`)
+    * `event_type` ("Creatie", "Reparatie", "Uitleen", "Retour")
+    * `description`
+    * `photo_url`
+    * `timestamp`
+
+Dit MVP-ontwerp stelt Stichting Groningen werkt Circulair in staat om met minimale investering en doorlooptijd de kernhypotheses van hun pilot te testen en waardevolle praktijkervaring op te doen.

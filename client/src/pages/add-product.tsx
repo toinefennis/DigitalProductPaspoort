@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -54,6 +54,13 @@ export default function AddProduct() {
       additionalPhotos: [],
     },
   });
+
+  // Update GTIN field when prefilledGtin changes
+  useEffect(() => {
+    if (prefilledGtin) {
+      setValue("gtin", prefilledGtin);
+    }
+  }, [prefilledGtin, setValue]);
 
   const productType = watch("type");
 
@@ -260,8 +267,10 @@ export default function AddProduct() {
               <Input
                 id="gtin"
                 {...register("gtin")}
+                value={watch("gtin") || ""}
                 placeholder="8720796166279"
                 className={`flex-1 ${errors.gtin ? "border-red-500" : ""}`}
+                onChange={(e) => setValue("gtin", e.target.value)}
               />
               <Button
                 type="button"

@@ -225,6 +225,16 @@ export default function AddProduct() {
             )}
           </div>
 
+          {/* Brand */}
+          <div>
+            <Label htmlFor="brand">Merk</Label>
+            <Input
+              id="brand"
+              {...register("brand")}
+              placeholder="Bijv. Nike, H&M, Patagonia"
+            />
+          </div>
+
           {/* Product Type */}
           <div>
             <Label htmlFor="type">Type *</Label>

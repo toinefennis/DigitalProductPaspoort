@@ -45,7 +45,19 @@ export class DatabaseStorage implements IStorage {
   async createProduct(product: InsertProduct): Promise<Product> {
     const [newProduct] = await db
       .insert(products)
-      .values(product)
+      .values({
+        gtin: product.gtin,
+        name: product.name,
+        type: product.type,
+        description: product.description,
+        brand: product.brand,
+        material: product.material,
+        photoUrl: product.photoUrl,
+        additionalPhotos: product.additionalPhotos,
+        sourceGtins: product.sourceGtins,
+        status: product.status,
+        collection: product.collection,
+      })
       .returning();
     
     // Create initial creation event

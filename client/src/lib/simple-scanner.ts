@@ -39,32 +39,53 @@ export class SimpleScanner {
   }
 
   private startMockScanning(onScan: (result: ScanResult) => void): void {
-    let scanCount = 0;
-    this.scanInterval = window.setInterval(() => {
-      scanCount++;
+    // For now, provide manual input option since real barcode scanning requires 
+    // specialized libraries. In production, this would be replaced with actual
+    // barcode detection using libraries like QuaggaJS or ZXing
+    
+    // Show instructions to user
+    setTimeout(() => {
+      const userInput = prompt(
+        "Scanner Demo\n\nVoer een GTIN/barcode in om te testen:\n" +
+        "Voorbeelden:\n" +
+        "• 8712345678901\n" +
+        "• 0123456789012\n" +
+        "• 8720796166279\n" +
+        "• 9506000134352\n\n" +
+        "Of voer je eigen GTIN in:"
+      );
       
-      // Simulate finding different types of codes
-      if (scanCount === 10) { // After 5 seconds
-        const mockGTINs = [
-          '8712345678901',
-          '0123456789012', 
-          '8720796166279',
-          '9506000134352'
-        ];
-        const randomGTIN = mockGTINs[Math.floor(Math.random() * mockGTINs.length)];
-        
+      if (userInput && this.isValidGTIN(userInput)) {
         onScan({
-          code: randomGTIN,
-          format: 'EAN-13',
+          code: userInput,
+          format: this.getGTINFormat(userInput),
           type: 'barcode'
         });
-        
-        if (this.scanInterval) {
-          clearInterval(this.scanInterval);
-          this.scanInterval = null;
-        }
+      } else if (userInput) {
+        // Invalid GTIN, but still process it
+        onScan({
+          code: userInput,
+          format: 'Unknown',
+          type: 'barcode'
+        });
       }
-    }, 500);
+      
+      if (this.scanInterval) {
+        clearInterval(this.scanInterval);
+        this.scanInterval = null;
+      }
+    }, 1000);
+  }
+
+  private getGTINFormat(gtin: string): string {
+    const length = gtin.length;
+    switch (length) {
+      case 8: return 'EAN-8';
+      case 12: return 'UPC-A';
+      case 13: return 'EAN-13';
+      case 14: return 'ITF-14';
+      default: return 'Unknown';
+    }
   }
 
   private isValidGTIN(code: string): boolean {

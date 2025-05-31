@@ -123,7 +123,7 @@ export default function ProductDetail() {
 
   // Update form when product data loads
   useEffect(() => {
-    if (product && !isEditing) {
+    if (product) {
       const materialProps = product.materialProperties || {};
       editForm.reset({
         name: product.name || "",
@@ -144,7 +144,7 @@ export default function ProductDetail() {
         materialCertifications: materialProps.certifications?.join(', ') || "",
       });
     }
-  }, [product, isEditing]);
+  }, [product, editForm]);
 
   const onSubmit = (data: EditFormData) => {
     updateMutation.mutate(data);

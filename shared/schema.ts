@@ -9,10 +9,13 @@ export const products = pgTable("products", {
   name: text("name").notNull(),
   type: text("type").notNull(), // 'kledingstuk', 'materiaal', 'remake'
   description: text("description"),
+  brand: text("brand"),
   material: text("material"),
   photoUrl: text("photo_url"),
+  additionalPhotos: jsonb("additional_photos").$type<string[]>().default([]),
   sourceGtins: jsonb("source_gtins").$type<string[]>().default([]),
   status: text("status").notNull().default("beschikbaar"), // 'beschikbaar', 'uitgeleend', 'in_reparatie'
+  collection: text("collection"), // User-defined collection
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -20,7 +23,7 @@ export const products = pgTable("products", {
 export const events = pgTable("events", {
   id: serial("id").primaryKey(),
   productId: integer("product_id").references(() => products.id).notNull(),
-  eventType: text("event_type").notNull(), // 'creatie', 'reparatie', 'uitleen', 'retour'
+  eventType: text("event_type").notNull(), // 'creatie', 'schoonmaak', 'wassen', 'reparatie', 'impregneren', 'refurbish', 'uitleen', 'opslag', 'recycle', 'retour'
   description: text("description").notNull(),
   photoUrl: text("photo_url"),
   loanReference: text("loan_reference"), // For loan events

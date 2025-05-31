@@ -46,8 +46,14 @@ export class DatabaseStorage implements IStorage {
     const [newProduct] = await db
       .insert(products)
       .values({
-        ...product,
-        updatedAt: new Date(),
+        gtin: product.gtin,
+        name: product.name,
+        type: product.type,
+        description: product.description,
+        material: product.material,
+        photoUrl: product.photoUrl,
+        sourceGtins: product.sourceGtins || [],
+        status: product.status || "beschikbaar"
       })
       .returning();
     
@@ -64,10 +70,7 @@ export class DatabaseStorage implements IStorage {
   async updateProduct(id: number, updates: Partial<InsertProduct>): Promise<Product> {
     const [updatedProduct] = await db
       .update(products)
-      .set({
-        ...updates,
-        updatedAt: new Date(),
-      })
+      .set(updates)
       .where(eq(products.id, id))
       .returning();
     

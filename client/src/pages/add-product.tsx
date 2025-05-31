@@ -33,9 +33,14 @@ export default function AddProduct() {
   const queryClient = useQueryClient();
 
   // Parse URL parameters for pre-filled data from scanner
-  const urlParams = new URLSearchParams(location.split('?')[1] || '');
+  const currentLocation = location;
+  const urlParams = new URLSearchParams(currentLocation.split('?')[1] || '');
   const prefilledGtin = urlParams.get('gtin') || '';
   const scanType = urlParams.get('scanType') || 'barcode';
+  
+  console.log('Current location:', currentLocation);
+  console.log('URL params:', urlParams.toString());
+  console.log('Extracted GTIN:', prefilledGtin);
 
   const {
     register,
@@ -57,6 +62,7 @@ export default function AddProduct() {
 
   // Update GTIN field when prefilledGtin changes
   useEffect(() => {
+    console.log('Prefilled GTIN from URL:', prefilledGtin);
     if (prefilledGtin) {
       setValue("gtin", prefilledGtin);
     }

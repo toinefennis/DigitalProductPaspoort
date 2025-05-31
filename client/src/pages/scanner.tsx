@@ -13,9 +13,27 @@ export default function Scanner() {
   const [manualGtin, setManualGtin] = useState("");
   const { toast } = useToast();
 
-  const handleScan = (gtin: string) => {
-    // Navigate to product detail by GTIN
-    setLocation(`/product/gtin/${gtin}`);
+  const handleScan = async (gtin: string, type: 'barcode' | 'qr') => {
+    try {
+      // First check if product exists
+      const response = await fetch(`/api/products/gtin/${gtin}`);
+      
+      if (response.ok) {
+        // Product exists, go to product detail
+        setLocation(`/product/gtin/${gtin}`);
+      } else if (response.status === 404) {
+        // Product doesn't exist, redirect to add product with GTIN pre-filled
+        setLocation(`/add-product?gtin=${gtin}&scanType=${type}`);
+      } else {
+        throw new Error('Failed to check product');
+      }
+    } catch (error) {
+      toast({
+        title: "Fout bij zoeken",
+        description: "Kon product niet ophalen. Probeer het opnieuw.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleManualEntry = () => {
@@ -25,7 +43,7 @@ export default function Scanner() {
   const handleManualSubmit = () => {
     if (manualGtin.trim()) {
       setShowManualEntry(false);
-      handleScan(manualGtin.trim());
+      handleScan(manualGtin.trim(), 'barcode');
       setManualGtin("");
     } else {
       toast({

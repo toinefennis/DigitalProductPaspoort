@@ -23,13 +23,19 @@ const formSchema = insertProductSchema.extend({
 type FormData = z.infer<typeof formSchema>;
 
 export default function AddProduct() {
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [additionalPhotos, setAdditionalPhotos] = useState<File[]>([]);
   const [inputSources, setInputSources] = useState<string[]>([]);
   const [newInputSource, setNewInputSource] = useState("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Parse URL parameters for pre-filled data from scanner
+  const urlParams = new URLSearchParams(location.split('?')[1] || '');
+  const prefilledGtin = urlParams.get('gtin') || '';
+  const scanType = urlParams.get('scanType') || 'barcode';
 
   const {
     register,
@@ -41,9 +47,11 @@ export default function AddProduct() {
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      gtin: prefilledGtin,
       type: "",
       status: "beschikbaar",
       sourceGtins: [],
+      additionalPhotos: [],
     },
   });
 

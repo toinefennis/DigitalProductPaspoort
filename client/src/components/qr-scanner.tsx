@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Camera, Flashlight, RotateCcw, Keyboard } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { BarcodeScanner, type ScanResult } from "@/lib/barcode-scanner";
+import { SimpleScanner, type ScanResult } from "@/lib/simple-scanner";
 
 interface QRScannerProps {
   onScan: (data: string, type: 'barcode' | 'qr') => void;
@@ -12,7 +12,7 @@ interface QRScannerProps {
 
 export function QRScanner({ onScan, onManualEntry }: QRScannerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const scannerRef = useRef<BarcodeScanner | null>(null);
+  const scannerRef = useRef<SimpleScanner | null>(null);
   const [isScanning, setIsScanning] = useState(false);
   const [hasFlash, setHasFlash] = useState(false);
   const [flashOn, setFlashOn] = useState(false);
@@ -29,7 +29,7 @@ export function QRScanner({ onScan, onManualEntry }: QRScannerProps) {
     if (!videoRef.current) return;
 
     try {
-      scannerRef.current = new BarcodeScanner();
+      scannerRef.current = new SimpleScanner();
       
       await scannerRef.current.startScanning(
         videoRef.current,
@@ -111,7 +111,7 @@ export function QRScanner({ onScan, onManualEntry }: QRScannerProps) {
         playsInline
         muted
       />
-      <canvas ref={canvasRef} className="hidden" />
+
       
       {/* Scanning overlay */}
       <div className="absolute inset-0 flex items-center justify-center">

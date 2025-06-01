@@ -57,6 +57,7 @@ function Router() {
       <Route path="/loans" component={LoanOverview} />
       <Route path="/export" component={Export} />
       <Route path="/gs1-sync" component={GS1Sync} />
+      <Route path="/gtin-registry" component={GtinRegistry} />
       <Route path="/profile" component={Profile} />
       <Route path="/stories" component={Stories} />
       <Route path="/share-story" component={ShareStory} />

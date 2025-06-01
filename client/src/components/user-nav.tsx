@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { User, Settings, LogOut, LogIn } from "lucide-react";
+import { User, Settings, LogOut, LogIn, Database } from "lucide-react";
 import { useLocation } from "wouter";
 
 export function UserNav() {
@@ -99,6 +99,12 @@ export function UserNav() {
           <Settings className="mr-2 h-4 w-4" />
           <span>Instellingen</span>
         </DropdownMenuItem>
+        {(user.role === 'manager' || user.role === 'admin') && (
+          <DropdownMenuItem onClick={() => setLocation("/gtin-registry")}>
+            <Database className="mr-2 h-4 w-4" />
+            <span>GTIN Register</span>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => window.location.href = "/api/logout"}>
           <LogOut className="mr-2 h-4 w-4" />

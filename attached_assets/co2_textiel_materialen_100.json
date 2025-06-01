@@ -1,0 +1,382 @@
+[
+  {
+    "Materiaal":"Katoen",
+    "CO2_kg_per_kg":5.0
+  },
+  {
+    "Materiaal":"Polyester",
+    "CO2_kg_per_kg":9.5
+  },
+  {
+    "Materiaal":"Wol",
+    "CO2_kg_per_kg":21.0
+  },
+  {
+    "Materiaal":"Zijde",
+    "CO2_kg_per_kg":14.5
+  },
+  {
+    "Materiaal":"Linnen",
+    "CO2_kg_per_kg":null
+  },
+  {
+    "Materiaal":"Nylon",
+    "CO2_kg_per_kg":10.0
+  },
+  {
+    "Materiaal":"Acryl",
+    "CO2_kg_per_kg":10.2
+  },
+  {
+    "Materiaal":"Viscose",
+    "CO2_kg_per_kg":6.0
+  },
+  {
+    "Materiaal":"Elastaan",
+    "CO2_kg_per_kg":18.0
+  },
+  {
+    "Materiaal":"Modal",
+    "CO2_kg_per_kg":3.8
+  },
+  {
+    "Materiaal":"Bamboe",
+    "CO2_kg_per_kg":4.0
+  },
+  {
+    "Materiaal":"Hennep",
+    "CO2_kg_per_kg":2.1
+  },
+  {
+    "Materiaal":"Tencel (Lyocell)",
+    "CO2_kg_per_kg":3.0
+  },
+  {
+    "Materiaal":"Ramie",
+    "CO2_kg_per_kg":3.0
+  },
+  {
+    "Materiaal":"Spandex",
+    "CO2_kg_per_kg":18.0
+  },
+  {
+    "Materiaal":"Cupro",
+    "CO2_kg_per_kg":5.5
+  },
+  {
+    "Materiaal":"Kasjmier",
+    "CO2_kg_per_kg":30.0
+  },
+  {
+    "Materiaal":"Angora",
+    "CO2_kg_per_kg":18.0
+  },
+  {
+    "Materiaal":"Mohair",
+    "CO2_kg_per_kg":25.0
+  },
+  {
+    "Materiaal":"Alpaca",
+    "CO2_kg_per_kg":15.0
+  },
+  {
+    "Materiaal":"Polyamide",
+    "CO2_kg_per_kg":10.0
+  },
+  {
+    "Materiaal":"PVC",
+    "CO2_kg_per_kg":null
+  },
+  {
+    "Materiaal":"PU (polyurethaan)",
+    "CO2_kg_per_kg":null
+  },
+  {
+    "Materiaal":"Leer",
+    "CO2_kg_per_kg":65.0
+  },
+  {
+    "Materiaal":"Suède",
+    "CO2_kg_per_kg":50.0
+  },
+  {
+    "Materiaal":"Denim",
+    "CO2_kg_per_kg":6.5
+  },
+  {
+    "Materiaal":"Flanel",
+    "CO2_kg_per_kg":null
+  },
+  {
+    "Materiaal":"Fleece",
+    "CO2_kg_per_kg":8.0
+  },
+  {
+    "Materiaal":"Velours",
+    "CO2_kg_per_kg":6.0
+  },
+  {
+    "Materiaal":"Jacquard",
+    "CO2_kg_per_kg":5.0
+  },
+  {
+    "Materiaal":"Lurex",
+    "CO2_kg_per_kg":20.0
+  },
+  {
+    "Materiaal":"Coolmax",
+    "CO2_kg_per_kg":9.0
+  },
+  {
+    "Materiaal":"Microvezel",
+    "CO2_kg_per_kg":10.0
+  },
+  {
+    "Materiaal":"Polypropyleen",
+    "CO2_kg_per_kg":6.0
+  },
+  {
+    "Materiaal":"Kevlar",
+    "CO2_kg_per_kg":30.0
+  },
+  {
+    "Materiaal":"Aramide",
+    "CO2_kg_per_kg":30.0
+  },
+  {
+    "Materiaal":"Dyneema",
+    "CO2_kg_per_kg":32.0
+  },
+  {
+    "Materiaal":"Latex",
+    "CO2_kg_per_kg":25.0
+  },
+  {
+    "Materiaal":"Rubber",
+    "CO2_kg_per_kg":25.0
+  },
+  {
+    "Materiaal":"Neopreen",
+    "CO2_kg_per_kg":25.0
+  },
+  {
+    "Materiaal":"Coconzijde",
+    "CO2_kg_per_kg":14.5
+  },
+  {
+    "Materiaal":"Melkvezel",
+    "CO2_kg_per_kg":null
+  },
+  {
+    "Materiaal":"PLA-vezel",
+    "CO2_kg_per_kg":null
+  },
+  {
+    "Materiaal":"Chitosan",
+    "CO2_kg_per_kg":null
+  },
+  {
+    "Materiaal":"Maïsvezel",
+    "CO2_kg_per_kg":2.5
+  },
+  {
+    "Materiaal":"Sisal",
+    "CO2_kg_per_kg":2.5
+  },
+  {
+    "Materiaal":"Jute",
+    "CO2_kg_per_kg":2.5
+  },
+  {
+    "Materiaal":"Kurk",
+    "CO2_kg_per_kg":null
+  },
+  {
+    "Materiaal":"Banana fiber",
+    "CO2_kg_per_kg":null
+  },
+  {
+    "Materiaal":"Ananasvezel",
+    "CO2_kg_per_kg":null
+  },
+  {
+    "Materiaal":"60\/40 Katoen\/Polyester",
+    "CO2_kg_per_kg":5.0
+  },
+  {
+    "Materiaal":"80\/20 Katoen\/Polyester",
+    "CO2_kg_per_kg":5.0
+  },
+  {
+    "Materiaal":"65\/35 Polyester\/Katoen",
+    "CO2_kg_per_kg":5.0
+  },
+  {
+    "Materiaal":"95\/5 Katoen\/Elastaan",
+    "CO2_kg_per_kg":5.0
+  },
+  {
+    "Materiaal":"50\/50 Katoen\/Modal",
+    "CO2_kg_per_kg":5.0
+  },
+  {
+    "Materiaal":"70\/30 Wol\/Polyester",
+    "CO2_kg_per_kg":9.5
+  },
+  {
+    "Materiaal":"60\/40 Wol\/Acryl",
+    "CO2_kg_per_kg":21.0
+  },
+  {
+    "Materiaal":"90\/10 Katoen\/Spandex",
+    "CO2_kg_per_kg":5.0
+  },
+  {
+    "Materiaal":"55\/45 Hennep\/Katoen",
+    "CO2_kg_per_kg":5.0
+  },
+  {
+    "Materiaal":"50\/50 Wol\/Katoen",
+    "CO2_kg_per_kg":5.0
+  },
+  {
+    "Materiaal":"70\/30 Bamboe\/Katoen",
+    "CO2_kg_per_kg":5.0
+  },
+  {
+    "Materiaal":"50\/50 Tencel\/Katoen",
+    "CO2_kg_per_kg":5.0
+  },
+  {
+    "Materiaal":"80\/20 Polyester\/Viscose",
+    "CO2_kg_per_kg":9.5
+  },
+  {
+    "Materiaal":"60\/40 Nylon\/Spandex",
+    "CO2_kg_per_kg":10.0
+  },
+  {
+    "Materiaal":"55\/45 Modal\/Polyester",
+    "CO2_kg_per_kg":9.5
+  },
+  {
+    "Materiaal":"90\/10 Wol\/Kasjmier",
+    "CO2_kg_per_kg":21.0
+  },
+  {
+    "Materiaal":"85\/15 Wol\/Alpaca",
+    "CO2_kg_per_kg":21.0
+  },
+  {
+    "Materiaal":"80\/20 Acryl\/Wol",
+    "CO2_kg_per_kg":21.0
+  },
+  {
+    "Materiaal":"65\/35 Polyester\/Viscose",
+    "CO2_kg_per_kg":9.5
+  },
+  {
+    "Materiaal":"70\/30 Linnen\/Polyester",
+    "CO2_kg_per_kg":9.5
+  },
+  {
+    "Materiaal":"60\/40 Ramie\/Katoen",
+    "CO2_kg_per_kg":5.0
+  },
+  {
+    "Materiaal":"50\/50 Cupro\/Viscose",
+    "CO2_kg_per_kg":6.0
+  },
+  {
+    "Materiaal":"80\/20 Kasjmier\/Zijde",
+    "CO2_kg_per_kg":14.5
+  },
+  {
+    "Materiaal":"90\/10 Wol\/Zijde",
+    "CO2_kg_per_kg":21.0
+  },
+  {
+    "Materiaal":"65\/35 Polyester\/Elastaan",
+    "CO2_kg_per_kg":9.5
+  },
+  {
+    "Materiaal":"60\/40 Acryl\/Polyester",
+    "CO2_kg_per_kg":9.5
+  },
+  {
+    "Materiaal":"70\/30 Wol\/Nylon",
+    "CO2_kg_per_kg":21.0
+  },
+  {
+    "Materiaal":"50\/50 Viscose\/Nylon",
+    "CO2_kg_per_kg":10.0
+  },
+  {
+    "Materiaal":"75\/25 Katoen\/Nylon",
+    "CO2_kg_per_kg":5.0
+  },
+  {
+    "Materiaal":"80\/20 Katoen\/Hennep",
+    "CO2_kg_per_kg":5.0
+  },
+  {
+    "Materiaal":"50\/50 Tencel\/Modal",
+    "CO2_kg_per_kg":3.8
+  },
+  {
+    "Materiaal":"65\/35 Viscose\/Polyester",
+    "CO2_kg_per_kg":9.5
+  },
+  {
+    "Materiaal":"70\/30 Modal\/Katoen",
+    "CO2_kg_per_kg":5.0
+  },
+  {
+    "Materiaal":"85\/15 Tencel\/Katoen",
+    "CO2_kg_per_kg":5.0
+  },
+  {
+    "Materiaal":"95\/5 Wol\/Elastaan",
+    "CO2_kg_per_kg":21.0
+  },
+  {
+    "Materiaal":"90\/10 Viscose\/Spandex",
+    "CO2_kg_per_kg":6.0
+  },
+  {
+    "Materiaal":"60\/40 Nylon\/Katoen",
+    "CO2_kg_per_kg":5.0
+  },
+  {
+    "Materiaal":"80\/20 Polyester\/Nylon",
+    "CO2_kg_per_kg":9.5
+  },
+  {
+    "Materiaal":"75\/25 Katoen\/Polyester",
+    "CO2_kg_per_kg":5.0
+  },
+  {
+    "Materiaal":"65\/35 Linnen\/Katoen",
+    "CO2_kg_per_kg":5.0
+  },
+  {
+    "Materiaal":"70\/30 Cupro\/Modal",
+    "CO2_kg_per_kg":3.8
+  },
+  {
+    "Materiaal":"85\/15 Polyester\/Tencel",
+    "CO2_kg_per_kg":9.5
+  },
+  {
+    "Materiaal":"50\/50 Bamboe\/Modal",
+    "CO2_kg_per_kg":3.8
+  },
+  {
+    "Materiaal":"90\/10 Polyester\/Spandex",
+    "CO2_kg_per_kg":9.5
+  },
+  {
+    "Materiaal":"55\/45 Modal\/Spandex",
+    "CO2_kg_per_kg":18.0
+  }
+]

@@ -15,6 +15,7 @@ import { ArrowLeft, Tag, QrCode, Wrench, Clock, CheckCircle, Edit3, Save, X, Lea
 import { EventTimeline } from "@/components/event-timeline";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { useAuth } from "@/hooks/useAuth";
 import type { ProductWithEvents, InsertProduct } from "@shared/schema";
 
 const editFormSchema = z.object({
@@ -48,6 +49,7 @@ export default function ProductDetail() {
   const [careInstructions, setCareInstructions] = useState<any>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
   
   const productId = params.id;
   const gtin = params.gtin;
@@ -338,8 +340,8 @@ export default function ProductDetail() {
         </Button>
       </div>
 
-      {/* Edit Button */}
-      <div className="px-4 pt-4">
+      {/* Action Buttons */}
+      <div className="px-4 pt-4 space-y-2">
         <Button
           variant="outline"
           size="sm"
@@ -358,6 +360,19 @@ export default function ProductDetail() {
             </>
           )}
         </Button>
+        
+        {/* GTIN Registry Conversion Button (Manager/Admin only) */}
+        {(user?.role === 'manager' || user?.role === 'admin') && (
+          <Button
+            variant="secondary"
+            size="sm"
+            className="w-full"
+            onClick={() => convertToGtinRegistry()}
+          >
+            <QrCode className="h-4 w-4 mr-2" />
+            Converteer naar GTIN Register
+          </Button>
+        )}
       </div>
 
       {/* Product Information */}

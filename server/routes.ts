@@ -84,6 +84,80 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // CO2 Material Data API
+  app.get('/api/materials/co2', (req, res) => {
+    try {
+      const co2MaterialData = require('./co2-material-data.json');
+      res.json(co2MaterialData);
+    } catch (error) {
+      console.error("Error loading CO2 material data:", error);
+      res.status(500).json({ message: "Failed to load CO2 data" });
+    }
+  });
+
+  app.post('/api/materials/co2/calculate', (req, res) => {
+    const { fiberComposition, productWeight } = req.body;
+    
+    try {
+      const co2MaterialData = require('./co2-material-data.json');
+      let composition;
+      
+      if (typeof fiberComposition === 'string') {
+        composition = JSON.parse(fiberComposition);
+      } else {
+        composition = fiberComposition;
+      }
+      
+      let totalCO2 = 0;
+      let calculatedComponents: any[] = [];
+      
+      if (Array.isArray(composition)) {
+        composition.forEach((component: any) => {
+          if (component.vezels && Array.isArray(component.vezels)) {
+            component.vezels.forEach((fiber: any) => {
+              const materialData = co2MaterialData.find((item: any) => {
+                const materialName = item.Materiaal.toLowerCase();
+                const fiberName = (fiber.naam || fiber.code || '').toLowerCase();
+                return materialName.includes(fiberName) || 
+                       (fiber.code && materialName.includes(fiber.code.toLowerCase()));
+              });
+              
+              if (materialData && materialData.CO2_kg_per_kg && fiber.percentage) {
+                const fiberWeight = (productWeight || 1) * (fiber.percentage / 100);
+                const fiberCO2 = fiberWeight * materialData.CO2_kg_per_kg;
+                totalCO2 += fiberCO2;
+                
+                calculatedComponents.push({
+                  component: component.component,
+                  fiber: fiber.naam || fiber.code,
+                  percentage: fiber.percentage,
+                  co2_factor: materialData.CO2_kg_per_kg,
+                  weight_kg: Math.round(fiberWeight * 1000) / 1000,
+                  co2_kg: Math.round(fiberCO2 * 1000) / 1000
+                });
+              }
+            });
+          }
+        });
+      }
+      
+      res.json({
+        total_co2_kg: Math.round(totalCO2 * 1000) / 1000,
+        product_weight_kg: productWeight || 1,
+        co2_per_kg: Math.round((totalCO2 / (productWeight || 1)) * 1000) / 1000,
+        components: calculatedComponents,
+        calculation_date: new Date().toISOString()
+      });
+      
+    } catch (error) {
+      console.error("Error calculating CO2:", error);
+      res.status(400).json({ 
+        message: 'Fout bij CO2 berekening', 
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
   // Photo upload endpoint with compression
   app.post("/api/upload/photo", upload.single("photo"), async (req, res) => {
     try {

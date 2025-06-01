@@ -436,11 +436,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get all events to properly track loan statuses
       const allEvents = await storage.getRecentEvents(1000);
       
-      // Find all loan events with valid borrower info
+      // Find all loan events (including those without complete borrower info)
       const loanEvents = allEvents.filter(event => 
-        event.eventType === "uitleen" && 
-        event.borrowerName && 
-        event.borrowerEmail
+        event.eventType === "uitleen"
       );
       
       console.log(`Found ${loanEvents.length} loan events`);

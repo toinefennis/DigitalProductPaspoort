@@ -500,14 +500,26 @@ export default function Stories() {
                             <p className="text-xs text-blue-700">{story.product.name}</p>
                           </div>
                         </div>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => navigate(`/products/${story.product?.id}`)}
-                          className="border-blue-300 text-blue-700 hover:bg-blue-100"
-                        >
-                          Bekijk Product
-                        </Button>
+                        <div className="flex space-x-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => navigate(`/products/${story.product?.id}`)}
+                            className="border-blue-300 text-blue-700 hover:bg-blue-100"
+                          >
+                            Bekijk Product
+                          </Button>
+                          {(currentUser && ((currentUser as any).role === 'admin' || (currentUser as any).role === 'manager' || story.authorId === String((currentUser as any).id))) && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => linkStoryMutation.mutate({ storyId: story.id, productId: null })}
+                              className="border-red-300 text-red-700 hover:bg-red-100"
+                            >
+                              Ontkoppel
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   ) : (

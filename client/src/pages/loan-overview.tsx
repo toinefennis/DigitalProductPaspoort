@@ -38,12 +38,13 @@ export default function LoanOverview() {
   const currentUserEmail = (currentUser as any)?.email;
   
   const activeLoanEvents = loanEvents?.filter(event => {
-    if (event.eventType !== "uitleen" || !event.borrowerName) return false;
+    if (event.eventType !== "uitleen") return false;
     
     // Admins and managers can see all loans
     if (userRole === 'admin' || userRole === 'manager') return true;
     
-    // Regular users can only see their own loans
+    // Regular users can only see their own loans (if borrower email is set)
+    if (!event.borrowerEmail) return userRole === 'admin' || userRole === 'manager';
     return event.borrowerEmail === currentUserEmail;
   }) || [];
 
@@ -118,8 +119,10 @@ export default function LoanOverview() {
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
-                          <p className="font-medium text-gray-900">{loanEvent.borrowerName}</p>
-                          {loanEvent.borrowerEmail && (
+                          <p className="font-medium text-gray-900">
+                            {loanEvent.borrowerName || "⚠️ Onbekende lener"}
+                          </p>
+                          {loanEvent.borrowerEmail ? (
                             <div className="flex items-center text-sm text-gray-600 mt-1">
                               <Mail className="h-3 w-3 mr-1" />
                               <a 
@@ -129,6 +132,13 @@ export default function LoanOverview() {
                                 {loanEvent.borrowerEmail}
                               </a>
                             </div>
+                          ) : (
+                            <p className="text-sm text-amber-600 mt-1">⚠️ Geen email opgegeven</p>
+                          )}
+                          {(!loanEvent.borrowerName || !loanEvent.borrowerEmail) && (
+                            <p className="text-xs text-amber-600 mt-2 font-medium">
+                              Incomplete leengegevens - contacteer admin om bij te werken
+                            </p>
                           )}
                           {loanEvent.borrowerPhone && (
                             <div className="flex items-center text-sm text-gray-600 mt-1">

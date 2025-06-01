@@ -19,6 +19,14 @@ export function FloatingActionButton() {
 
   return (
     <>
+      {/* Overlay to close menu when clicking outside */}
+      {showMenu && (
+        <div 
+          className="fixed inset-0 z-10 bg-black bg-opacity-25"
+          onClick={() => setShowMenu(false)}
+        />
+      )}
+
       {/* Quick Action Menu */}
       {showMenu && (
         <Card className="fixed bottom-20 right-4 bg-white shadow-material-3 z-20 p-2">
@@ -46,7 +54,7 @@ export function FloatingActionButton() {
       {/* Floating Action Button */}
       <Button
         size="lg"
-        className="fixed bottom-20 right-4 bg-gwc-primary hover:bg-gwc-primary/90 text-white p-4 rounded-full shadow-material-3 z-10"
+        className="fixed bottom-20 right-4 bg-gwc-primary hover:bg-gwc-primary/90 text-white p-4 rounded-full shadow-material-3 z-30"
         onClick={() => setShowMenu(!showMenu)}
       >
         <Plus className="h-6 w-6" />

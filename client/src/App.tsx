@@ -16,6 +16,8 @@ import Settings from "@/pages/settings";
 import Users from "@/pages/users";
 import Notifications from "@/pages/notifications";
 import LoanOverview from "@/pages/loan-overview";
+import Export from "@/pages/export";
+import Login from "@/pages/login";
 import NotFound from "@/pages/not-found";
 
 function Router() {

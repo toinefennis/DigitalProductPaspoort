@@ -242,6 +242,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Export data endpoints
+  app.get("/api/export/:type", async (req, res) => {
+    try {
+      const { type } = req.params;
+      const { format = "csv" } = req.query;
+      
+      let data: any[] = [];
+      let filename = "";
+      
+      switch (type) {
+        case "products":
+          data = await storage.getAllProducts();
+          filename = "products";
+          break;
+        case "events":
+          data = await storage.getRecentEvents(1000);
+          filename = "events";
+          break;
+        case "loans":
+          const allEvents = await storage.getRecentEvents(1000);
+          data = allEvents.filter(event => event.eventType === "uitleen");
+          filename = "active_loans";
+          break;
+        case "users":
+          data = await storage.getAllUsers();
+          filename = "users";
+          break;
+        case "full":
+          const products = await storage.getAllProducts();
+          const events = await storage.getRecentEvents(1000);
+          const users = await storage.getAllUsers();
+          data = { products, events, users };
+          filename = "full_database";
+          break;
+        default:
+          return res.status(400).json({ message: "Invalid export type" });
+      }
+
+      if (format === "json") {
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}.json"`);
+        res.json(data);
+      } else if (format === "csv") {
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}.csv"`);
+        
+        if (Array.isArray(data) && data.length > 0) {
+          const headers = Object.keys(data[0]).join(',');
+          const csvData = data.map(row => 
+            Object.values(row).map(value => 
+              typeof value === 'string' ? `"${value.replace(/"/g, '""')}"` : value
+            ).join(',')
+          ).join('\n');
+          res.send(`${headers}\n${csvData}`);
+        } else {
+          res.send('No data available');
+        }
+      } else {
+        return res.status(400).json({ message: "Unsupported format" });
+      }
+    } catch (error) {
+      console.error("Error exporting data:", error);
+      res.status(500).json({ message: "Failed to export data" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

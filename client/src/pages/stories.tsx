@@ -399,7 +399,7 @@ export default function Stories() {
 
                     <div className="flex items-center space-x-2">
                       {/* Edit button for author */}
-                      {currentUser && story.authorId === currentUser.id.toString() && (
+                      {currentUser && story.authorId === (currentUser as any).id.toString() && (
                         <Button 
                           variant="ghost" 
                           size="sm"

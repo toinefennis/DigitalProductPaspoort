@@ -67,13 +67,7 @@ export default function EditStory() {
   // Update story mutation
   const updateStoryMutation = useMutation({
     mutationFn: async (data: any) => {
-      return apiRequest(`/api/stories/${storyId}`, {
-        method: "PATCH",
-        body: JSON.stringify(data),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      return apiRequest(`/api/stories/${storyId}`, "PATCH", data);
     },
     onSuccess: () => {
       toast({

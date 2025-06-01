@@ -504,7 +504,7 @@ export default function Stories() {
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => setLocation(`/products/${story.product?.id}`)}
+                            onClick={() => setLocation(`/product/${story.product?.id}`)}
                             className="border-blue-300 text-blue-700 hover:bg-blue-100"
                           >
                             Bekijk Product

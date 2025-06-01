@@ -24,7 +24,8 @@ import {
   Facebook,
   Twitter,
   Linkedin,
-  Copy
+  Copy,
+  Package
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -48,6 +49,12 @@ interface Story {
   comments: number;
   views: number;
   isPublic: boolean;
+  productId?: number;
+  product?: {
+    id: number;
+    name: string;
+    gtin: string;
+  };
   status?: string;
   moderatedBy?: string;
   moderationNotes?: string;
@@ -420,6 +427,31 @@ export default function Stories() {
                         ? `${story.content.substring(0, 200)}...` 
                         : story.content}
                     </p>
+                  )}
+
+                  {/* Product Link */}
+                  {story.product && (
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-8 h-8 bg-blue-100 rounded flex items-center justify-center">
+                            <Package className="h-4 w-4 text-blue-600" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-blue-900">Gekoppeld product</p>
+                            <p className="text-xs text-blue-700">{story.product.name}</p>
+                          </div>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setLocation(`/products/${story.product?.id}`)}
+                          className="border-blue-300 text-blue-700 hover:bg-blue-100"
+                        >
+                          Bekijk Product
+                        </Button>
+                      </div>
+                    </div>
                   )}
 
                   {/* Photos */}

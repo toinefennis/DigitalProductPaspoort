@@ -1,9 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
-import { Package, Wrench, Clock, RefreshCw } from "lucide-react";
+import { Package, Wrench, Clock, RefreshCw, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { nl } from "date-fns/locale";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 import type { DashboardStats, Event, Product } from "@shared/schema";
 
 function StatsCard({ title, value, icon: Icon, color }: {
@@ -27,7 +31,13 @@ function StatsCard({ title, value, icon: Icon, color }: {
   );
 }
 
-function ActivityCard({ activity }: { activity: Event & { product: Product } }) {
+function ActivityCard({ activity, onDelete }: { 
+  activity: Event & { product: Product };
+  onDelete?: (eventId: number) => void;
+}) {
+  const { user: currentUser } = useAuth();
+  const isAdmin = (currentUser as any)?.role === 'admin';
+
   const getEventIcon = (eventType: string) => {
     switch (eventType) {
       case "reparatie":

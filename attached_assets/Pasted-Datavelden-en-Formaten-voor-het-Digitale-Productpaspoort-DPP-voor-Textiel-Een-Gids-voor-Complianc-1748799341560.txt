@@ -1,0 +1,509 @@
+Datavelden en Formaten voor het Digitale Productpaspoort (DPP) voor Textiel: Een Gids voor ComplianceI. Het EU Digitale Productpaspoort voor Textiel: Regelgevend Kader en DoelstellingenA. Introductie tot de Ecodesign for Sustainable Products Regulation (ESPR)De Ecodesign for Sustainable Products Regulation (ESPR), die op 18 juli 2024 in werking is getreden (1), markeert een significante verschuiving in de benadering van productduurzaamheid binnen de Europese Unie. Deze verordening vervangt de Ecodesign-richtlijn 2009/125/EG en breidt het toepassingsgebied aanzienlijk uit. Waar de vorige richtlijn zich voornamelijk beperkte tot energiegerelateerde producten, omvat de ESPR nu vrijwel alle fysieke goederen die op de EU-markt worden gebracht, inclusief textiel (2). Enkele uitzonderingen, zoals voedsel, diervoeder en geneesmiddelen, vallen buiten de reikwijdte (2).Het hoofddoel van de ESPR is om producten op de EU-markt ecologisch duurzamer en meer circulair te maken. Dit wordt beoogd door het stellen van ecodesignvereisten die betrekking hebben op diverse productaspecten, zoals duurzaamheid, herbruikbaarheid, repareerbaarheid, recycleerbaarheid, energie- en grondstoffenefficiëntie, en het gehalte aan gerecyclede materialen (2). Textiel is hierbij geïdentificeerd als een prioritaire productcategorie vanwege het grote potentieel voor verbetering op deze gebieden (4).De ESPR is meer dan een etiketteringsinitiatief; het is ontworpen om een fundamentele transformatie te bewerkstelligen in de manier waarop producten worden ontworpen en vervaardigd voor de EU-markt. Door het opleggen van ecodesignvereisten dwingt de verordening fabrikanten tot innovatie en het heroverwegen van hun gehele waardeketen. Het Digitale Productpaspoort (DPP) fungeert hierbij als een cruciaal instrument om de naleving van deze nieuwe ontwerpprincipes te verifiëren en te handhaven. Voor ontwikkelaars van DPP-applicaties betekent dit dat de software niet alleen data moet kunnen weergeven, maar potentieel ook processen moet ondersteunen die de conformiteit met de ecodesignprincipes aantonen, zoals het traceren van reparatiegebeurtenissen of het verifiëren van claims over gerecycled materiaal. Dit impliceert dat de ontwikkeling van DPP-applicaties moet anticiperen op functionaliteiten die verder gaan dan eenvoudige dataweergave, en mogelijk modules voor levenscyclusbeheer of complianceverificatie tegen de ecodesignparameters van de ESPR omvatten.B. Het Digitale Productpaspoort (DPP): Rol, Doelstellingen en Verwachte Impact voor TextielHet Digitale Productpaspoort (DPP) is een kernonderdeel van de ESPR (1) en functioneert als een digitaal dossier of "identiteitskaart" voor producten (2). Voor de textielsector zijn de doelstellingen van het DPP veelzijdig: het verbeteren van de traceerbaarheid van grondstoffen tot eindconsument, het in staat stellen van consumenten om geïnformeerde, duurzame keuzes te maken, en het bevorderen van een circulaire economie door richtlijnen voor reparatie, hergebruik en recycling (1). Het DPP beoogt de transparantie en verantwoordingsplicht binnen de gehele toeleveringsketen te vergroten (1). Het zal relevante informatie opslaan ter ondersteuning van de duurzaamheid van producten, de circulariteit bevorderen en de naleving van wettelijke voorschriften versterken (2).Het DPP is ontworpen als een informatiehub voor diverse belanghebbenden, waaronder consumenten, bedrijven (zoals fabrikanten, recyclers en reparateurs) en overheidsinstanties (4). Deze verschillende actoren zullen gedifferentieerde toegangsniveaus en informatiebehoeften hebben, gebaseerd op een "need-to-know" principe (7). Consumenten zouden bijvoorbeeld toegang kunnen krijgen tot wasinstructies en duurzaamheidsscores, terwijl recyclers gedetailleerde informatie over de materiaalsamenstelling nodig hebben, en autoriteiten data voor conformiteitscontrole. Een DPP-applicatie moet daarom worden uitgerust met robuuste mechanismen voor toegangscontrole en aanpasbare weergaven of API's om tegemoet te komen aan de specifieke databehoeften van deze uiteenlopende gebruikersgroepen. Dit vereist een complex datamachtigingsmodel.C. Belangrijke Tijdlijnen: ESPR, Gedelegeerde Handelingen voor Textiel, en DPP-HandhavingDe implementatie van de ESPR en het DPP volgt een gefaseerd schema:
+Inwerkingtreding ESPR: 18 juli 2024 (1).
+Eerste Ontwerp Gedelegeerde Handeling voor textiel: Verwacht in 2025 (1), mogelijk eind 2025 (7).
+Aanname Gedelegeerde Handeling voor textiel: Verwacht in 2026 (1), hoewel sommige bronnen 2027 noemen (4).
+Implementatieperiode van 18 maanden: Volgend op de aanname, leidend tot handhaving rond 2027-2028 (1).
+DPP-uitrol per industrie: 2027-2030 (1).
+Specifieke vereisten voor textielproducten worden naar verwachting gepubliceerd tegen januari 2026, met start van de handhaving in juli 2027 (1).
+Deze tijdlijnen zijn cruciaal voor projectplanning en het anticiperen op het moment waarop specifieke data verplicht wordt. Hoewel de ESPR een algemeen kader biedt, zullen de precieze datavereisten voor textiel pas definitief worden vastgelegd in de Gedelegeerde Handelingen (1). Deze Gedelegeerde Handelingen zijn van vitaal belang, omdat zij productspecifieke prestatie- en informatievereisten zullen specificeren (4). Dit betekent dat elke DPP-applicatie die nu wordt ontwikkeld, aanpasbaar moet zijn. Initiatieven zoals Trace4Value werken aan dataprotocollen op basis van de huidige inzichten, maar deze hebben nog geen wettelijke status (7). De architectuur van een DPP-applicatie moet daarom flexibel en modulair zijn om toekomstige updates en aanvullingen op de datavereisten, als gevolg van de publicatie en mogelijke amendementen van Gedelegeerde Handelingen, te kunnen accommoderen. Een datamodel dat kan evolueren zonder ingrijpende herzieningen is essentieel.Tabel 1: Belangrijke EU-Regelgeving en Tijdlijnen voor het Textiel DPP
+MijlpaalVerwachte Datum/PeriodeBelangrijkste Implicaties voor DatavereistenInwerkingtreding ESPRJuli 2024Algemeen wettelijk kader voor DPP vastgesteld; basisvereisten voor ecodesign en informatieverplichtingen geïntroduceerd. (1)Eerste Ontwerp Gedelegeerde Handeling Textiel2025 (eind 2025)Eerste concrete indicaties van specifieke datavereisten voor textielproducten worden openbaar. (1)Aanname Gedelegeerde Handeling Textiel2026 (mogelijk 2027)Definitieve vaststelling van de verplichte data-elementen en prestatie-eisen voor textiel-DPP's. (1)Implementatieperiode (18 maanden)2027-2028Bedrijven krijgen tijd om hun systemen en processen aan te passen aan de vereisten van de Gedelegeerde Handeling. (1)Start Handhaving DPP voor TextielJuli 2027 / 2028DPP wordt verplicht voor textielproducten die op de EU-markt worden gebracht; naleving wordt gecontroleerd. (1)Algemene DPP-uitrol per Industrie2027-2030Gefaseerde uitrol van DPP's over verschillende productsectoren. (1)
+Deze tabel biedt een duidelijke routekaart en benadrukt kritieke momenten waarop meer specifieke datavereisten bekend zullen worden en wanneer naleving verplicht wordt. Dit helpt bij het prioriteren van ontwikkelingsinspanningen. Kennis van de tijdlijn stelt ontwikkelaars in staat om ontwikkelingsfasen te plannen, te anticiperen op de afronding van bepaalde datamodules en de urgentie van verschillende datacategorieën te begrijpen.II. Kern-datacategorieën voor het Textiel DPPA. Overzicht van Hoog-Over InformatiegroepenHet Digitale Productpaspoort voor textiel zal een breed scala aan informatie omvatten. Op basis van de doelstellingen van de ESPR en discussies binnen expertgroepen zoals CIRPASS en Trace4Value, kunnen deze data worden gegroepeerd in logische categorieën. De Europese Commissie en CIRPASS suggereren categorieën zoals technische prestaties, prestaties op het gebied van ecologische duurzaamheid, circulariteitsaspecten (duurzaamheid, repareerbaarheid), en wettelijke conformiteit (5). Andere bronnen voegen hier productgerelateerde informatie (handleidingen, labels) (5), materiaalsamenstelling, productieprocessen, sociale verantwoordelijkheid (1), en traceerbaarheid binnen de waardeketen (4) aan toe.Deze categorieën zijn niet geïsoleerd. Zo heeft "Materiaalsamenstelling" directe invloed op "Ecologische Duurzaamheid," "Circulariteit," en "Wettelijke Conformiteit" (bijvoorbeeld de aanwezigheid van gevaarlijke stoffen). Data over gerecycled materiaal (Materiaalsamenstelling) beïnvloedt circulariteitsmetrieken. Het gebruik van chemicaliën in de productie (Ecologische Duurzaamheid) houdt verband met zorgwekkende stoffen (Wettelijke Conformiteit). Deze onderlinge verbondenheid betekent dat de backend van een DPP-applicatie deze relaties effectief moet beheren, mogelijk via een relationele database of een graafdatabase-structuur die deze afhankelijkheden kan modelleren. Het datamodel moet koppelingen tussen verschillende datapunten over categorieën heen mogelijk maken om een holistisch beeld van het product te bieden en complexe queries te faciliteren (bijvoorbeeld "Toon alle producten met >50% gerecycled materiaal EN een lage koolstofvoetafdruk").B. Koppelen van Datacategorieën aan ESPR-Vereisten en DoelstellingenElke kern-datacategorie ondersteunt direct een of meer doelstellingen van de ESPR:
+Transparantie: Bereikt door gedetailleerde productinformatie, materiaalsamenstelling, en data over de toeleveringsketen.
+Duurzaamheid: Aangepakt door milieueffectmetrieken, data over verantwoorde herkomst, en informatie over chemicaliënbeheer.
+Circulariteit: Ondersteund door data over duurzaamheid, repareerbaarheid, recycleerbaarheid, gerecycled materiaal, en instructies voor het einde van de levensduur.
+Geïnformeerde Consumentenkeuze: Mogelijk gemaakt door toegankelijke informatie over herkomst, materialen, en milieu-impact (1).
+Wettelijke Conformiteit: Verzekerd door het opnemen van data over naleving van regelgeving, aanwezigheid van beperkte stoffen, en certificeringen.
+Het DPP zal dienen als een primair instrument voor markttoezichtautoriteiten om de naleving van de ecodesignvereisten van de ESPR te verifiëren (8). Als de ESPR bijvoorbeeld een bepaald niveau van duurzaamheid of gerecycled materiaal voorschrijft voor een categorie textielproducten, dan moet het DPP verifieerbare data bevatten die dit aantoont. Dit onderstreept het cruciale belang van data-accuratesse, -betrouwbaarheid en -verifieerbaarheid (8). Een DPP-applicatie heeft derhalve robuuste mechanismen voor datavalidatie nodig, en mogelijk integratiepunten voor verificatiedata van derden of audittrails. Het louter opslaan van data is niet voldoende; de integriteit ervan is essentieel.Tabel 2: Kern-datacategorieën Textiel DPP en ESPR-Afstemming
+Kern-datacategorieOvereenkomstige ESPR-Doelstelling(en)Voorbeelden van Belangrijke Data SubgroepenProductidentificatie & Algemene InfoUnieke digitale identiteit, Traceerbaarheid (1)Unieke ID, productnaam, merk, GTIN, batch-/serienummer, land van herkomst.Materiaalsamenstelling & HerkomstTransparantie, Circulariteit, Duurzaamheid, Naleving claims (bv. biologisch/gerecycled) (1)Vezelcompositie, percentage gerecycled materiaal, herkomst materialen, materiaalcertificeringen.Productie & ToeleveringsketenTraceerbaarheid, Verantwoording, Sociale en ecologische claims verifiëren (1)Productielocaties, belangrijkste processen, leveranciersinformatie (tiers), EPCIS-gebeurtenisdata.Milieuprestaties & ImpactVermindering milieu-impact, Duurzaamheid (1)Koolstofvoetafdruk, water-/energieverbruik, chemicaliëngebruik, afvalproductie, emissies, Higg Index scores, EU Ecolabel data.Circulariteit & Einde LevensduurBevordering circulaire economie, Afvalvermindering, Hergebruik, Reparatie, Recycling (1)Duurzaamheidsinfo, repareerbaarheidsinfo, recycleerbaarheidsinfo, demontage-instructies, end-of-life advies, doorverkoopgeschiedenis.Conformiteit & VeiligheidNaleving wetgeving, Consumentenbescherming (2)Verklaring van overeenstemming, SVHC-lijst, beperkte stoffen, testrapporten, veiligheidswaarschuwingen, EU Ecolabel certificering.Sociale VerantwoordelijkheidEerlijke arbeidspraktijken, Consumentenvertrouwen (1)Sociale audits, beleid rond eerlijke lonen/werkomstandigheden, GOTS sociale criteria.ConsumenteninformatieGeïnformeerde keuzes, Juist gebruik en onderhoud, Bevordering levensduurverlenging (1)Wasinstructies (ISO 3758), garantie, reparatie-info, producthandleidingen, duurzaamheidsverhaal.
+Deze tabel helpt de "waarom"-vraag achter elke datacategorie te beantwoorden door deze direct te koppelen aan de overkoepelende regelgevende doelen. Dit versterkt het belang van het verzamelen van uitgebreide data in elk gebied en helpt bij het logisch structureren van de informatiearchitectuur van de applicatie.III. Uitgebreide Datavelden en Formaten voor Textiel DPP'sDe volgende lijst van datavelden is een synthese uit meerdere bronnen, waaronder algemene DPP-vereisten (1), textielspecifieke discussies (1), indicaties uit het Trace4Value-protocol (7), CIRPASS-elementen (11), en GS1-aanbevelingen (12). Hoewel de definitieve Gedelegeerde Handelingen de finale lijsten zullen bevatten, vertegenwoordigen deze de huidige beste inzichten. Voorgestelde datatypen kunnen variëren afhankelijk van specifieke schema's.A. Productidentificatie & Algemene InformatieEssentiële data voor het uniek identificeren van het product en het bieden van basiscontext. Dit sluit aan bij het ESPR-doel om elk product een unieke digitale identiteit toe te kennen (1). De granulariteit van identificatie is hierbij een sleutelfactor. Het DPP kan van toepassing zijn op model-, batch- of artikelniveau (8). GS1-standaarden ondersteunen dit (GTIN voor model, GTIN + Batch/Lot, SGTIN voor artikel) (13). De keuze van granulariteit heeft aanzienlijke gevolgen voor de gegevensverzameling en de complexiteit van het systeem. Item-level serialisatie biedt de hoogste traceerbaarheid, maar is uitdagender te implementeren. De Gedelegeerde Handelingen zullen waarschijnlijk minimale granulariteit specificeren voor verschillende textielproducten. Een DPP-applicatie moet ontworpen zijn om verschillende niveaus van productidentificatiegranulariteit aan te kunnen. Het datamodel moet koppelingen van een enkel "productmodel DPP" naar meerdere "batch DPP's" of "item DPP's" accommoderen indien nodig.
+Unieke Productidentificator (UID): Een wereldwijd unieke ID voor het specifieke productitem, batch of model, afhankelijk van de granulariteit.
+
+Formaat: URI (bv. GS1 Digital Link).
+Voorbeeld: https://id.gs1.org/01/01234567890128/21/SERIAL123
+Bron/Standaard: ESPR, GS1 Digital Link (1)
+
+
+Productnaam/Stijlnaam: Commerciële naam van het product.
+
+Formaat: Tekst.
+Voorbeeld: "Duurzaam Katoenen T-shirt Model X"
+Bron/Standaard: Algemeen (17)
+
+
+Productmodelnummer/Stijlnummer: Fabrikant's model- of stijlidentificator.
+
+Formaat: Tekst.
+Voorbeeld: "TX-550"
+Bron/Standaard: Algemeen (9)
+
+
+Merknaam: Het merk waaronder het product wordt verkocht.
+
+Formaat: Tekst.
+Voorbeeld: "EcoBrand"
+Bron/Standaard: Algemeen (9)
+
+
+Global Trade Item Number (GTIN): GS1 GTIN voor het producttype.
+
+Formaat: 14-cijferige numerieke string (GS1 standaard).
+Voorbeeld: "01234567890128"
+Bron/Standaard: GS1 (12)
+
+
+Batch-/Lotnummer: Indien van toepassing, voor traceerbaarheid van een productiebatch.
+
+Formaat: Alfanumeriek.
+Voorbeeld: "LOT2024Q1A"
+Bron/Standaard: GS1 (13)
+
+
+Serienummer: Indien van toepassing, voor serialisatie op artikelniveau.
+
+Formaat: Alfanumeriek.
+Voorbeeld: "SN0012345"
+Bron/Standaard: GS1 (13)
+
+
+Productcategorie: (bv. T-shirt, Jeans, Jas, Huishoudtextiel).
+
+Formaat: Tekst (mogelijk uit een gecontroleerde woordenlijst).
+Voorbeeld: "T-shirt"
+Bron/Standaard: Algemeen (9)
+
+
+Productbeschrijving: Korte beschrijving van het product.
+
+Formaat: Tekst.
+Voorbeeld: "Unisex T-shirt van biologisch katoen met ronde hals."
+Bron/Standaard: Algemeen (11)
+
+
+Maat: Productmaat (bv. S, M, L, 32/34).
+
+Formaat: Tekst/Gestructureerd (bv. waarde + eenheid).
+Voorbeeld: "M" of {"waarde": "32", "eenheid": "inch"}
+Bron/Standaard: Algemeen (9)
+
+
+Kleur: Primaire kleur(en) van het product.
+
+Formaat: Tekst (mogelijk kleurcodes, bv. HEX).
+Voorbeeld: "Marineblauw" of "#000080"
+Bron/Standaard: Schema.org (18)
+
+
+Land van Herkomst (Productniveau): Land waar het eindproduct geacht wordt te zijn ontstaan (vaak laatste substantiële transformatie).
+
+Formaat: ISO 3166-1 alpha-2 code.
+Voorbeeld: "PT" (Portugal)
+Bron/Standaard: ISO 3166-1 (9)
+
+
+Productiedatum: Datum waarop het product is vervaardigd.
+
+Formaat: ISO 8601 Datum (YYYY−MM−DD).
+Voorbeeld: "2024-05-15"
+Bron/Standaard: Algemeen
+
+
+Identificator Economische Operator: Unieke ID voor de entiteit die het product op de markt brengt.
+
+Formaat: URI / Gestandaardiseerde ID (bv. GLN).
+Voorbeeld: urn:epc:id:sgln:0614141.00000.0
+Bron/Standaard: ESPR, GS1 GLN (5)
+
+
+Identificator Faciliteit (Productielocatie): Unieke ID van de primaire productiefaciliteit.
+
+Formaat: URI / Gestandaardiseerde ID (bv. GLN).
+Voorbeeld: urn:epc:id:sgln:0614141.00001.0
+Bron/Standaard: ESPR, GS1 GLN (5)
+
+
+Registratie-identificator (DPP-systeem): Niet-openbare identificator voor registratie in het centrale DPP-register van de EU.
+
+Formaat: Te definiëren door de EU.
+Bron/Standaard: ESPR (5)
+
+
+Beoogde Markt: (bv. EU, specifieke lidstaten).
+
+Formaat: Lijst van ISO 3166-1 alpha-2 codes.
+Voorbeeld:
+Bron/Standaard: Algemeen
+
+
+Productgewicht: Nettogewicht van het product.
+
+Formaat: Numeriek + Eenheid (bv. g, kg).
+Voorbeeld: {"waarde": 150, "eenheid": "g"}
+Bron/Standaard: Algemeen (19)
+
+
+Productafmetingen: (Lengte, Breedte, Hoogte indien van toepassing).
+
+Formaat: Numeriek + Eenheid (bv. cm).
+Bron/Standaard: Algemeen (17)
+
+
+B. Materiaalsamenstelling & HerkomstCruciaal voor transparantie, circulariteit (vooral recycling), en conformiteit (bv. claims over biologisch of gerecycled materiaal). De ESPR benadrukt het belang van inzicht in de materiaalsamenstelling (1). Claims over biologisch of gerecycled materiaal vereisen robuuste verificatie (20). Certificeringen zoals GOTS en GRS bieden dit, maar het betrouwbaar koppelen ervan aan de specifieke materiaalbatch in het DPP is essentieel. Een DPP dat "70% biologisch katoen" vermeldt, moet onderbouwd zijn met bewijs. Dit omvat het traceren van het gecertificeerde materiaal door de toeleveringsketen met behulp van transactiecertificaten of vergelijkbare mechanismen die door de certificeringsschema's worden geleverd. Het DPP moet deze bewijzen opslaan of ernaar linken. Een DPP-applicatie dient te overwegen hoe certificeringsdata geïntegreerd of gerefereerd kan worden, mogelijk via API's naar databases van certificeringsinstanties of veilige opslag van digitale certificaatafschriften. W3C Verifiable Credentials kunnen hier een rol spelen (22).
+Vezelsamenstelling (per component): Gedetailleerde uitsplitsing van vezeltypes (bv. Katoen, Polyester, Elastaan) en hun percentages voor elk afzonderlijk component van het kledingstuk (bv. hoofdstof, voering, ribboord).
+
+Formaat: Lijst van {Vezeltype (Standaardcode, bv. ISO/Textiellabeling Reg.), Percentage (Numeriek)}.
+Voorbeeld: [{"vezel": "CO", "percentage": 95}, {"vezel": "EL", "percentage": 5}]
+Bron/Standaard: Textiellabeling Verordening, ISO-normen (1)
+
+
+Percentage Gerecycled Materiaal (Pre-consumer/Post-consumer): Percentage gerecycled materiaal, met specificatie van pre-consumer of post-consumer herkomst voor elk vezeltype.
+
+Formaat: Numeriek + Type (Pre/Post).
+Voorbeeld: {"vezel": "Polyester", "percentage_gerecycled": 70, "type_gerecycled": "Post-consumer"}
+Bron/Standaard: ESPR, GRS (2)
+
+
+Herkomst van Hoofdmaterialen/Vezels: Land of regio van herkomst voor significante materialen (bv. katoen uit India, polyester uit China).
+
+Formaat: ISO 3166-1 alpha-2 code(s).
+Voorbeeld: "IN" (India) voor katoen.
+Bron/Standaard: ISO 3166-1 (1)
+
+
+Materiaalcertificeringen: Links naar of identificatoren voor certificeringen gerelateerd aan materialen (bv. GOTS-certificaatnummer voor biologisch katoen, GRS-certificaat voor gerecycled polyester).
+
+Formaat: Lijst van {Certificatienaam, Certificaat ID/Link, Gecertificeerd Materiaal/Vezel}.
+Voorbeeld:
+Bron/Standaard: GOTS, GRS, OEKO-TEX, etc. (7)
+
+
+Leren Componenten (indien van toepassing): Type leer, herkomst (diersoort, land), LWG Looierij Audit rating/ID.
+
+Formaat: Gestructureerde data.
+Voorbeeld: {"leertype": "Rundleer", "herkomst_dier": "Bos taurus", "herkomst_land": "BR", "lwg_rating": "Gold"}
+Bron/Standaard: LWG (30)
+
+
+Zorgwekkende Stoffen in Materialen: Verklaring indien materialen inherent SVHC's boven de drempelwaarde bevatten (hoewel idealiter vermeden).
+
+Formaat: Lijst van {Stofnaam, CAS-nummer, Concentratie}.
+Voorbeeld:
+Bron/Standaard: REACH (4)
+
+
+C. Productie & Traceerbaarheid ToeleveringsketenInformatie over waar en hoe het product is gemaakt, cruciaal voor verantwoordingsplicht en het verifiëren van sociale en milieuclaims. ESPR vereist verbeterde traceerbaarheid (1). GS1 EPCIS 2.0 wordt herhaaldelijk genoemd als de standaard voor het delen van gebeurtenisdata in de toeleveringsketen (12). Het beantwoordt "wat, waar, wanneer en waarom" voor producten die door de keten bewegen. Om de "nauwgezette tracking" genoemd in 1 te bereiken, is een gestandaardiseerde manier om gebeurtenissen vast te leggen en te delen noodzakelijk. EPCIS 2.0, met zijn JSON-LD ondersteuning en REST API's (33), voorziet hierin. Voor textiel kan dit betekenen dat een batch gecertificeerd biologisch katoen wordt gevolgd van de spinner naar de wever, dan naar de verver, en uiteindelijk naar de kledingfabrikant, waarbij elke stap wordt vastgelegd als een EPCIS-gebeurtenis. Een DPP-applicatie moet ontworpen zijn om EPCIS 2.0 gebeurtenisdata te consumeren, verwerken en mogelijk bij te dragen. Dit kan integratie met EPCIS-repositories inhouden of tools bieden voor partners in de toeleveringsketen om dergelijke gebeurtenissen vast te leggen en in te dienen.
+Productieland (Eindassemblage): Land waar het kledingstuk is geassembleerd.
+
+Formaat: ISO 3166-1 alpha-2 code.
+Voorbeeld: "BD" (Bangladesh)
+Bron/Standaard: ISO 3166-1 (19)
+
+
+Belangrijkste Productiefaciliteiten (Naam, Adres, GLN/Unieke ID): Voor belangrijke productiestappen (bv. spinnen, weven/breien, verven, snijden & naaien).
+
+Formaat: Lijst van {Processtap, Faciliteitsnaam, Adres, Faciliteits-ID (GLN)}.
+Voorbeeld:
+Bron/Standaard: GS1 GLN (5)
+
+
+Productieprocessen (Beschrijving): Overzicht van de belangrijkste gebruikte productiemethoden (bv. waterloos verven, digitale print).
+
+Formaat: Tekst.
+Voorbeeld: "Geverfd met waterbesparende technieken, genaaid in een Fair Wear gecertificeerde fabriek."
+Bron/Standaard: Algemeen (1)
+
+
+Productiedatum (Belangrijke Fasen): Data voor significante productiemijlpalen.
+
+Formaat: ISO 8601 Datum (YYYY−MM−DD).
+Bron/Standaard: Algemeen
+
+
+Gebeurtenisdata Toeleveringsketen (gebaseerd op EPCIS 2.0): Belangrijke traceerbaarheidsgebeurtenissen (bv. inbedrijfstelling, transformatie, verzending, ontvangst) die materialen en producten door de toeleveringsketen koppelen. Dit omvat velden zoals: eventTime, eventTimeZoneOffset, bizStep (bv. urn:epcglobal:cbv:bizstep:shipping), disposition (bv. urn:epcglobal:cbv:disp:in_transit), readPoint (locatie van gebeurtenis, bv. GLN), bizLocation (bv. GLN), epcList (identificatoren van betrokken objecten, bv. SGTIN's, SSCC's).
+
+Formaat: JSON-LD objecten gestructureerd volgens EPCIS 2.0. (Zie Sectie IV.D voor meer details en voorbeelden).
+Bron/Standaard: GS1 EPCIS 2.0 (12)
+
+
+Leveranciersinformatie (Tiers): Informatie over belangrijke leveranciers in verschillende tiers (bv. Tier 1: Kledingfabrikant, Tier 2: Stoffenfabriek).
+
+Formaat: Lijst van {Tierniveau, Leveranciersnaam, Leveranciers-ID}.
+Voorbeeld: [{"tier": 1, "naam": "Garment Maker Inc.", "id": "GM789"}]
+Bron/Standaard: Algemeen (5)
+
+
+D. Milieuprestaties & ImpactMetrieken die de impact van het product op het milieu kwantificeren, een kernfocus van de ESPR (1). Hoewel velden zoals Product Carbon Footprint (PCF) worden genoemd, kunnen de methodologieën voor het berekenen van deze impacts variëren. Het DPP zal de gebruikte methodologie moeten specificeren of de mogelijkheid bieden deze aan te duiden voor geloofwaardigheid. Om PCF-data vergelijkbaar te maken tussen producten of merken, moet de berekeningsmethode (bv. PEF, ISO 14067) transparant zijn. De EU werkt aan Product Environmental Footprint (PEF) methodologieën, die waarschijnlijk een referentie zullen worden. Een DPP-applicatie moet een veld bevatten om de gebruikte methodologie/standaard voor elke milieueffectmetriek te specificeren. Naarmate EU PEF Category Rules (PEFCR's) voor textiel worden verfijnd, zal de app hiermee moeten worden afgestemd.
+Product Carbon Footprint (PCF): Totale broeikasgasemissies geassocieerd met de levenscyclus van het product (of specifieke fasen).
+
+Formaat: Numeriek + Eenheid (bv. kg CO2​eq) + Methodologie/Standaard gebruikt voor berekening.
+Voorbeeld: {"waarde": 5.2, "eenheid": "kg CO2​eq", "methodologie": "PEFCR Apparel & Footwear v1.0"}
+Bron/Standaard: ESPR, PEF (1)
+
+
+Waterverbruik (Productie): Totaal waterverbruik tijdens belangrijke productieprocessen.
+
+Formaat: Numeriek + Eenheid (bv. Liter) + Scope (bv. per kg stof).
+Voorbeeld: {"waarde": 1500, "eenheid": "L", "scope": "per kg geverfde stof"}
+Bron/Standaard: ESPR (1)
+
+
+Energieverbruik (Productie): Totaal energieverbruik tijdens belangrijke productieprocessen, idealiter met uitsplitsing naar hernieuwbare/niet-hernieuwbare bronnen.
+
+Formaat: Numeriek + Eenheid (bv. kWh) + Scope.
+Voorbeeld: {"waarde": 25, "eenheid": "kWh", "scope": "per kg eindproduct", "hernieuwbaar_percentage": 30}
+Bron/Standaard: ESPR (1)
+
+
+Chemicaliëngebruik (Algemeen/Belangrijke Processen): Informatie over types en hoeveelheden gebruikte chemicaliën, met name die met milieu-impact (verwijzend naar systemen zoals Bluesign).
+
+Formaat: Kwalitatieve beschrijving of kwantitatieve data indien beschikbaar.
+Voorbeeld: "Verven conform Bluesign-criteria; ZDHC MRSL niveau 3 conform."
+Bron/Standaard: ESPR, Bluesign, ZDHC (1)
+
+
+Afvalproductie (Productie): Hoeveelheid en type afval geproduceerd tijdens de productie.
+
+Formaat: Numeriek + Eenheid (bv. kg) + Afvaltype.
+Voorbeeld: {"waarde": 0.5, "eenheid": "kg", "type": "Textielsnijafval", "scope": "per kledingstuk"}
+Bron/Standaard: ESPR (1)
+
+
+Emissies naar Lucht/Water (Productie): Data over specifieke uitgestoten verontreinigende stoffen, indien gereguleerd en gemeten.
+
+Formaat: Stof + Numeriek + Eenheid + Meetpunt.
+Voorbeeld: {"stof": "COD", "waarde": 50, "eenheid": "mg/L", "meetpunt": "Afvalwater ververij"}
+Bron/Standaard: ESPR (5)
+
+
+Higg Index Scores (indien beschikbaar): Relevante scores van Higg MSI (Materials Sustainability Index) voor materialen of Higg FEM (Facility Environmental Module) for productiefaciliteiten.
+
+Formaat: Score + Modulenaam + Versie.
+Voorbeeld: {"module": "Higg FEM", "score": 75, "versie": "4.0", "faciliteit_id": "FAC123"}
+Bron/Standaard: Cascale (Higg Index) (40)
+
+
+EU Ecolabel Conformiteitsdata: Specifieke milieuprestatiedata vereist door EU Ecolabel voor textiel, indien gecertificeerd.
+
+Formaat: Specifieke parameters en waarden zoals gedefinieerd in EU Ecolabel criteria.
+Bron/Standaard: EU Ecolabel (9)
+
+
+E. Circulariteit & Einde LevensduurData ter ondersteuning van de transitie naar een circulaire economie, inclusief productlevensduur, reparatie, hergebruik en recycling (1). Informatie zoals reparatiegeschiedenis of doorverkoopgeschiedenis is dynamisch en verandert na het verkooppunt (7). Het DPP is geen statisch document dat alleen bij de productie wordt aangemaakt. Om circulariteit te ondersteunen, moet het gedurende de gebruiks- en afvalfase van het product kunnen worden bijgewerkt. Een reparatiegebeurtenis dient bijvoorbeeld in het DPP te worden gelogd. Een DPP-applicatie en het onderliggende systeem moeten veilige en geauthenticeerde updates van specifieke datavelden na distributie ondersteunen. Dit introduceert complexiteit met betrekking tot data-eigendom, toegangsrechten voor updates en data-integriteit over tijd. Blockchain wordt vaak genoemd als een technologie om dit te beheren (1).
+Duurzaamheidsinformatie: Verwachte levensduur, weerstand tegen slijtage (bv. Martindale slijtagetestresultaten, kleurechtheidsdata van 47).
+
+Formaat: Tekstbeschrijving, Testresultaten (Numeriek + Eenheid + Standaard).
+Voorbeeld: "Verwachte levensduur: 5 jaar bij normaal gebruik. Martindale: 30.000 rubs (ISO 12947-2)."
+Bron/Standaard: ESPR, ISO-testnormen (2)
+
+
+Repareerbaarheidsinformatie: Instructies voor reparatie, beschikbaarheid van reserveonderdelen (knopen, ritsen), ontwerp voor demontage.
+
+Formaat: Tekst, URI naar handleiding/schema's, Boolean voor beschikbaarheid reserveonderdelen.
+Voorbeeld: "Reparatiehandleiding:. Reserveknopen beschikbaar via."
+Bron/Standaard: ESPR (2)
+
+
+Herbruikbaarheidspotentieel: Informatie die hergebruik of doorverkoop aanmoedigt.
+
+Formaat: Tekst.
+Voorbeeld: "Dit kledingstuk is ontworpen voor een lange levensduur en kan worden doorverkocht of gedoneerd."
+Bron/Standaard: ESPR (2)
+
+
+Recycleerbaarheidsinformatie: Type geschikt recyclingproces (bv. mechanisch, chemisch), compatibiliteit met bestaande recyclingstromen, aanwezigheid van materialen die recycling belemmeren.
+
+Formaat: Tekst, Gestandaardiseerde codes.
+Voorbeeld: "Mechanisch recyclebaar (katoen). Verwijder metalen knopen voor recycling."
+Bron/Standaard: ESPR (2)
+
+
+Demontage-instructies: Handleiding voor het demonteren van het product voor reparatie of recycling.
+
+Formaat: Tekst, URI naar handleiding.
+Bron/Standaard: ESPR
+
+
+Advies Einde Levensduurbeheer: Instructies voor correcte verwijdering/inzameling voor recycling.
+
+Formaat: Tekst, URI.
+Voorbeeld: "Lever in bij textielinzamelpunt. Zie voor locaties."
+Bron/Standaard: ESPR (1)
+
+
+Doorverkoopgeschiedenis (indien relevant): Vorige eigenaren/transactiedata voor hoogwaardige of specifieke items, indien gevolgd.
+
+Formaat: Lijst van {Eigenaar ID, Transactiedatum}.
+Bron/Standaard: Algemeen (12)
+
+
+Informatie voor Recyclers/Reparateurs: Specifieke data nodig voor deze actoren, mogelijk toegankelijk via verschillende weergaven (bv. gedetailleerde vezeluitsplitsing, chemische afwerkingen die recycling kunnen beïnvloeden).
+
+Formaat: Afhankelijk van specifieke behoefte.
+Bron/Standaard: ESPR (7)
+
+
+F. Conformiteit & VeiligheidInformatie die aantoont dat voldaan wordt aan wettelijke en veiligheidsnormen, inclusief stofbeperkingen. Certificeringen zoals OEKO-TEX Standard 100 (9) en Bluesign (9) testen en beperken reeds vele gevaarlijke stoffen. In plaats van alle stoffen opnieuw te testen voor het DPP, kunnen fabrikanten bestaande geldige certificeringen benutten. Het DPP zou dan naar deze certificeringen en hun dekkingsgebied moeten verwijzen. Dit vermindert dubbel werk en kosten. Een DPP-applicatie moet de opname van data van, of links naar, erkende externe certificeringen als bewijs van conformiteit voor bepaalde veiligheids- en chemische beperkingsaspecten mogelijk maken. Dit vereist een systeem om de geldigheid van deze gekoppelde certificeringen te beheren en verifiëren.
+Verklaring van Overeenstemming (EU): Link naar of ingebedde Verklaring van Overeenstemming voor relevante EU-richtlijnen/verordeningen.
+
+Formaat: URI/PDF.
+Bron/Standaard: EU-regelgeving
+
+
+Lijst Zeer Zorgwekkende Stoffen (SVHC): Verklaring van eventuele SVHC's aanwezig boven 0.1% g/g, conform REACH.
+
+Formaat: Lijst van {Stofnaam, CAS-nummer, Concentratie, Reden voor opname}.
+Voorbeeld:
+Bron/Standaard: REACH (4)
+
+
+Beperkte Stoffen (Productniveau): Bevestiging van conformiteit met specifieke stofbeperkingen (bv. van OEKO-TEX Standard 100, Bluesign RSL, of wettelijke limieten voor azokleurstoffen, zware metalen).
+
+Formaat: Conformiteitsverklaring, Link naar testrapporten.
+Voorbeeld: "Voldoet aan OEKO-TEX Standard 100, Appendix 4. Testrapport: [Link]"
+Bron/Standaard: OEKO-TEX, Bluesign, REACH (9)
+
+
+Testrapporten (Veiligheid/Conformiteit): Links naar relevante testrapporten (bv. ontvlambaarheid, chemische veiligheid).
+
+Formaat: URI/PDF.
+Bron/Standaard: Relevante testnormen
+
+
+Veiligheidswaarschuwingen/-instructies: Alle wettelijk vereiste veiligheidsinformatie.
+
+Formaat: Tekst.
+Voorbeeld: "Uit de buurt van vuur houden."
+Bron/Standaard: Algemene Productveiligheidsverordening (48)
+
+
+EU Ecolabel Certificeringsdata: Indien gecertificeerd, het EU Ecolabel licentienummer en link naar certificaat.
+
+Formaat: Tekst + URI.
+Voorbeeld: "EU Ecolabel: DK/016/001, [Link naar certificaat]"
+Bron/Standaard: EU Ecolabel (9)
+
+
+G. Sociale VerantwoordelijkheidInformatie met betrekking tot arbeidspraktijken, eerlijke lonen en werkomstandigheden in de toeleveringsketen (1). Dit gebied is nog in ontwikkeling wat betreft verplichte DPP-data, maar er is een sterke verwachting vanuit consumenten en regelgeving. Vergeleken met milieu- of chemische data zijn specifieke verplichte sociale datapunten voor het DPP minder duidelijk gedefinieerd in de huidige ESPR-discussies. De druk van consumenten en NGO's voor transparantie op dit gebied is echter hoog (48). Hoewel de initiële Gedelegeerde Handelingen zich mogelijk meer richten op milieuaspecten, zal data over sociale verantwoordelijkheid waarschijnlijk prominenter worden. Certificeringen zoals GOTS omvatten al sociale criteria. Het DPP biedt een natuurlijk platform om dit te communiceren. Een DPP-applicatie moet ontworpen zijn om flexibel data over sociale verantwoordelijkheid op te nemen naarmate de vereisten duidelijker worden of als merken vrijwillig kiezen om meer openbaar te maken. Dit kan het linken naar MVO-rapporten of specifieke audit samenvattingen inhouden.
+Informatie Sociale Conformiteitsaudit: Verwijzing naar sociale audits (bv. SA8000, BSCI) voor belangrijke productiefaciliteiten.
+
+Formaat: Audittype, Datum, Geauditeerde Faciliteit, Link naar samenvatting/certificaat.
+Voorbeeld: {"audit_type": "BSCI", "datum": "2023-11-10", "faciliteit_id": "FAC456", "link": ""}
+Bron/Standaard: Sociale auditstandaarden (26)
+
+
+Informatie Eerlijke Lonen: Verklaring of link naar beleid inzake eerlijke lonen.
+
+Formaat: Tekst/URI.
+Voorbeeld: "Ons beleid inzake leefbaar loon is te vinden op."
+Bron/Standaard: ILO-conventies (1)
+
+
+Verklaring Werkomstandigheden: Informatie over beleid m.b.t. werktijden, gezondheid & veiligheid.
+
+Formaat: Tekst/URI.
+Voorbeeld: "Wij onderschrijven de ILO-normen voor veilige werkomstandigheden. Details:."
+Bron/Standaard: ILO-conventies (1)
+
+
+Beleid Kinderarbeid/Gedwongen Arbeid: Verklaring van naleving van ILO-conventies.
+
+Formaat: Tekst/URI.
+Voorbeeld: "Nultolerantiebeleid voor kinderarbeid en gedwongen arbeid, conform ILO C138 en C182."
+Bron/Standaard: ILO-conventies (20)
+
+
+GOTS Sociale Criteria Data: Indien GOTS-gecertificeerd, dekt dit inherent sociale criteria.
+
+Formaat: Verwijzing naar GOTS-certificering.
+Bron/Standaard: GOTS (20)
+
+
+H. ConsumenteninformatieData die direct nuttig is voor de eindconsument voor productverzorging, -gebruik en -begrip. Het DPP, toegankelijk via een QR-code, biedt een direct communicatiekanaal naar de consument op verschillende punten in de levenscyclus van het product (9). Naast verplichte data kunnen merken het DPP gebruiken om waardetoevoegende informatie te verstrekken, zoals stylingtips, gedetailleerde duurzaamheidsverhalen of links naar merkgemeenschappen. Dit transformeert het DPP van een louter conformiteitsinstrument naar een marketing- en klantbetrokkenheidskans. Een DPP-applicatie moet secties met rijke inhoud (tekst, afbeeldingen, video's) mogelijk maken die merken kunnen aanpassen om de consumentenbetrokkenheid te vergroten, terwijl verplichte regelgevende informatie duidelijk wordt onderscheiden van vrijwillige merkinhoud.
+Wasinstructies (ISO 3758): Gestandaardiseerde was-, droog-, strijk-, bleek- en professionele reinigingssymbolen en/of tekstinstructies.
+
+Formaat: Lijst van ISO 3758 codes/Tekst.
+Voorbeeld: ["30C_mild_wasprogramma", "niet_bleken", "strijken_lage_temperatuur"]
+Bron/Standaard: ISO 3758 (9)
+
+
+Garantie-informatie: Details van productgarantie.
+
+Formaat: Tekst, URI naar garantievoorwaarden.
+Voorbeeld: "2 jaar garantie op productiefouten. Voorwaarden:."
+Bron/Standaard: Algemeen (19)
+
+
+Informatie Reparatieservice: Contactgegevens of links voor geautoriseerde reparatiediensten.
+
+Formaat: Tekst/URI.
+Voorbeeld: "Voor reparaties, contacteer [Email] of bezoek."
+Bron/Standaard: Algemeen
+
+
+Producthandleidingen/-gidsen (indien van toepassing): Link naar gebruikershandleidingen.
+
+Formaat: URI.
+Bron/Standaard: Algemeen (5)
+
+
+Duurzaamheidsverhaal/Impact Highlights: Consumentvriendelijke verhalen over de duurzame kenmerken van het product.
+
+Formaat: Tekst, Rich Text, URI.
+Voorbeeld: "Gemaakt met 70% minder water dan conventioneel katoen. Lees meer op."
+Bron/Standaard: Algemeen (26)
+
+
+Tabel 3: Uitgebreide Lijst van Datavelden voor het Textiel DPP (Selectie)Deze tabel dient als kern van Sectie III en wordt hieronder als een samengevatte selectie gepresenteerd. Een volledige tabel zou alle hierboven genoemde velden per categorie (A-H) gedetailleerd uitwerken.
+Dataveld Naam (Voorbeeld)Beschrijving/DoelESPR/Regelgevende RelevantieVoorgesteld Data Type/FormaatVoorbeeld Waarde(n)Bron/StandaardStatus (Indicatief)A. ProductidentificatieUnieke Productidentificator (UID)Unieke ID voor productitem, batch of model.Kern ESPR-vereiste (1)URI (bv. GS1 Digital Link)https://id.gs1.org/01/01234567890128/21/S123ESPR, GS1VerplichtGlobal Trade Item Number (GTIN)GS1-identificator voor producttype.Traceerbaarheid, supply chain management (12)14-cijferige numerieke string"01234567890128"GS1Verplicht (indien gebruikt)Land van Herkomst (Productniveau)Land van laatste substantiële transformatie.Consumenteninformatie, handelsbeleidISO 3166-1 alpha-2 code"PT"ISO 3166-1 (9)Waarschijnlijk VerplichtB. MateriaalsamenstellingVezelsamenstelling (per component)Gedetailleerde uitsplitsing vezeltypes en percentages.Transparantie, recycling, claims (1)Lijst van {Vezeltype (Standaardcode), Percentage (Numeriek)}[{"vezel": "CO", "percentage": 95}, {"vezel": "EL", "percentage": 5}]Textiellabeling Verordening, ISOVerplichtPercentage Gerecycled Materiaal% gerecycled materiaal, pre-/post-consumer.Circulariteit, ESPR-doelstellingen (2)Numeriek + Type (Pre/Post){"vezel": "PES", "percentage_gerecycled": 70, "type_gerecycled": "Post-consumer"}ESPR, GRS (21)Verplicht (indien geclaimd)MateriaalcertificeringenCertificaten voor materialen (bv. GOTS, GRS).Verificatie van claims (9)Lijst van {Certificatienaam, Certificaat ID/Link}``GOTS, GRS, etc. (20)Verplicht (indien geclaimd)C. Productie & ToeleveringsketenBelangrijkste ProductiefaciliteitenNaam, adres, ID voor belangrijke productiestappen.Traceerbaarheid, sociale/ecologische verantwoordelijkheid (5)Lijst van {Processtap, Faciliteitsnaam, Adres, Faciliteits-ID (GLN)}``GS1 GLN (5)Waarschijnlijk VerplichtGebeurtenisdata ToeleveringsketenEPCIS 2.0 events voor traceerbaarheid.Verbeterde traceerbaarheid (1)JSON-LD objecten (EPCIS 2.0 structuur)(Zie EPCIS 2.0 specificaties voor gedetailleerde voorbeelden)GS1 EPCIS 2.0 (32)Afhankelijk van Gedelegeerde HandelingD. Milieuprestaties & ImpactProduct Carbon Footprint (PCF)Broeikasgasemissies levenscyclus.Vermindering milieu-impact (1)Numeriek + Eenheid (kg CO2​eq) + Methodologie{"waarde": 5.2, "eenheid": "kg CO2​eq", "methodologie": "PEFCR Apparel v1.0"}PEF, ISO 14067Waarschijnlijk VerplichtWaterverbruik (Productie)Waterverbruik tijdens productie.Vermindering milieu-impact (1)Numeriek + Eenheid (L) + Scope{"waarde": 1500, "eenheid": "L", "scope": "per kg stof"}ESPRWaarschijnlijk VerplichtE. Circulariteit & Einde LevensduurRepareerbaarheidsinformatieInstructies, beschikbaarheid onderdelen.Bevordering reparatie, levensduurverlenging (2)Tekst, URI, Boolean"Reparatiehandleiding:. Reserveknopen beschikbaar."ESPR (12)Waarschijnlijk VerplichtRecycleerbaarheidsinformatieGeschikt recyclingproces, belemmeringen.Bevordering recycling (2)Tekst, Gestandaardiseerde codes"Mechanisch recyclebaar (katoen). Verwijder metalen knopen."ESPRWaarschijnlijk VerplichtF. Conformiteit & VeiligheidLijst Zeer Zorgwekkende Stoffen (SVHC)Aanwezigheid SVHC's > 0.1% g/g.Consumentenbescherming, REACH-naleving (4)Lijst van {Stofnaam, CAS, Concentratie}``REACHVerplichtG. Sociale VerantwoordelijkheidInformatie Sociale ConformiteitsauditVerwijzing naar sociale audits.Eerlijke arbeidspraktijken (26)Audittype, Datum, Faciliteit, Link{"audit_type": "BSCI", "datum": "2023-11-10", "link": ""}BSCI, SA8000, etc.Mogelijk Verplicht/AanbevolenH. ConsumenteninformatieWasinstructies (ISO 3758)Gestandaardiseerde zorgsymbolen/-tekst.Juist onderhoud, levensduurverlenging (12)Lijst van ISO 3758 codes/Tekst["30C_mild", "niet_bleken"]ISO 3758 (56)Verplicht
+Deze tabel dient als een directe input voor het ontwerp van databaseschema's en de planning van gegevensverzameling. De "Status" kolom is indicatief en onderhevig aan de definitieve Gedelegeerde Handelingen.IV. Datastandaarden, Formaten en Technische OverwegingenA. Unieke Identificatoren: Granulariteit en BeheerHet DPP-systeem steunt op unieke identificatie op diverse niveaus. De ESPR vereist dat producten een unieke digitale identiteit hebben (1). Vier unieke identificatoren worden consistent genoemd als vereist: productidentificator, faciliteitidentificator, identificator van de economische operator, en een (niet-openbare) registratie-identificator (5). GS1-standaarden zoals GTIN (voor producttype), SGTIN (geserialiseerde GTIN voor individuele items), GLN (voor partijen/locaties), en SSCC (voor logistieke eenheden) zijn hierbij cruciaal. De DPP-data kan op model-, batch- of artikelniveau zijn (8).De productidentificator kan een GTIN, GTIN + Batch/Lot, of SGTIN zijn, bij voorkeur in GS1 Digital Link formaat (5). Faciliteitidentificatoren (bv. voor productielocaties, distributiecentra) en identificatoren voor economische operatoren (bv. merkeigenaar, importeur) worden idealiter als GLN's geïmplementeerd (5). De registratie-identificator wordt toegewezen door het centrale EU DPP-register voor koppelingsdoeleinden (5).Hoewel dataopslag gedecentraliseerd is, is een centraal EU DPP-register gepland (8). Dit register zal waarschijnlijk de "Registratie Identificatoren" beheren en fungeren als een opzoekmechanisme om te vinden waar de eigenlijke DPP-data zich bevindt. Het is een toegangspunt voor autoriteiten en zal automatische verificatie door de douane mogelijk maken (8). Een puur gedecentraliseerd systeem zonder centrale index zou de ontdekking van DPP's bemoeilijken. Het centrale register lost dit op door een unieke product-ID (aanwezig op het product) te koppelen aan de locatie van zijn DPP-data. Een DPP-applicatie, hoewel mogelijk data decentraal beherend, moet interageren met dit centrale EU-register, tenminste voor het registreren van DPP's en hun unieke identificatoren. De technische specificaties voor deze interactie zullen kritiek zijn.B. Datadragers: Technologieën en ImplementatieFysieke dragers op het product linken naar het digitale DPP. QR-codes worden breed verwacht als de primaire methode, vaak gebruikmakend van de GS1 Digital Link standaard (1). RFID en NFC zijn ook mogelijkheden, vooral voor specifieke use-cases zoals geautomatiseerde sortering of voorraadbeheer (12).
+QR-Code: Geprefereerd vanwege smartphoneleesbaarheid en de mogelijkheid om een GS1 Digital Link URI te coderen (1).
+Data Matrix: Een andere 2D-code, gangbaar in sommige industrieën, kan gespecialiseerde apps vereisen voor smartphone scanning (14).
+RFID (RAIN RFID/UHF RFID): Maakt bulkscanning mogelijk, goed voor logistiek en sortering, maar vereist speciale lezers. Kan GS1 Digital Link URI dragen (12).
+NFC: Korteafstandscommunicatie, geschikt voor tap-and-go interactie met smartphones (49).
+De GS1 Digital Link standaard (12) standaardiseert hoe productidentificatoren (zoals GTIN) worden ingebed in een web URI-structuur. Deze URI, wanneer gescand (bv. vanaf een QR-code), kan worden opgelost om toegang te bieden tot meerdere soorten informatie, afhankelijk van de context (consument, retailer, regulator). Een eenvoudige QR-code die naar één webpagina wijst, is beperkt. GS1 Digital Link stelt één QR-code in staat te fungeren als een gateway naar diverse datapunten en diensten. Een resolver-dienst (59) leidt de gebruiker/applicatie naar de juiste informatie op basis van de gescande identificator en mogelijk andere factoren. Een DPP-applicatie zou GS1 Digital Link moeten benutten voor zijn datadragers. Dit betekent het structureren van de unieke productidentificator binnen de QR-code volgens deze standaard en mogelijk interactie met of het aanbieden van resolver-diensten.Tabel 4: Vergelijking van Datadrager Technologieën voor Textiel DPPTechnologieLeesbaarheid (Smartphone)Data CapaciteitKostenindicatieVereiste InfrastructuurBelangrijkste Use Cases TextielVoordelenNadelenQR-Code (met GS1 Digital Link)Uitstekend (camera app)GoedLaagGeen extra (voor lezen)Consumenteninteractie, productinfo, marketing, traceerbaarheidUniverseel, goedkoop, makkelijk te genereren, GS1 Digital Link supportKan beschadigd raken, beperkte bulkleesbaarheidData MatrixMatig (vaak aparte app)GoedLaagGeen extra (voor lezen)Industriële tracking, kleine itemsCompact, robuustMinder directe smartphone compatibiliteit dan QRRFID (bv. RAIN RFID)Nee (speciale lezer)Zeer goedGemiddeld/HoogRFID-lezers, middlewareLogistiek, voorraadbeheer, anti-diefstal, geautomatiseerde sorteringBulkscanning, geen line-of-sight nodig, robuustHogere kosten per tag, speciale lezers nodig, privacy-overwegingenNFCGoed (NFC-enabled phone)BeperktGemiddeldGeen extra (voor lezen op phone)Contactloze betaling, snelle info-uitwisseling, authenticatieMakkelijk te gebruiken met smartphones, veilig voor korte afstandZeer korte leesafstand, beperkte data, hogere tagkosten dan QRDeze tabel helpt bij het selecteren van de meest geschikte datadragertechnologie, rekening houdend met de afwegingen.C. Data-uitwisselingsformaten & Semantiek: JSON-LD, Schema.org, WoordenlijstenVoor interoperabiliteit moet data gestructureerd en machineleesbaar zijn. JSON-LD komt naar voren als een aanbevolen formaat voor DPP-data vanwege zijn webvriendelijkheid en vermogen om semantische betekenis in te bedden (7). Het gebruik van standaard woordenlijsten zoals Schema.org voor productbeschrijvingen (18), GS1-vocabulaire (bv. voor EPCIS-gebeurtenissen, productattributen) (17), en UNECE UNTP voor geharmoniseerde duurzaamheidsdata (28) is cruciaal.
+JSON-LD: Geprefereerd formaat voor data-uitwisseling (7).
+Schema.org: Voor algemene productattributen (bv. naam, beschrijving, merk, kleur) (11).
+GS1 Web Vocabulary / CBV (Core Business Vocabulary): Voor EPCIS gebeurtenisdata, identificatoren, bedrijfsstappen, disposities (33).
+ISO Codes: Voor eenheden, landen (ISO 3166-1 uit 63), talen (ISO 639-1 uit 65), valuta (ISO 4217 uit 67), wassymbolen (ISO 3758 uit 56).
+Textielvezelcodes: Gestandaardiseerde afkortingen voor vezeltypes (bv. CO voor katoen, PES voor polyester uit 24).
+Hoewel algemene vocabulaires bestaan, heeft de textielsector specifieke databehoeften. CIRPASS-2 werkt aan een EU DPP kernontologie (61). EURATEX roept op tot een gedeeld semantisch kader en datamodellen op maat voor textiel (7). Voor echte interoperabiliteit van textiel DPP's is simpelweg JSON-LD gebruiken niet voldoende. De betekenis (semantiek) van elk dataveld moet algemeen begrepen worden. Een textielspecifieke ontologie, voortbouwend op bestaande standaarden, zou deze semantiek definiëren. Dit omvat het definiëren van klassen (bv. "TextielProduct," "VezelMengsel") en eigenschappen (bv. "heeftPercentageGerecycledMateriaal," "gebruiktVerfprocesType") met duidelijke definities en relaties. Ontwikkelaars van DPP-applicaties dienen de ontwikkeling van dergelijke ontologieën (bv. van CIRPASS-2, CEN/CENELEC) te volgen en hun datamodellen zo te ontwerpen dat ze compatibel zijn. Vroege adoptie van deze semantische standaarden zal toekomstige data-uitwisseling en -integratie vergemakkelijken.D. Belangrijke Interoperabiliteitsstandaarden: GS1 EPCIS 2.0, ISO/PWI 25534-1, CEN/CENELEC
+GS1 EPCIS 2.0: Voor het vastleggen en delen van gebeurtenisdata in de toeleveringsketen (traceerbaarheid). Biedt "wat, waar, wanneer, waarom" van productbewegingen en -transformaties. Gebruikt JSON-LD en REST API's (12). Voorbeeld JSON-LD ObjectEvent (conceptueel):
+JSON{
+  "@context": ["https://ref.gs1.org/standards/epcis/2.0.0/epcis-context.jsonld"],
+  "type": "ObjectEvent",
+  "eventTime": "2024-05-20T10:00:00Z",
+  "eventTimeZoneOffset": "+02:00",
+  "epcList": ["urn:epc:id:sgtin:0614141.107346.2024.1"],
+  "action": "OBSERVE",
+  "bizStep": "urn:epcglobal:cbv:bizstep:shipping",
+  "disposition": "urn:epcglobal:cbv:disp:in_transit",
+  "readPoint": {"id": "urn:epc:id:sgln:0614141.00734.0"},
+  "bizLocation": {"id": "urn:epc:id:sgln:0614141.00888.0"},
+  "gs1:digitalLink": "https://id.example.com/01/06141411073467/21/2024ITEM1"
+}
+
+
+ISO/PWI 25534-1: Een aankomende ISO-standaard over "Digital Product Passport – Overview and Fundamental Principles." Beoogt een wereldwijd kader te bieden, gericht op interoperabiliteit en data-elementen zoals conformiteitscertificaten, gerecycled materiaal, gevaarlijke materialen, milieuvoetafdrukken en traceerbaarheidsrecords (28).
+CEN/CENELEC Standaarden: Ontwikkelen geharmoniseerde standaarden voor DPP, verwacht eind 2026, die datadragers, infrastructuur en data-interoperabiliteit dekken (4).
+Meerdere instanties (ISO, CEN/CENELEC, GS1) ontwikkelen standaarden relevant voor DPP's. De EU streeft ernaar dat deze open en niet-eigendomsrechtelijk beschermd zijn (4). Hoewel deze inspanningen complementair zijn, zal het waarborgen van volledige afstemming en het vermijden van conflicterende specificaties een uitdaging zijn. De standaardisatieverzoeken van de EU-Commissie aan CEN/CENELEC zullen hierin een sleutelrol spelen. Ontwikkelaars dienen al deze standaardisatie-inspanningen te volgen. De DPP-applicatie moet prioriteit geven aan naleving van standaarden die expliciet worden genoemd of opgelegd door de EU Gedelegeerde Handelingen zodra deze zijn gepubliceerd. Flexibiliteit om aan te passen aan het uiteindelijke geconvergeerde standaardlandschap zal belangrijk zijn.Tabel 5: Belangrijke Datastandaarden voor Interoperabiliteit van Textiel DPP
+StandaardUitgevende InstantieBelangrijkste Kenmerken/DoelRelevantie voor Textiel DPPHuidige StatusGS1 Digital LinkGS1Standaardiseert hoe product-ID's in een web-URI worden gecodeerd; maakt één datadrager voor meerdere datatypes mogelijk.Primaire methode voor het linken van fysiek product naar digitale DPP-data via QR-codes; ondersteunt contextafhankelijke informatie. (12)GepubliceerdGS1 EPCIS 2.0GS1Standaard voor het vastleggen en delen van gebeurtenisdata in de toeleveringsketen ("wat, waar, wanneer, waarom"). JSON-LD & REST.Essentieel voor end-to-end traceerbaarheid van textielproducten en hun componenten. (32)GepubliceerdISO/PWI 25534-1 (DPP Principes)ISOOverkoepelende principes en fundamentele concepten voor DPP's, interoperabiliteit.Biedt een wereldwijd kader; zal data-elementen zoals conformiteit, gerecycled materiaal, etc. adresseren. (28)In ontwikkelingCEN/CENELEC DPP StandaardenCEN/CENELECGeharmoniseerde Europese standaarden voor datadragers, infrastructuur, data-interoperabiliteit voor DPP.Zullen de technische specificaties voor DPP-implementatie in de EU verder verfijnen. (4)In ontwikkelingJSON-LDW3CLichtgewicht Linked Data formaat; maakt het mogelijk om JSON te gebruiken voor het delen van gestructureerde, gelinkte data.Aanbevolen formaat voor DPP-data-uitwisseling; ondersteunt semantische interoperabiliteit. (7)Gepubliceerd (W3C Rec)Schema.orgSchema.org communityGedeelde woordenlijst voor gestructureerde data op het internet (producten, organisaties, etc.).Biedt standaardtermen voor algemene productattributen (naam, merk, kleur, etc.) in het DPP. (11)GepubliceerdISO 3166-1 (Landcodes)ISOTweeletterige landcodes.Standaardisatie van land van herkomst, productielocaties. (63)GepubliceerdISO 3758 (Was-, droog- en strijksymbolen)ISO / GINETEXGestandaardiseerde symbolen voor textielverzorging.Verplichte consumenteninformatie voor textielverzorging. (56)GepubliceerdTextiellabeling Verordening (EU) / ISO 2076EU / ISOGestandaardiseerde namen en codes voor textielvezels.Verplichte informatie over vezelsamenstelling. (24)Gepubliceerd
+Deze tabel biedt een beknopte gids voor de belangrijkste technische standaarden waarmee rekening moet worden gehouden.Tabel 6: Gestandaardiseerde Codes voor DPP-Datavelden (Voorbeelden)CodetypeStandaardVoorbeeld CodeBeschrijvingTaalISO 639-1nlNederlandsLandISO 3166-1 alpha-2DEDuitslandValutaISO 4217EUREuroWassymboolISO 3758 / GINETEX(symbool)bv. Wassen op 30°C, mild procesVezeltypeTextiellabeling Ver. (EU) / ISO 2076COKatoenVezeltypeTextiellabeling Ver. (EU) / ISO 2076PESPolyesterBedrijfsstap (EPCIS)GS1 CBV (urn:epcglobal:cbv:bizstep:...)shippingVerzending van goederenDispositie (EPCIS)GS1 CBV (urn:epcglobal:cbv:disp:...)in_transitGoederen zijn onderwegHet gebruik van gestandaardiseerde codes is essentieel voor dataconsistentie en machineleesbaarheid.E. Data-architectuur Overwegingen: Decentralisatie, Veiligheid, ToegangscontroleHet DPP-systeem wordt voorzien als gebaseerd op een decentrale aanpak voor dataopslag, wat betekent dat data bij de eigenaar blijft (bv. fabrikant, merk) in plaats van in één centrale EU-database (5). Toegang tot data zal verlopen via de unieke productidentificator op de datadrager, steunend op een opzoekmechanisme (waarschijnlijk het centrale EU DPP-register) (5). Toegang tot data zal gebaseerd zijn op een "need-to-know" basis, met openbare en beperkte datasegmenten (7). Dataveiligheid, -authenticiteit, -betrouwbaarheid en -integriteit zijn van het grootste belang (7). Blockchain wordt genoemd als een potentiële technologie voor het waarborgen van data-integriteit en het beheren van updates (1). W3C Verifiable Credentials kunnen de betrouwbaarheid van data verhogen (22).Een decentrale architectuur (8) geeft data-eigenaren controle, maar vereist een robuust systeem voor dataontdekking (het EU DPP-register8) en het waarborgen van databetrouwbaarheid (verifieerbare credentials, audittrails22). Als data verspreid is over talrijke bedrijfssystemen, is de vraag hoe een gebruiker deze kan vinden en vertrouwen. De datadrager linkt naar het register, dat verwijst naar de databron. Vertrouwen wordt opgebouwd door veilige data-uitwisselingsprotocollen, verifieerbare claims (bv. VC's voor certificeringen), en duidelijke audittrails voor datawijzigingen. Een DPP-applicatie moet ontworpen zijn als een knooppunt in dit decentrale netwerk. Het moet data op een vindbare manier kunnen publiceren (waarschijnlijk door registratie bij het EU-register) en sterke veiligheidsmaatregelen implementeren. Voor data die het van andere bronnen consumeert (bv. DPP's van leveranciers), heeft het mechanismen nodig om de authenticiteit te verifiëren.V. Integratie van Data uit Bestaande Certificeringen en SystemenA. Benutten van Data van GOTS, OEKO-TEX, Bluesign, GRS, EU Ecolabel, Higg Index, LWGVeel merken verzamelen reeds data voor diverse certificeringsschema's. Het DPP zou deze bestaande informatie moeten benutten om dubbel werk te voorkomen. Voorbeelden:
+GOTS: Biologisch vezelgehalte, verwerkingscriteria, sociale criteria (20).
+OEKO-TEX Standard 100: Data over beperkte stoffen in het eindproduct (26).
+Bluesign: Chemicaliëninputbeheer, BSSL/BSBL-conformiteit voor stoffen (9).
+GRS: Percentage gerecycled materiaal, chain of custody voor gerecyclede materialen (21).
+EU Ecolabel: Specifieke milieu- en geschiktheidscriteria (9).
+Higg Index: Milieuprestaties van faciliteiten (FEM), duurzaamheidsscores van materialen (MSI) (40).
+LWG: Milieuprestaties van looierijen voor leren componenten (30).
+Bestaande certificeringen vertegenwoordigen door derden geverifieerde claims over specifieke productattributen of processen. Het DPP kan fungeren als een aggregator of een verwijzer naar deze certificeringen. In plaats van simpelweg "biologisch katoen" te vermelden, zou het DPP kunnen linken naar het GOTS scope-certificaat of een Verifiable Credential gebruiken die is uitgegeven door de GOTS-certificeerder. Dit verhoogt de betrouwbaarheid van de DPP-data. Een DPP-applicatie zou velden voor certificaat-ID's, links naar openbare certificaatdatabases, of zelfs het inbedden van verifieerbare presentaties van deze certificeringen moeten ondersteunen. Dit vereist inzicht in de datastructuren van deze certificeringsschema's.B. Koppelen van Certificeringsdatapunten aan DPP-VeldenEen systematische koppeling is nodig. Bijvoorbeeld, een GRS-certificaat levert "percentage gerecycled materiaal" en "materiaaltype," die direct overeenkomen met DPP-velden. OEKO-TEX testresultaten komen overeen met "conformiteit beperkte stoffen." Handmatig overnemen van data uit PDF-certificaten is inefficiënt en foutgevoelig. Voor naadloze integratie zouden gestandaardiseerde API's van certificeringsinstanties ideaal zijn, waarmee DPP-systemen gevalideerde certificeringsdata voor een specifiek product of batch kunnen opvragen en ophalen. Hoewel dit wellicht nog niet volledig bestaat, is het een toekomstige richting. Het ontwerp van een DPP-applicatie zou toekomstige integraties met systemen van certificeringsinstanties kunnen overwegen. In de tussentijd zijn robuuste mechanismen voor het uploaden en koppelen van digitale certificaatafschriften nodig.Tabel 7: Koppelen van Belangrijke Certificeringsdata aan DPP-Velden (Voorbeelden)
+CertificatieschemaBelangrijk Datapunt van CertificeringOvereenkomstig(e) Textiel DPP-Veld(en)Opmerkingen over Integratie/VerificatieGOTSGecertificeerd Biologisch Vezel %; Naleving sociale criteriaVezelsamenstelling (met specificatie 'biologisch'); Sociale Verantwoordelijkheid data (verwijzing naar GOTS) (20)Link naar GOTS scope certificaat; gebruik transactiecertificaten voor traceerbaarheid van batch.GRSPercentage Gerecycled Materiaal (pre/post-consumer); MateriaalsoortPercentage Gerecycled Materiaal; Vezelsamenstelling (met specificatie 'gerecycled') (21)Link naar GRS scope certificaat; chain of custody documentatie.OEKO-TEX Std 100Testresultaten voor schadelijke stoffen (bv. zware metalen, ftalaten)Beperkte Stoffen (Productniveau); Conformiteit & Veiligheid (verwijzing naar OEKO-TEX certificaat) (50)Link naar geldig OEKO-TEX certificaat/labelnummer; testrapporten als bewijs.Bluesign SYSTEMConformiteit met BSBL (input chemicaliën); BSSL (eindproduct)Chemicaliëngebruik (Productie); Beperkte Stoffen (Productniveau) (verwijzing naar Bluesign APPROVED label/product) (53)Verwijzing naar Bluesign Product/Finder; data over gebruikte Bluesign APPROVED chemicaliën.EU EcolabelNaleving van EU Ecolabel criteria (bv. vezelherkomst, chemicaliën)EU Ecolabel Certificeringsdata; diverse milieu- en duurzaamheidsvelden afhankelijk van specifieke criteria (45)EU Ecolabel licentienummer; bewijs van naleving van specifieke criteria.Higg Index (FEM)Score milieuprestaties productiefaciliteitMilieuprestaties & Impact (verwijzing naar Higg FEM score van faciliteit) (40)Higg ID van faciliteit; geverifieerde FEM-module.Higg Index (MSI)Duurzaamheidsscore materiaalMilieuprestaties & Impact (verwijzing naar Higg MSI score van materiaal) (40)Specifieke materiaal ID en MSI-score.LWG (Leather)Milieuauditscore looierij (Brons/Zilver/Goud)Leren Componenten (LWG Tannery Audit rating) (30)LWG-certificaatnummer van de looierij.
+Deze tabel toont hoe bestaande investeringen in certificeringen waardevol blijven en kunnen worden gebruikt voor het DPP, in plaats van het DPP te zien als een volledig nieuwe en afzonderlijke datalast.VI. Aanbevelingen voor het Bouwen van een Conforme Textiel DPP-ApplicatieA. Prioritering van Dataverzameling op basis van Regelgevende Tijdlijnen en BeschikbaarheidFocus initieel op datapunten die waarschijnlijk in de eerste Gedelegeerde Handelingen zullen staan (bv. kernidentificatie, materiaalsamenstelling, belangrijke milieu-impacts, zorgwekkende stoffen). Data die al wordt verzameld voor bestaande regelgeving (bv. REACH SVHC's) of breed geaccepteerde certificeringen dient ook geprioriteerd te worden (1). Bedrijven zouden moeten beginnen met het beoordelen van hun huidige datamanagementpraktijken en het identificeren van hiaten (1). Voordat een applicatie wordt gebouwd, is het cruciaal om te begrijpen welke data al beschikbaar is, waar deze zich bevindt en in welk formaat. Deze "heatmap" van informatie (1) zal de strategie voor dataverzameling informeren. Het ontwikkelingsproces van een DPP-applicatie zou een voorbereidende fase moeten omvatten waarin gebruikers (merken) deze interne data-audit uitvoeren. De applicatie zou zelfs tools of checklists kunnen bieden om dit te faciliteren.B. Strategieën voor Effectieve Samenwerking in de ToeleveringsketenHet DPP vereist data van meerdere tiers in de toeleveringsketen. Het opzetten van duidelijke communicatiekanalen, data-uitwisselingsovereenkomsten en het gebruik van gestandaardiseerde templates/platformen voor data-aanlevering door leveranciers is essentieel (1). Leveranciers, vooral KMO's verderop in de keten, kunnen uitdagingen ondervinden bij het verstrekken van gedetailleerde data. Merken moeten mogelijk ondersteuning, training en potentieel incentives bieden aan leveranciers om accurate data in de vereiste formaten te verzamelen en te delen. Langetermijnpartnerschappen en een gedeeld begrip van het belang van het DPP zijn hierbij sleutelfactoren. Een DPP-applicatie zou functionaliteiten voor een leveranciersportaal kunnen bevatten met gebruiksvriendelijke data-invoerformulieren, templates en begeleiding. Het zou ook de status van data-aanlevering door leveranciers kunnen volgen.C. Belang van Robuust Datamanagement: PIM/PLM IntegratieProduct Information Management (PIM) en Product Lifecycle Management (PLM) systemen kunnen dienen als centrale repositories voor veel van de DPP-data (1). Integratie van de DPP-applicatie met deze bestaande bedrijfssystemen kan dataverzameling stroomlijnen en consistentie waarborgen. Het DPP moet geen nieuwe, geïsoleerde datasilo creëren. Het moet integreren met en data benutten van systemen waar productinformatie al wordt beheerd. PIM's bevatten vaak marketing- en basisproductdata. PLM's beheren ontwerp-, ontwikkelings- en sommige productiedata. ERP's verwerken transactiedata. Het DPP moet relevante informatie uit deze bronnen halen en specifieke duurzaamheids-/circulariteitsdata toevoegen. Een DPP-applicatie moet goed gedefinieerde API's hebben voor integratie met gangbare PIM-, PLM- en ERP-systemen. Dit maakt geautomatiseerde dataflows mogelijk en vermindert handmatige data-invoer.D. Voorbereiden op Evoluerende Vereisten en Toekomstige Updates van StandaardenHet regelgevend landschap en de technische standaarden voor DPP's zijn nog in ontwikkeling. De DPP-applicatie moet ontworpen zijn met flexibiliteit en schaalbaarheid in gedachten om nieuwe datavelden, wijzigingen in formaten en updates van standaarden te accommoderen zonder volledige herzieningen te vereisen. Dit omvat het adopteren van een modulaire architectuur en het gebruik van aanpasbare datamodellen (7). Deelname aan of leren van pilotprojecten zoals Trace4Value (7) of CIRPASS-2 (27) kan vroege inzichten verschaffen en oplossingen testen. Deze pilots zijn waar theoretische dataprotocollen en technische oplossingen in reële scenario's worden getest. Lessen hieruit kunnen de ontwikkeling van een robuustere en praktischere DPP-applicatie informeren. Continue monitoring van updates van de Europese Commissie en output van standaardisatieorganen is ook essentieel.VII. Conclusies en AanbevelingenHet ontwikkelen van een Digital Product Passport applicatie voor textiel die voldoet aan de EU-standaarden vereist een grondig begrip van een complex en evoluerend landschap van regelgeving, datavereisten en technische standaarden. De Ecodesign for Sustainable Products Regulation (ESPR) legt de basis, maar de specifieke details voor textiel zullen verder worden uitgewerkt in de aankomende Gedelegeerde Handelingen.Kernaanbevelingen voor de ontwikkeling van een DPP-applicatie:
+Prioriteer Flexibiliteit en Modulariteit: Gezien de evoluerende aard van de vereisten, moet de applicatiearchitectuur aanpasbaar zijn om toekomstige wijzigingen in datavelden, formaten en standaarden op te vangen zonder ingrijpende herzieningen.
+Focus op Kern-Datacategorieën: Begin met de data die nu al als essentieel wordt beschouwd: productidentificatie, materiaalsamenstelling, herkomst, belangrijkste milieu-impacts, en informatie over circulariteit en conformiteit.
+Implementeer Robuuste Identificatie: Maak gebruik van GS1-standaarden (GTIN, SGTIN, GLN) en bereid voor op interactie met het centrale EU DPP-register. GS1 Digital Link via QR-codes is de aanbevolen datadrager voor consumenteninteractie.
+Standaardiseer Data-uitwisseling: Gebruik JSON-LD als primair dataformaat. Integreer gestandaardiseerde vocabulaires (Schema.org, GS1 CBV) en codes (ISO-standaarden voor land, taal, vezels, etc.) om interoperabiliteit te waarborgen. Volg de ontwikkelingen rond textielspecifieke ontologieën (bv. CIRPASS-2).
+Ondersteun Traceerbaarheid met EPCIS 2.0: Ontwerp de applicatie om EPCIS 2.0 gebeurtenisdata te kunnen verwerken en/of genereren om gedetailleerde traceerbaarheid in de toeleveringsketen te ondersteunen.
+Faciliteer Integratie: Zorg voor API's voor integratie met bestaande bedrijfsystemen (PIM, PLM, ERP) en systemen van certificeringsinstanties om dataverzameling te stroomlijnen en redundantie te vermijden.
+Beveiliging en Toegangscontrole: Implementeer sterke beveiligingsmaatregelen en een gedifferentieerd toegangscontrolemachanisme ("need-to-know") om de integriteit en vertrouwelijkheid van data te waarborgen, in lijn met de decentrale data-architectuur. Overweeg technologieën zoals Verifiable Credentials.
+Betrek de Toeleveringsketen: Voorzie tools en ondersteuning voor leveranciers om de aanlevering van accurate en tijdige data te faciliteren.
+Blijf Geïnformeerd: Monitor continu de publicaties van de Europese Commissie (m.n. Gedelegeerde Handelingen), en de voortgang van standaardisatie-initiatieven (ISO, CEN/CENELEC, GS1) en pilotprojecten (Trace4Value, CIRPASS-2).
+Door een proactieve en goed geïnformeerde aanpak kunnen ontwikkelaars DPP-applicaties bouwen die niet alleen voldoen aan de huidige en toekomstige wettelijke vereisten, maar ook bijdragen aan een transparantere, duurzamere en meer circulaire textielindustrie. De transitie naar het DPP is een uitdaging, maar biedt ook kansen voor innovatie en verbeterde consumentenbetrokkenheid.

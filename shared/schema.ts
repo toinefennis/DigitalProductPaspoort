@@ -205,6 +205,69 @@ export const gs1ProductMappingsRelations = relations(gs1ProductMappings, ({ one 
   }),
 }));
 
+// GTIN Registry table for comprehensive product registration (Manager/Admin only)
+export const gtinRegistry = pgTable("gtin_registry", {
+  id: serial("id").primaryKey(),
+  
+  // Basic Product Identification
+  gtin: varchar("gtin", { length: 14 }).notNull().unique(),
+  productName: varchar("product_name", { length: 255 }).notNull(),
+  brandName: varchar("brand_name", { length: 255 }),
+  modelNumber: varchar("model_number", { length: 100 }),
+  productCategory: varchar("product_category", { length: 100 }),
+  productDescription: text("product_description"),
+  
+  // DPP Specific Fields
+  uniqueProductId: varchar("unique_product_id", { length: 500 }), // URI format
+  batchNumber: varchar("batch_number", { length: 100 }),
+  serialNumber: varchar("serial_number", { length: 100 }),
+  countryOfOrigin: varchar("country_of_origin", { length: 2 }), // ISO 3166-1 alpha-2
+  productionDate: timestamp("production_date"),
+  
+  // Economic Operator & Facility
+  economicOperatorId: varchar("economic_operator_id", { length: 255 }), // GLN or URI
+  productionFacilityId: varchar("production_facility_id", { length: 255 }), // GLN or URI
+  registrationId: varchar("registration_id", { length: 255 }), // DPP system registration
+  
+  // Product Physical Properties
+  productWeight: integer("product_weight"), // in grams
+  productDimensions: jsonb("product_dimensions"), // {length, width, height, unit}
+  productSize: varchar("product_size", { length: 50 }),
+  productColor: varchar("product_color", { length: 100 }),
+  
+  // Material Composition (JSON structure for flexibility)
+  fiberComposition: jsonb("fiber_composition"), // Array of {fiber_code, percentage}
+  recycledContent: jsonb("recycled_content"), // {fiber, percentage, type: pre/post-consumer}
+  materialOrigins: jsonb("material_origins"), // {material, country_code}
+  materialCertifications: jsonb("material_certifications"), // Array of certifications
+  
+  // Production & Supply Chain
+  productionCountry: varchar("production_country", { length: 2 }), // ISO 3166-1 alpha-2
+  productionFacilities: jsonb("production_facilities"), // Array of facilities with process steps
+  productionProcesses: text("production_processes"),
+  supplierInformation: jsonb("supplier_information"), // Tier information
+  
+  // Sustainability & Compliance
+  sustainabilityData: jsonb("sustainability_data"), // Environmental metrics
+  chemicalCompliance: jsonb("chemical_compliance"), // REACH compliance, restricted substances
+  socialCompliance: jsonb("social_compliance"), // Fair trade, labor standards
+  circularityData: jsonb("circularity_data"), // Recyclability, repair instructions
+  
+  // Care & End of Life
+  careInstructions: text("care_instructions"),
+  careSymbols: jsonb("care_symbols"), // Washing symbols data
+  endOfLifeInstructions: text("end_of_life_instructions"),
+  
+  // Regulatory & Market
+  intendedMarkets: jsonb("intended_markets"), // Array of country codes
+  regulatoryCompliance: jsonb("regulatory_compliance"), // Various compliance data
+  
+  // Metadata
+  registeredBy: integer("registered_by").references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Stories table for user-generated content
 export const stories = pgTable("stories", {
   id: serial("id").primaryKey(),
@@ -230,6 +293,13 @@ export const storiesRelations = relations(stories, ({ one }) => ({
   product: one(products, {
     fields: [stories.productId],
     references: [products.id],
+  }),
+}));
+
+export const gtinRegistryRelations = relations(gtinRegistry, ({ one }) => ({
+  registeredBy: one(users, {
+    fields: [gtinRegistry.registeredBy],
+    references: [users.id],
   }),
 }));
 
@@ -264,6 +334,12 @@ export const insertStorySchema = createInsertSchema(stories).omit({
   updatedAt: true,
 });
 
+export const insertGtinRegistrySchema = createInsertSchema(gtinRegistry).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export type InsertProduct = z.infer<typeof insertProductSchema>;
 export type Product = typeof products.$inferSelect;
 export type InsertEvent = z.infer<typeof insertEventSchema>;
@@ -274,6 +350,8 @@ export type InsertNotification = z.infer<typeof insertNotificationSchema>;
 export type Notification = typeof notifications.$inferSelect;
 export type InsertStory = z.infer<typeof insertStorySchema>;
 export type Story = typeof stories.$inferSelect;
+export type InsertGtinRegistry = z.infer<typeof insertGtinRegistrySchema>;
+export type GtinRegistry = typeof gtinRegistry.$inferSelect;
 
 // Statistics type for dashboard
 export type DashboardStats = {

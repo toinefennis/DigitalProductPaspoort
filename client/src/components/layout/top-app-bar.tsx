@@ -19,6 +19,15 @@ export function TopAppBar() {
             variant="ghost"
             size="icon"
             className="text-white hover:bg-white hover:bg-opacity-10"
+            onClick={() => setLocation("/loans")}
+            title="Uitleenoverzicht"
+          >
+            <ClipboardList className="h-5 w-5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-white hover:bg-white hover:bg-opacity-10"
             onClick={() => setLocation("/notifications")}
           >
             <Bell className="h-5 w-5" />

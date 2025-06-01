@@ -172,6 +172,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         expectedReturn: req.body.expectedReturn ? new Date(req.body.expectedReturn) : null,
       };
 
+      // Calculate expected return date for loan events if not provided
+      if (eventData.eventType === "uitleen" && !eventData.expectedReturn && req.body.loanDurationWeeks) {
+        const loanDurationWeeks = parseInt(req.body.loanDurationWeeks) || 3;
+        const expectedReturn = new Date();
+        expectedReturn.setDate(expectedReturn.getDate() + (loanDurationWeeks * 7));
+        eventData.expectedReturn = expectedReturn;
+      }
+
       const validatedEvent = insertEventSchema.parse(eventData);
       
       // Verify product exists
@@ -181,6 +189,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const event = await storage.createEvent(validatedEvent);
+
+      // Create notification for loan events
+      if (validatedEvent.eventType === "uitleen" && validatedEvent.borrowerName) {
+        await storage.createNotification({
+          userId: 1, // Default admin user
+          type: "loan_created",
+          title: "Nieuwe uitleen",
+          message: `Product "${product.name}" is uitgeleend aan ${validatedEvent.borrowerName}`,
+          productId: product.id,
+        });
+      }
+
       res.status(201).json(event);
     } catch (error) {
       if (error instanceof z.ZodError) {

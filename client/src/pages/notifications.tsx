@@ -1,20 +1,31 @@
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Bell, BellOff, Check, CheckCheck, Package, AlertCircle } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Bell, BellOff, Check, CheckCheck, Package, AlertCircle, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { formatDistanceToNow } from "date-fns";
 import { nl } from "date-fns/locale";
-import type { Notification } from "@shared/schema";
+import type { Notification, Product } from "@shared/schema";
 
 export default function Notifications() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [showAddNotification, setShowAddNotification] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState("");
+  const [notificationType, setNotificationType] = useState("loan_reminder");
 
   const { data: notifications, isLoading } = useQuery<Notification[]>({
     queryKey: ["/api/notifications"],
+  });
+
+  const { data: products } = useQuery<Product[]>({
+    queryKey: ["/api/products"],
   });
 
   const markAsReadMutation = useMutation({
@@ -38,6 +49,56 @@ export default function Notifications() {
       queryClient.invalidateQueries({ queryKey: ["/api/notifications"] });
     },
   });
+
+  const createNotificationMutation = useMutation({
+    mutationFn: async (data: { productId: number; type: string; message: string }) => {
+      return await apiRequest("POST", "/api/notifications", data);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Melding aangemaakt",
+        description: "Nieuwe melding is succesvol aangemaakt",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/notifications"] });
+      setShowAddNotification(false);
+      setSelectedProduct("");
+    },
+  });
+
+  const handleCreateNotification = () => {
+    if (!selectedProduct) {
+      toast({
+        title: "Fout",
+        description: "Selecteer eerst een product",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const product = products?.find(p => p.id.toString() === selectedProduct);
+    if (!product) return;
+
+    let message = "";
+    switch (notificationType) {
+      case "loan_reminder":
+        message = `Product "${product.name}" is beschikbaar voor uitleen`;
+        break;
+      case "return_reminder":
+        message = `Herinnering: Product "${product.name}" moet worden teruggebracht`;
+        break;
+      case "maintenance":
+        message = `Product "${product.name}" heeft onderhoud nodig`;
+        break;
+      default:
+        message = `Update voor product "${product.name}"`;
+    }
+
+    createNotificationMutation.mutate({
+      productId: product.id,
+      type: notificationType,
+      message,
+    });
+  };
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
@@ -92,18 +153,84 @@ export default function Notifications() {
               </Badge>
             )}
           </div>
-          {unreadCount > 0 && (
+          <div className="flex space-x-2">
             <Button
               variant="outline"
               size="sm"
-              onClick={() => markAllAsReadMutation.mutate()}
-              disabled={markAllAsReadMutation.isPending}
+              onClick={() => setShowAddNotification(!showAddNotification)}
             >
-              <CheckCheck className="h-4 w-4 mr-2" />
-              Alles als gelezen markeren
+              <Plus className="h-4 w-4 mr-2" />
+              Nieuwe melding
             </Button>
-          )}
+            {unreadCount > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => markAllAsReadMutation.mutate()}
+                disabled={markAllAsReadMutation.isPending}
+              >
+                <CheckCheck className="h-4 w-4 mr-2" />
+                Alles als gelezen markeren
+              </Button>
+            )}
+          </div>
         </div>
+
+        {/* Add Notification Form */}
+        {showAddNotification && (
+          <Card className="mb-6">
+            <CardContent className="p-4">
+              <h3 className="font-medium mb-4">Nieuwe melding aanmaken</h3>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="product-select">Product selecteren</Label>
+                  <Select value={selectedProduct} onValueChange={setSelectedProduct}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Kies een product..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {products?.map((product) => (
+                        <SelectItem key={product.id} value={product.id.toString()}>
+                          {product.name} ({product.gtin})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="notification-type">Type melding</Label>
+                  <Select value={notificationType} onValueChange={setNotificationType}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="loan_reminder">Beschikbaar voor uitleen</SelectItem>
+                      <SelectItem value="return_reminder">Retour herinnering</SelectItem>
+                      <SelectItem value="maintenance">Onderhoud nodig</SelectItem>
+                      <SelectItem value="status_update">Status update</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex space-x-2">
+                  <Button
+                    onClick={handleCreateNotification}
+                    disabled={createNotificationMutation.isPending || !selectedProduct}
+                  >
+                    {createNotificationMutation.isPending ? "Aanmaken..." : "Melding aanmaken"}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowAddNotification(false)}
+                  >
+                    Annuleren
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <div className="space-y-3">
           {notifications?.map((notification) => (

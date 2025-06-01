@@ -909,15 +909,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      // Get all events with products where eventType is 'uitleen'
-      const events = await storage.getRecentEvents(100); // Get more events to filter
-      
-      // Filter for loan events only
-      const loanEvents = events.filter(event => 
-        event.eventType === "uitleen" && 
-        event.borrowerName && 
-        event.borrowerEmail
-      );
+      // Get all active loan events
+      const loanEvents = await storage.getActiveLoans();
 
       // Filter based on user role
       let filteredLoanEvents = loanEvents;

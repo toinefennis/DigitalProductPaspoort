@@ -37,6 +37,7 @@ export interface IStorage {
   getEventsByProductId(productId: number): Promise<Event[]>;
   getRecentEvents(limit?: number): Promise<(Event & { product: Product })[]>;
   deleteEvent(eventId: number): Promise<void>;
+  getActiveLoans(): Promise<(Event & { product: Product })[]>;
   
   // User operations
   createUser(user: InsertUser): Promise<User>;
@@ -63,6 +64,7 @@ export interface IStorage {
   updateStory(id: number, updates: Partial<InsertStory>): Promise<Story>;
   deleteStory(id: number): Promise<void>;
   moderateStory(id: number, status: string, moderatedBy: string, notes?: string): Promise<Story>;
+  linkStoryToProduct(storyId: number, productId: number | null): Promise<Story>;
   
   // GTIN Registry operations (Manager/Admin only)
   createGtinRegistry(gtinData: InsertGtinRegistry): Promise<GtinRegistry>;
@@ -179,6 +181,22 @@ export class DatabaseStorage implements IStorage {
 
   async deleteEvent(eventId: number): Promise<void> {
     await db.delete(events).where(eq(events.id, eventId));
+  }
+
+  async getActiveLoans(): Promise<(Event & { product: Product })[]> {
+    const results = await db
+      .select()
+      .from(events)
+      .leftJoin(products, eq(events.productId, products.id))
+      .where(eq(events.eventType, "uitleen"))
+      .orderBy(desc(events.createdAt));
+    
+    return results
+      .filter(result => result.events.borrowerName && result.events.borrowerEmail)
+      .map(result => ({
+        ...result.events,
+        product: result.products!,
+      }));
   }
 
   async createNotification(notification: InsertNotification): Promise<Notification> {
@@ -343,6 +361,18 @@ export class DatabaseStorage implements IStorage {
       .where(eq(stories.id, id))
       .returning();
     return moderatedStory;
+  }
+
+  async linkStoryToProduct(storyId: number, productId: number | null): Promise<Story> {
+    const [updatedStory] = await db
+      .update(stories)
+      .set({
+        productId,
+        updatedAt: new Date()
+      })
+      .where(eq(stories.id, storyId))
+      .returning();
+    return updatedStory;
   }
 
   // GTIN Registry operations (Manager/Admin only)

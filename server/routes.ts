@@ -7,6 +7,7 @@ import { z } from "zod";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import session from "express-session";
 
 // Configure multer for file uploads
 const uploadDir = path.join(process.cwd(), "uploads");
@@ -36,6 +37,17 @@ const upload = multer({
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Session middleware
+  app.use(session({
+    secret: process.env.SESSION_SECRET || 'demo-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { 
+      secure: false, // Set to true in production with HTTPS
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+  }));
+
   // Serve uploaded files
   app.use("/uploads", express.static(uploadDir));
 
@@ -499,21 +511,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Authentication endpoints
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      // Demo authentication - in production use proper authentication
+      const demoUsers = [
+        { id: 1, username: "admin", password: "admin123", role: "admin", fullName: "Admin Gebruiker", email: "admin@gwc.nl" },
+        { id: 2, username: "manager", password: "manager123", role: "manager", fullName: "Manager Gebruiker", email: "manager@gwc.nl" },
+        { id: 3, username: "user", password: "user123", role: "user", fullName: "Normale Gebruiker", email: "user@gwc.nl" }
+      ];
+      
+      const user = demoUsers.find(u => u.username === username && u.password === password);
+      
+      if (!user) {
+        return res.status(401).json({ message: "Onjuiste gebruikersnaam of wachtwoord" });
+      }
+      
+      // Set user in session
+      (req as any).session.user = user;
+      
+      const { password: _, ...userWithoutPassword } = user;
+      res.json({ user: userWithoutPassword, message: "Login successful" });
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(500).json({ message: "Login failed" });
+    }
+  });
+
+  app.post("/api/auth/logout", async (req, res) => {
+    try {
+      (req as any).session.destroy((err: any) => {
+        if (err) {
+          console.error("Logout error:", err);
+          return res.status(500).json({ message: "Logout failed" });
+        }
+        res.json({ message: "Logout successful" });
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+      res.status(500).json({ message: "Logout failed" });
+    }
+  });
+
   // User profile endpoints
   app.get("/api/users/me", async (req, res) => {
     try {
-      if (!req.user) {
+      const sessionUser = (req as any).session?.user;
+      if (!sessionUser) {
         return res.status(401).json({ message: "Not authenticated" });
       }
       
-      const userId = (req.user as any).id;
-      const user = await storage.getUserById(userId);
-      
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-      
-      res.json(user);
+      res.json(sessionUser);
     } catch (error) {
       console.error("Error fetching current user:", error);
       res.status(500).json({ message: "Failed to fetch user profile" });
@@ -522,20 +572,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.patch("/api/users/update-profile", async (req, res) => {
     try {
-      if (!req.user) {
+      const sessionUser = (req as any).session?.user;
+      if (!sessionUser) {
         return res.status(401).json({ message: "Not authenticated" });
       }
       
-      const userId = (req.user as any).id;
       const { fullName, email, phone } = req.body;
       
-      const updatedUser = await storage.updateUser(userId, {
+      // Update session user data
+      (req as any).session.user = {
+        ...sessionUser,
         fullName,
         email,
-        phone,
-      });
+        phone
+      };
       
-      res.json(updatedUser);
+      res.json((req as any).session.user);
     } catch (error) {
       console.error("Error updating user profile:", error);
       res.status(500).json({ message: "Failed to update profile" });
@@ -544,18 +596,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/users/change-password", async (req, res) => {
     try {
-      if (!req.user) {
+      const sessionUser = (req as any).session?.user;
+      if (!sessionUser) {
         return res.status(401).json({ message: "Not authenticated" });
       }
       
-      const userId = (req.user as any).id;
       const { currentPassword, newPassword } = req.body;
       
-      const success = await storage.changeUserPassword(userId, currentPassword, newPassword);
-      
-      if (!success) {
+      // Simple password validation for demo
+      if (currentPassword !== sessionUser.password) {
         return res.status(400).json({ message: "Current password is incorrect" });
       }
+      
+      // Update password in session
+      (req as any).session.user.password = newPassword;
       
       res.json({ message: "Password changed successfully" });
     } catch (error) {

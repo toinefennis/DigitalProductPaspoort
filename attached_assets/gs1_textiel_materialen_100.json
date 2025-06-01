@@ -1,0 +1,2602 @@
+[
+  {
+    "Materiaal": "Katoen",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Katoen",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Polyester",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "Polyester",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Wol",
+    "Wassen": "30°C fijnwas",
+    "Symbool_Wassen": "🧺30",
+    "Drogen": "Niet in droger",
+    "Symbool_Drogen": "🚫🌀",
+    "Strijken": "Lage temperatuur",
+    "Symbool_Strijken": "🧲↓",
+    "gs1:materialComposition": "Wol",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "30°C fijnwas",
+        "symbol": "🧺30"
+      },
+      "drying": {
+        "instruction": "Niet in droger",
+        "symbol": "🚫🌀"
+      },
+      "ironing": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🧲↓"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Zijde",
+    "Wassen": "30°C fijnwas",
+    "Symbool_Wassen": "🧺30",
+    "Drogen": "Niet in droger",
+    "Symbool_Drogen": "🚫🌀",
+    "Strijken": "Lage temperatuur",
+    "Symbool_Strijken": "🧲↓",
+    "gs1:materialComposition": "Zijde",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "30°C fijnwas",
+        "symbol": "🧺30"
+      },
+      "drying": {
+        "instruction": "Niet in droger",
+        "symbol": "🚫🌀"
+      },
+      "ironing": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🧲↓"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Linnen",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Linnen",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Nylon",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "Nylon",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Acryl",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Acryl",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Viscose",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Viscose",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Elastaan",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Elastaan",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Modal",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Lage temperatuur",
+    "Symbool_Strijken": "🧲↓",
+    "gs1:materialComposition": "Modal",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🧲↓"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Bamboe",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Bamboe",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Hennep",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Hennep",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Tencel (Lyocell)",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Tencel (Lyocell)",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Ramie",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Ramie",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Spandex",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Spandex",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Cupro",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Cupro",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Kasjmier",
+    "Wassen": "30°C fijnwas",
+    "Symbool_Wassen": "🧺30",
+    "Drogen": "Niet in droger",
+    "Symbool_Drogen": "🚫🌀",
+    "Strijken": "Lage temperatuur",
+    "Symbool_Strijken": "🧲↓",
+    "gs1:materialComposition": "Kasjmier",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "30°C fijnwas",
+        "symbol": "🧺30"
+      },
+      "drying": {
+        "instruction": "Niet in droger",
+        "symbol": "🚫🌀"
+      },
+      "ironing": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🧲↓"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Angora",
+    "Wassen": "30°C fijnwas",
+    "Symbool_Wassen": "🧺30",
+    "Drogen": "Niet in droger",
+    "Symbool_Drogen": "🚫🌀",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Angora",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "30°C fijnwas",
+        "symbol": "🧺30"
+      },
+      "drying": {
+        "instruction": "Niet in droger",
+        "symbol": "🚫🌀"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Mohair",
+    "Wassen": "30°C fijnwas",
+    "Symbool_Wassen": "🧺30",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Mohair",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "30°C fijnwas",
+        "symbol": "🧺30"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Alpaca",
+    "Wassen": "30°C fijnwas",
+    "Symbool_Wassen": "🧺30",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Alpaca",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "30°C fijnwas",
+        "symbol": "🧺30"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Polyamide",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Polyamide",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "PVC",
+    "Wassen": "Handwas",
+    "Symbool_Wassen": "🖐️🧼",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "PVC",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "Handwas",
+        "symbol": "🖐️🧼"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "PU (polyurethaan)",
+    "Wassen": "Handwas",
+    "Symbool_Wassen": "🖐️🧼",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "PU (polyurethaan)",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "Handwas",
+        "symbol": "🖐️🧼"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Leer",
+    "Wassen": "Handwas",
+    "Symbool_Wassen": "🖐️🧼",
+    "Drogen": "Niet in droger",
+    "Symbool_Drogen": "🚫🌀",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Leer",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "Handwas",
+        "symbol": "🖐️🧼"
+      },
+      "drying": {
+        "instruction": "Niet in droger",
+        "symbol": "🚫🌀"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Suède",
+    "Wassen": "Handwas",
+    "Symbool_Wassen": "🖐️🧼",
+    "Drogen": "Niet in droger",
+    "Symbool_Drogen": "🚫🌀",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Suède",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "Handwas",
+        "symbol": "🖐️🧼"
+      },
+      "drying": {
+        "instruction": "Niet in droger",
+        "symbol": "🚫🌀"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Denim",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Denim",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Flanel",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Flanel",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Fleece",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Fleece",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Velours",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Velours",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Jacquard",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Jacquard",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "60/40 Polyester/Katoen",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "60/40 Polyester/Katoen",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "65/35 Polyester/Katoen",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "65/35 Polyester/Katoen",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "50/50 Katoen/Modal",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Lage temperatuur",
+    "Symbool_Strijken": "🧲↓",
+    "gs1:materialComposition": "50/50 Katoen/Modal",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🧲↓"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "70/30 Wol/Polyester",
+    "Wassen": "30°C fijnwas",
+    "Symbool_Wassen": "🧺30",
+    "Drogen": "Niet in droger",
+    "Symbool_Drogen": "🚫🌀",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "70/30 Wol/Polyester",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "30°C fijnwas",
+        "symbol": "🧺30"
+      },
+      "drying": {
+        "instruction": "Niet in droger",
+        "symbol": "🚫🌀"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "80/20 Katoen/Polyester",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "80/20 Katoen/Polyester",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "60/40 Wol/Acryl",
+    "Wassen": "30°C fijnwas",
+    "Symbool_Wassen": "🧺30",
+    "Drogen": "Niet in droger",
+    "Symbool_Drogen": "🚫🌀",
+    "Strijken": "Lage temperatuur",
+    "Symbool_Strijken": "🧲↓",
+    "gs1:materialComposition": "60/40 Wol/Acryl",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "30°C fijnwas",
+        "symbol": "🧺30"
+      },
+      "drying": {
+        "instruction": "Niet in droger",
+        "symbol": "🚫🌀"
+      },
+      "ironing": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🧲↓"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "95/5 Katoen/Elastaan",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "95/5 Katoen/Elastaan",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "90/10 Katoen/Spandex",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "90/10 Katoen/Spandex",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "70/30 Viscose/Linnen",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "70/30 Viscose/Linnen",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "55/45 Hennep/Katoen",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "55/45 Hennep/Katoen",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "50/50 Wol/Katoen",
+    "Wassen": "30°C fijnwas",
+    "Symbool_Wassen": "🧺30",
+    "Drogen": "Niet in droger",
+    "Symbool_Drogen": "🚫🌀",
+    "Strijken": "Lage temperatuur",
+    "Symbool_Strijken": "🧲↓",
+    "gs1:materialComposition": "50/50 Wol/Katoen",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "30°C fijnwas",
+        "symbol": "🧺30"
+      },
+      "drying": {
+        "instruction": "Niet in droger",
+        "symbol": "🚫🌀"
+      },
+      "ironing": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🧲↓"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "70/30 Bamboe/Katoen",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "70/30 Bamboe/Katoen",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "50/50 Tencel/Katoen",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "50/50 Tencel/Katoen",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "80/20 Polyester/Viscose",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "80/20 Polyester/Viscose",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "60/40 Nylon/Spandex",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "60/40 Nylon/Spandex",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "55/45 Modal/Polyester",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "55/45 Modal/Polyester",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "90/10 Wol/Kasjmier",
+    "Wassen": "30°C fijnwas",
+    "Symbool_Wassen": "🧺30",
+    "Drogen": "Niet in droger",
+    "Symbool_Drogen": "🚫🌀",
+    "Strijken": "Lage temperatuur",
+    "Symbool_Strijken": "🧲↓",
+    "gs1:materialComposition": "90/10 Wol/Kasjmier",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "30°C fijnwas",
+        "symbol": "🧺30"
+      },
+      "drying": {
+        "instruction": "Niet in droger",
+        "symbol": "🚫🌀"
+      },
+      "ironing": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🧲↓"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "85/15 Wol/Alpaca",
+    "Wassen": "30°C fijnwas",
+    "Symbool_Wassen": "🧺30",
+    "Drogen": "Niet in droger",
+    "Symbool_Drogen": "🚫🌀",
+    "Strijken": "Lage temperatuur",
+    "Symbool_Strijken": "🧲↓",
+    "gs1:materialComposition": "85/15 Wol/Alpaca",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "30°C fijnwas",
+        "symbol": "🧺30"
+      },
+      "drying": {
+        "instruction": "Niet in droger",
+        "symbol": "🚫🌀"
+      },
+      "ironing": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🧲↓"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "80/20 Acryl/Wol",
+    "Wassen": "30°C fijnwas",
+    "Symbool_Wassen": "🧺30",
+    "Drogen": "Niet in droger",
+    "Symbool_Drogen": "🚫🌀",
+    "Strijken": "Lage temperatuur",
+    "Symbool_Strijken": "🧲↓",
+    "gs1:materialComposition": "80/20 Acryl/Wol",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "30°C fijnwas",
+        "symbol": "🧺30"
+      },
+      "drying": {
+        "instruction": "Niet in droger",
+        "symbol": "🚫🌀"
+      },
+      "ironing": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🧲↓"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "65/35 Polyester/Viscose",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "65/35 Polyester/Viscose",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "70/30 Linnen/Polyester",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "70/30 Linnen/Polyester",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "60/40 Ramie/Katoen",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "60/40 Ramie/Katoen",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "50/50 Cupro/Viscose",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "50/50 Cupro/Viscose",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "80/20 Kasjmier/Zijde",
+    "Wassen": "30°C fijnwas",
+    "Symbool_Wassen": "🧺30",
+    "Drogen": "Niet in droger",
+    "Symbool_Drogen": "🚫🌀",
+    "Strijken": "Lage temperatuur",
+    "Symbool_Strijken": "🧲↓",
+    "gs1:materialComposition": "80/20 Kasjmier/Zijde",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "30°C fijnwas",
+        "symbol": "🧺30"
+      },
+      "drying": {
+        "instruction": "Niet in droger",
+        "symbol": "🚫🌀"
+      },
+      "ironing": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🧲↓"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "90/10 Wol/Zijde",
+    "Wassen": "30°C fijnwas",
+    "Symbool_Wassen": "🧺30",
+    "Drogen": "Niet in droger",
+    "Symbool_Drogen": "🚫🌀",
+    "Strijken": "Lage temperatuur",
+    "Symbool_Strijken": "🧲↓",
+    "gs1:materialComposition": "90/10 Wol/Zijde",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "30°C fijnwas",
+        "symbol": "🧺30"
+      },
+      "drying": {
+        "instruction": "Niet in droger",
+        "symbol": "🚫🌀"
+      },
+      "ironing": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🧲↓"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "65/35 Polyester/Elastaan",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "65/35 Polyester/Elastaan",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "60/40 Acryl/Polyester",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "60/40 Acryl/Polyester",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "70/30 Wol/Nylon",
+    "Wassen": "30°C fijnwas",
+    "Symbool_Wassen": "🧺30",
+    "Drogen": "Niet in droger",
+    "Symbool_Drogen": "🚫🌀",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "70/30 Wol/Nylon",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "30°C fijnwas",
+        "symbol": "🧺30"
+      },
+      "drying": {
+        "instruction": "Niet in droger",
+        "symbol": "🚫🌀"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "50/50 Viscose/Nylon",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "50/50 Viscose/Nylon",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "75/25 Katoen/Nylon",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "75/25 Katoen/Nylon",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Lurex",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Lurex",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Coolmax",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Coolmax",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Microvezel",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Microvezel",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Polypropyleen",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Polypropyleen",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Kevlar",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Kevlar",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Aramide",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Aramide",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Dyneema",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Dyneema",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Latex",
+    "Wassen": "Handwas",
+    "Symbool_Wassen": "🖐️🧼",
+    "Drogen": "Niet in droger",
+    "Symbool_Drogen": "🚫🌀",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "Latex",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "Handwas",
+        "symbol": "🖐️🧼"
+      },
+      "drying": {
+        "instruction": "Niet in droger",
+        "symbol": "🚫🌀"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Rubber",
+    "Wassen": "Handwas",
+    "Symbool_Wassen": "🖐️🧼",
+    "Drogen": "Niet in droger",
+    "Symbool_Drogen": "🚫🌀",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "Rubber",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "Handwas",
+        "symbol": "🖐️🧼"
+      },
+      "drying": {
+        "instruction": "Niet in droger",
+        "symbol": "🚫🌀"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Neopreen",
+    "Wassen": "Handwas",
+    "Symbool_Wassen": "🖐️🧼",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "Neopreen",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "Handwas",
+        "symbol": "🖐️🧼"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Coconzijde",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Coconzijde",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Melkvezel",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Melkvezel",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "PLA-vezel",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "PLA-vezel",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Chitosan",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Chitosan",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Maïsvezel",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Maïsvezel",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Sisal",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Sisal",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Jute",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Jute",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Kurk",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Kurk",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Banana fiber",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Banana fiber",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "Ananasvezel",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "Ananasvezel",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "60/40 Katoen/Bamboe",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "60/40 Katoen/Bamboe",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "80/20 Katoen/Hennep",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "80/20 Katoen/Hennep",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "50/50 Tencel/Modal",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Lage temperatuur",
+    "Symbool_Strijken": "🧲↓",
+    "gs1:materialComposition": "50/50 Tencel/Modal",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🧲↓"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "65/35 Viscose/Polyester",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "65/35 Viscose/Polyester",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "70/30 Modal/Katoen",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Lage temperatuur",
+    "Symbool_Strijken": "🧲↓",
+    "gs1:materialComposition": "70/30 Modal/Katoen",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🧲↓"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "85/15 Tencel/Katoen",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "85/15 Tencel/Katoen",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "95/5 Wol/Elastaan",
+    "Wassen": "30°C fijnwas",
+    "Symbool_Wassen": "🧺30",
+    "Drogen": "Niet in droger",
+    "Symbool_Drogen": "🚫🌀",
+    "Strijken": "Lage temperatuur",
+    "Symbool_Strijken": "🧲↓",
+    "gs1:materialComposition": "95/5 Wol/Elastaan",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "30°C fijnwas",
+        "symbol": "🧺30"
+      },
+      "drying": {
+        "instruction": "Niet in droger",
+        "symbol": "🚫🌀"
+      },
+      "ironing": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🧲↓"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "90/10 Viscose/Spandex",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "90/10 Viscose/Spandex",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "60/40 Nylon/Katoen",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "60/40 Nylon/Katoen",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "80/20 Polyester/Nylon",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "80/20 Polyester/Nylon",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "75/25 Katoen/Polyester",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "75/25 Katoen/Polyester",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "65/35 Linnen/Katoen",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "65/35 Linnen/Katoen",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "70/30 Cupro/Modal",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Lage temperatuur",
+    "Symbool_Strijken": "🧲↓",
+    "gs1:materialComposition": "70/30 Cupro/Modal",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🧲↓"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "85/15 Polyester/Tencel",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "85/15 Polyester/Tencel",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "50/50 Bamboe/Modal",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Lage temperatuur",
+    "Symbool_Strijken": "🧲↓",
+    "gs1:materialComposition": "50/50 Bamboe/Modal",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🧲↓"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "90/10 Polyester/Spandex",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "90/10 Polyester/Spandex",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "55/45 Modal/Spandex",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Lage temperatuur",
+    "Symbool_Strijken": "🧲↓",
+    "gs1:materialComposition": "55/45 Modal/Spandex",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🧲↓"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "60/40 Wol/Katoen",
+    "Wassen": "30°C fijnwas",
+    "Symbool_Wassen": "🧺30",
+    "Drogen": "Niet in droger",
+    "Symbool_Drogen": "🚫🌀",
+    "Strijken": "Lage temperatuur",
+    "Symbool_Strijken": "🧲↓",
+    "gs1:materialComposition": "60/40 Wol/Katoen",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "30°C fijnwas",
+        "symbol": "🧺30"
+      },
+      "drying": {
+        "instruction": "Niet in droger",
+        "symbol": "🚫🌀"
+      },
+      "ironing": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🧲↓"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "80/20 Modal/Polyester",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Lage temperatuur",
+    "Symbool_Drogen": "🌀↓",
+    "Strijken": "Niet strijken",
+    "Symbool_Strijken": "🚫🧲",
+    "gs1:materialComposition": "80/20 Modal/Polyester",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Lage temperatuur",
+        "symbol": "🌀↓"
+      },
+      "ironing": {
+        "instruction": "Niet strijken",
+        "symbol": "🚫🧲"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  },
+  {
+    "Materiaal": "50/50 Tencel/Viscose",
+    "Wassen": "40°C normaal",
+    "Symbool_Wassen": "🧺40",
+    "Drogen": "Hangend drogen",
+    "Symbool_Drogen": "📍🌬️",
+    "Strijken": "Gemiddelde temperatuur",
+    "Symbool_Strijken": "🧲⬆️",
+    "gs1:materialComposition": "50/50 Tencel/Viscose",
+    "gs1:careInstructions": {
+      "washing": {
+        "instruction": "40°C normaal",
+        "symbol": "🧺40"
+      },
+      "drying": {
+        "instruction": "Hangend drogen",
+        "symbol": "📍🌬️"
+      },
+      "ironing": {
+        "instruction": "Gemiddelde temperatuur",
+        "symbol": "🧲⬆️"
+      }
+    },
+    "gs1:gpcCategoryCode": "53101500",
+    "gs1:productType": "TextileMaterial"
+  }
+]

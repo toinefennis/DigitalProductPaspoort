@@ -52,6 +52,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Serve uploaded files
   app.use("/uploads", express.static(uploadDir));
 
+  // Load material care data
+  const materialCareData = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'server', 'material-care-data.json'), 'utf8'));
+
+  // Get material care instructions
+  app.get("/api/materials", async (req, res) => {
+    try {
+      res.json(materialCareData);
+    } catch (error) {
+      console.error("Error fetching materials:", error);
+      res.status(500).json({ message: "Failed to fetch materials" });
+    }
+  });
+
+  // Get care instructions for specific material
+  app.get("/api/materials/:material/care", async (req, res) => {
+    try {
+      const materialName = decodeURIComponent(req.params.material);
+      const material = materialCareData.find(m => 
+        m.Materiaal.toLowerCase() === materialName.toLowerCase()
+      );
+      
+      if (!material) {
+        return res.status(404).json({ message: "Material not found" });
+      }
+      
+      res.json(material["gs1:careInstructions"]);
+    } catch (error) {
+      console.error("Error fetching care instructions:", error);
+      res.status(500).json({ message: "Failed to fetch care instructions" });
+    }
+  });
+
   // Photo upload endpoint with compression
   app.post("/api/upload/photo", upload.single("photo"), async (req, res) => {
     try {

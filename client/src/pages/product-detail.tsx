@@ -44,6 +44,8 @@ export default function ProductDetail() {
   const [isEditing, setIsEditing] = useState(false);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [materials, setMaterials] = useState<any[]>([]);
+  const [careInstructions, setCareInstructions] = useState<any>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
@@ -54,6 +56,46 @@ export default function ProductDetail() {
     queryKey: gtin ? [`/api/products/gtin/${gtin}`] : [`/api/products/${productId}`],
     enabled: !!(productId || gtin),
   });
+
+  // Fetch materials on component mount
+  useEffect(() => {
+    const fetchMaterials = async () => {
+      try {
+        const response = await fetch('/api/materials');
+        if (response.ok) {
+          const materialsData = await response.json();
+          setMaterials(materialsData);
+        }
+      } catch (error) {
+        console.error('Error fetching materials:', error);
+      }
+    };
+    fetchMaterials();
+  }, []);
+
+  // Handle material change to auto-fill washing instructions
+  const handleMaterialChange = async (materialName: string) => {
+    try {
+      const response = await fetch(`/api/materials/${encodeURIComponent(materialName)}/care`);
+      if (response.ok) {
+        const careData = await response.json();
+        setCareInstructions(careData);
+        
+        // Auto-fill washing instructions in form
+        const washingInstruction = `${careData.washing.instruction}, ${careData.drying.instruction}, ${careData.ironing.instruction}`;
+        editForm.setValue('washingInstructions', washingInstruction);
+      }
+    } catch (error) {
+      console.error('Error fetching care instructions:', error);
+    }
+  };
+
+  // Load care instructions when product loads
+  useEffect(() => {
+    if (product?.material) {
+      handleMaterialChange(product.material);
+    }
+  }, [product?.material]);
 
   const editForm = useForm<EditFormData>({
     resolver: zodResolver(editFormSchema),
@@ -373,11 +415,27 @@ export default function ProductDetail() {
 
               <div>
                 <Label htmlFor="material">Hoofdmateriaal</Label>
-                <Input
-                  id="material"
-                  {...editForm.register("material")}
-                  placeholder="Bijv. 80% Gerecycled Polyester, 20% Katoen"
-                />
+                <Select 
+                  onValueChange={(value) => {
+                    editForm.setValue("material", value);
+                    handleMaterialChange(value);
+                  }} 
+                  value={editForm.watch("material") || ""}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecteer materiaal" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {materials.map((material, index) => (
+                      <SelectItem key={index} value={material.Materiaal}>
+                        {material.Materiaal}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <div className="text-xs text-gray-500 mt-1">
+                  Wasinstructies worden automatisch ingevuld op basis van materiaal
+                </div>
               </div>
 
               <div>
@@ -661,6 +719,24 @@ export default function ProductDetail() {
                           <span className="text-sm font-medium text-gray-700">Wasinstructies:</span>
                         </div>
                         <p className="text-sm text-gray-600 ml-6">{product.washingInstructions}</p>
+                        
+                        {/* Care symbols based on material */}
+                        {product.material && careInstructions && (
+                          <div className="ml-6 mt-2">
+                            <span className="text-xs font-medium text-gray-500 block mb-1">Verzorgingssymbolen:</span>
+                            <div className="flex space-x-3 text-lg">
+                              <span title={careInstructions.washing.instruction}>
+                                {careInstructions.washing.symbol}
+                              </span>
+                              <span title={careInstructions.drying.instruction}>
+                                {careInstructions.drying.symbol}
+                              </span>
+                              <span title={careInstructions.ironing.instruction}>
+                                {careInstructions.ironing.symbol}
+                              </span>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>

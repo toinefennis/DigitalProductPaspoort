@@ -8,6 +8,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import session from "express-session";
+import sharp from "sharp";
 
 // Configure multer for file uploads
 const uploadDir = path.join(process.cwd(), "uploads");
@@ -51,15 +52,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Serve uploaded files
   app.use("/uploads", express.static(uploadDir));
 
-  // Photo upload endpoint
+  // Photo upload endpoint with compression
   app.post("/api/upload/photo", upload.single("photo"), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ message: "No photo uploaded" });
       }
 
-      const photoUrl = `/uploads/${req.file.filename}`;
-      console.log("Photo uploaded successfully:", photoUrl);
+      const originalPath = req.file.path;
+      const compressedFilename = `compressed-${req.file.filename}`;
+      const compressedPath = path.join(uploadDir, compressedFilename);
+
+      // Compress image to max 2MB
+      let quality = 85;
+      let compressedSize = 0;
+      const maxSize = 2 * 1024 * 1024; // 2MB
+
+      do {
+        await sharp(originalPath)
+          .resize(1920, 1920, { 
+            fit: 'inside', 
+            withoutEnlargement: true 
+          })
+          .jpeg({ 
+            quality: quality,
+            progressive: true 
+          })
+          .toFile(compressedPath);
+
+        const stats = fs.statSync(compressedPath);
+        compressedSize = stats.size;
+        
+        if (compressedSize > maxSize && quality > 20) {
+          quality -= 10;
+          fs.unlinkSync(compressedPath); // Remove the previous attempt
+        }
+      } while (compressedSize > maxSize && quality > 20);
+
+      // Remove original file
+      fs.unlinkSync(originalPath);
+
+      const photoUrl = `/uploads/${compressedFilename}`;
+      console.log(`Photo compressed from ${req.file.size} to ${compressedSize} bytes (${Math.round(compressedSize / 1024)}KB)`);
       res.json({ url: photoUrl });
     } catch (error) {
       console.error("Error uploading photo:", error);

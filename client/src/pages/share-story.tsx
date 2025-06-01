@@ -146,7 +146,10 @@ export default function ShareStory() {
   });
 
   const onSubmit = (data: StoryFormData) => {
-    // Process tags - keep them as a comma-separated string for the form submission
+    // Add productId if available
+    if (productId) {
+      data.productId = parseInt(productId);
+    }
     createStoryMutation.mutate(data);
   };
 
@@ -273,14 +276,34 @@ export default function ShareStory() {
           </Button>
         </div>
 
+        {/* Product Information */}
+        {product && (
+          <Card className="mb-4">
+            <CardHeader className="pb-3">
+              <div className="flex items-center space-x-3">
+                <Package className="h-5 w-5 text-gwc-primary" />
+                <div>
+                  <CardTitle className="text-lg">Gekoppeld aan Product</CardTitle>
+                  <p className="text-sm text-gray-600">
+                    {product.name} • GTIN: {product.gtin}
+                  </p>
+                </div>
+              </div>
+            </CardHeader>
+          </Card>
+        )}
+
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <MessageCircle className="h-5 w-5" />
-              <span>Deel je circulaire verhaal</span>
+              <span>{product ? "Deel je product ervaring" : "Deel je circulaire verhaal"}</span>
             </CardTitle>
             <p className="text-sm text-gray-600">
-              Vertel anderen over je ervaring met circulaire economie, hergebruik, of duurzaamheid.
+              {product 
+                ? "Vertel anderen over je ervaring met dit product - reparaties, gebruik, tips of duurzame toepassingen."
+                : "Vertel anderen over je ervaring met circulaire economie, hergebruik, of duurzaamheid."
+              }
             </p>
           </CardHeader>
           <CardContent>

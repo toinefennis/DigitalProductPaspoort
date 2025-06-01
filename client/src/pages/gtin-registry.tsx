@@ -897,6 +897,38 @@ export default function GtinRegistry() {
                         </div>
                       </div>
 
+                      {/* CO2 Calculation Display */}
+                      {co2Calculation && (
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                          <div className="flex items-center gap-2 mb-3">
+                            <Leaf className="h-5 w-5 text-blue-600" />
+                            <h4 className="font-medium text-blue-900">CO2 Voetafdruk Berekening</h4>
+                          </div>
+                          <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                              <span className="text-blue-700 font-medium">Totaal CO2:</span>
+                              <span className="ml-2 text-blue-900">{co2Calculation.total_co2_kg} kg CO2e</span>
+                            </div>
+                            <div>
+                              <span className="text-blue-700 font-medium">Per kg product:</span>
+                              <span className="ml-2 text-blue-900">{co2Calculation.co2_per_kg} kg CO2e/kg</span>
+                            </div>
+                          </div>
+                          {co2Calculation.components && (
+                            <div className="mt-3">
+                              <span className="text-blue-700 font-medium text-sm">Materiaal breakdown:</span>
+                              <div className="mt-1 space-y-1">
+                                {co2Calculation.components.map((comp: any, idx: number) => (
+                                  <div key={idx} className="text-xs text-blue-600">
+                                    {comp.material}: {comp.co2_contribution} kg CO2e ({comp.percentage}%)
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
                       <div>
                         <Label htmlFor="recycledContent">Gerecycled Materiaal (JSON)</Label>
                         <Textarea

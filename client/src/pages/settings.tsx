@@ -6,12 +6,14 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { Settings, Database, Camera, Bell, Info } from "lucide-react";
+import { Settings, Database, Camera, Bell, Info, Download, LogIn } from "lucide-react";
+import { useLocation } from "wouter";
 
 export default function SettingsPage() {
   const [notifications, setNotifications] = useState(true);
   const [autoBackup, setAutoBackup] = useState(false);
   const [cameraQuality, setCameraQuality] = useState("high");
+  const [, setLocation] = useLocation();
   const { toast } = useToast();
 
   const handleSaveSettings = () => {
@@ -82,8 +84,13 @@ export default function SettingsPage() {
           </div>
           <Separator />
           <div className="space-y-2">
-            <Button variant="outline" className="w-full">
-              Exporteer Alle Gegevens
+            <Button 
+              variant="outline" 
+              className="w-full"
+              onClick={() => setLocation("/export")}
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Exporteer Database
             </Button>
             <Button variant="outline" className="w-full">
               Importeer Gegevens

@@ -30,6 +30,8 @@ function Router() {
       <Route path="/users" component={Users} />
       <Route path="/notifications" component={Notifications} />
       <Route path="/loans" component={LoanOverview} />
+      <Route path="/export" component={Export} />
+      <Route path="/login" component={Login} />
       <Route path="/product/:id" component={ProductDetail} />
       <Route path="/product/gtin/:gtin" component={ProductDetail} />
       <Route path="/add-product" component={AddProduct} />

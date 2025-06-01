@@ -273,7 +273,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const products = await storage.getAllProducts();
           const events = await storage.getRecentEvents(1000);
           const users = await storage.getAllUsers();
-          data = { products, events, users };
+          data = [
+            { table: "products", data: products },
+            { table: "events", data: events },
+            { table: "users", data: users }
+          ];
           filename = "full_database";
           break;
         default:

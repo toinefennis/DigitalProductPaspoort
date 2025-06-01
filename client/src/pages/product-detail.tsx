@@ -42,6 +42,8 @@ export default function ProductDetail() {
   const params = useParams();
   const [, setLocation] = useLocation();
   const [isEditing, setIsEditing] = useState(false);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
@@ -75,6 +77,33 @@ export default function ProductDetail() {
     },
   });
 
+  // Photo upload handler
+  const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.size > 10 * 1024 * 1024) { // 10MB limit
+        toast({
+          title: "Bestand te groot",
+          description: "De foto mag maximaal 10MB zijn.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setPhotoFile(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPhotoPreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removePhoto = () => {
+    setPhotoFile(null);
+    setPhotoPreview(null);
+  };
+
   const updateMutation = useMutation({
     mutationFn: async (data: EditFormData) => {
       // Process material properties
@@ -86,8 +115,29 @@ export default function ProductDetail() {
         certifications: data.materialCertifications ? data.materialCertifications.split(',').map(c => c.trim()).filter(c => c) : undefined,
       };
 
+      // Upload photo if provided
+      let photoUrl = undefined;
+      if (photoFile) {
+        const formData = new FormData();
+        formData.append('photo', photoFile);
+
+        const photoResponse = await fetch('/api/upload/photo', {
+          method: 'POST',
+          body: formData,
+          credentials: 'include',
+        });
+
+        if (!photoResponse.ok) {
+          throw new Error('Foto upload mislukt');
+        }
+
+        const photoResult = await photoResponse.json();
+        photoUrl = photoResult.url;
+      }
+
       const updateData = {
         ...data,
+        photo: photoUrl,
         materialProperties: Object.keys(materialProperties).some(key => materialProperties[key as keyof typeof materialProperties]) 
           ? materialProperties 
           : undefined,
@@ -429,6 +479,44 @@ export default function ProductDetail() {
                   className="text-sm"
                 />
               </div>
+            </div>
+
+            {/* Photo Upload Section */}
+            <div className="space-y-3 border-t pt-4">
+              <Label className="text-sm font-medium">Product foto toevoegen</Label>
+              
+              {photoPreview ? (
+                <div className="relative">
+                  <img 
+                    src={photoPreview} 
+                    alt="Foto preview" 
+                    className="w-full h-40 object-cover rounded-lg border"
+                  />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    className="absolute top-2 right-2"
+                    onClick={removePhoto}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ) : (
+                <div className="border-2 border-dashed border-gray-200 rounded-lg p-6 text-center">
+                  <div className="space-y-2">
+                    <div className="text-gray-500 text-sm">
+                      Klik om een foto toe te voegen
+                    </div>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={handlePhotoChange}
+                      className="cursor-pointer"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Save/Cancel buttons */}

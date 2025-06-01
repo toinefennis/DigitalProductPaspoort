@@ -304,7 +304,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           res.send('No data available');
         }
       } else if (format === "excel") {
-        const XLSX = require('xlsx');
+        const XLSX = await import('xlsx');
         
         // Helper functions for GS1 mapping
         const mapEventTypeToBusinessStep = (eventType: string): string => {
@@ -332,7 +332,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
 
         // Create workbook for GS1-compliant export
-        const wb = XLSX.utils.book_new();
+        const wb = XLSX.default.utils.book_new();
         
         if (type === "products" || type === "full") {
           const products = type === "products" ? data : (data.find((d: any) => d.table === "products")?.data || []);
@@ -355,7 +355,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             'GLN of Information Provider': process.env.GS1_SANDBOX_GLN || '8720796166279'
           }));
           
-          const ws1 = XLSX.utils.json_to_sheet(gs1ProductData);
+          const ws1 = XLSX.default.utils.json_to_sheet(gs1ProductData);
           
           // Set column widths
           ws1['!cols'] = [
@@ -364,7 +364,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             { wch: 12 }, { wch: 18 }, { wch: 15 }, { wch: 20 }
           ];
           
-          XLSX.utils.book_append_sheet(wb, ws1, 'GS1 Product Information');
+          XLSX.default.utils.book_append_sheet(wb, ws1, 'GS1 Product Information');
         }
         
         if (type === "events" || type === "full") {
@@ -385,13 +385,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
             'Business Location': 'GWC Repair Cafe'
           }));
           
-          const ws2 = XLSX.utils.json_to_sheet(eventsData);
+          const ws2 = XLSX.default.utils.json_to_sheet(eventsData);
           ws2['!cols'] = [
             { wch: 10 }, { wch: 15 }, { wch: 30 }, { wch: 20 }, { wch: 40 },
             { wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 20 }
           ];
           
-          XLSX.utils.book_append_sheet(wb, ws2, 'EPCIS Events');
+          XLSX.default.utils.book_append_sheet(wb, ws2, 'EPCIS Events');
         }
         
         if (type === "users" || type === "full") {
@@ -408,16 +408,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
             'Created Date': u.createdAt ? new Date(u.createdAt).toISOString().split('T')[0] : ''
           }));
           
-          const ws3 = XLSX.utils.json_to_sheet(usersData);
+          const ws3 = XLSX.default.utils.json_to_sheet(usersData);
           ws3['!cols'] = [
             { wch: 10 }, { wch: 20 }, { wch: 30 }, { wch: 15 }, { wch: 25 }, { wch: 15 }, { wch: 12 }
           ];
           
-          XLSX.utils.book_append_sheet(wb, ws3, 'Users');
+          XLSX.default.utils.book_append_sheet(wb, ws3, 'Users');
         }
         
         // Generate Excel buffer
-        const excelBuffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+        const excelBuffer = XLSX.default.write(wb, { type: 'buffer', bookType: 'xlsx' });
         
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', `attachment; filename="GS1-DPP-${filename}-${new Date().toISOString().split('T')[0]}.xlsx"`);

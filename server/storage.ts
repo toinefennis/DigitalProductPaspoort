@@ -33,10 +33,13 @@ export interface IStorage {
   
   // User operations
   createUser(user: InsertUser): Promise<User>;
+  getUserById(userId: number): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   getAllUsers(): Promise<User[]>;
+  updateUser(userId: number, updates: Partial<InsertUser>): Promise<User>;
   updateUserRole(userId: number, role: string): Promise<User>;
+  changeUserPassword(userId: number, currentPassword: string, newPassword: string): Promise<boolean>;
   
   // Notification operations
   createNotification(notification: InsertNotification): Promise<Notification>;

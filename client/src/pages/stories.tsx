@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useLocation } from "wouter";
+import { useLocation, useRoute } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -62,7 +62,7 @@ interface Story {
 }
 
 export default function Stories() {
-  const [location, setLocation] = useLocation();
+  const [location, navigate] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTag, setSelectedTag] = useState("all");
   const [sortBy, setSortBy] = useState("recent");
@@ -312,7 +312,7 @@ export default function Stories() {
             </p>
           </div>
           <Button
-            onClick={() => setLocation("/share-story")}
+            onClick={() => navigate("/share-story")}
             className="bg-gwc-primary hover:bg-gwc-primary/90"
           >
             <Plus className="h-4 w-4 mr-2" />
@@ -378,7 +378,7 @@ export default function Stories() {
                   Wees de eerste om een circulair verhaal te delen!
                 </p>
                 <Button
-                  onClick={() => setLocation("/share-story")}
+                  onClick={() => navigate("/share-story")}
                   className="bg-gwc-primary hover:bg-gwc-primary/90"
                 >
                   <Plus className="h-4 w-4 mr-2" />
@@ -503,7 +503,7 @@ export default function Stories() {
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => setLocation(`/products/${story.product?.id}`)}
+                          onClick={() => navigate(`/products/${story.product?.id}`)}
                           className="border-blue-300 text-blue-700 hover:bg-blue-100"
                         >
                           Bekijk Product

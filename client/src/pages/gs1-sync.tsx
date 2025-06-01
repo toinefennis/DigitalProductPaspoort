@@ -20,9 +20,11 @@ import {
   Link as LinkIcon,
   AlertTriangle,
   Download,
-  Upload
+  Upload,
+  Lock
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { apiRequest } from "@/lib/queryClient";
 import { formatDistanceToNow } from "date-fns";
 import { nl } from "date-fns/locale";
@@ -54,6 +56,32 @@ export default function GS1Sync() {
   const [autoSync, setAutoSync] = useState(true);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { user: currentUser } = useAuth();
+
+  // Check if user has permission to access GS1 sync
+  const hasGS1Access = (currentUser as any)?.role === 'admin';
+
+  if (!hasGS1Access) {
+    return (
+      <div className="h-full flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardContent className="pt-6">
+            <div className="text-center">
+              <Lock className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <h2 className="text-lg font-medium mb-2">Geen toegang</h2>
+              <p className="text-gray-600 mb-4">
+                Je hebt geen toestemming om GS1 synchronisaties te beheren.
+                Alleen systeembeheerders hebben toegang tot deze functie.
+              </p>
+              <p className="text-xs text-gray-500">
+                GS1 integraties bevatten gevoelige bedrijfsinformatie en zijn beperkt tot beheerders.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   const { data: partners, isLoading: partnersLoading } = useQuery<GS1Partner[]>({
     queryKey: ["/api/gs1/partners"],

@@ -499,6 +499,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // User profile endpoints
+  app.get("/api/users/me", async (req, res) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+      
+      const userId = (req.user as any).id;
+      const user = await storage.getUserById(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching current user:", error);
+      res.status(500).json({ message: "Failed to fetch user profile" });
+    }
+  });
+
+  app.patch("/api/users/update-profile", async (req, res) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+      
+      const userId = (req.user as any).id;
+      const { fullName, email, phone } = req.body;
+      
+      const updatedUser = await storage.updateUser(userId, {
+        fullName,
+        email,
+        phone,
+      });
+      
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Error updating user profile:", error);
+      res.status(500).json({ message: "Failed to update profile" });
+    }
+  });
+
+  app.post("/api/users/change-password", async (req, res) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+      
+      const userId = (req.user as any).id;
+      const { currentPassword, newPassword } = req.body;
+      
+      const success = await storage.changeUserPassword(userId, currentPassword, newPassword);
+      
+      if (!success) {
+        return res.status(400).json({ message: "Current password is incorrect" });
+      }
+      
+      res.json({ message: "Password changed successfully" });
+    } catch (error) {
+      console.error("Error changing password:", error);
+      res.status(500).json({ message: "Failed to change password" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

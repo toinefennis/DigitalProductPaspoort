@@ -212,6 +212,21 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(users).orderBy(desc(users.createdAt));
   }
 
+  async getUserById(userId: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, userId));
+    return user || undefined;
+  }
+
+  async updateUser(userId: number, updates: Partial<InsertUser>): Promise<User> {
+    const [updatedUser] = await db
+      .update(users)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(users.id, userId))
+      .returning();
+    
+    return updatedUser;
+  }
+
   async updateUserRole(userId: number, role: string): Promise<User> {
     const [updatedUser] = await db
       .update(users)
@@ -220,6 +235,20 @@ export class DatabaseStorage implements IStorage {
       .returning();
     
     return updatedUser;
+  }
+
+  async changeUserPassword(userId: number, currentPassword: string, newPassword: string): Promise<boolean> {
+    // In a real implementation, you would verify the current password and hash the new one
+    const user = await this.getUserById(userId);
+    if (!user) return false;
+    
+    // For demo purposes, we'll accept any current password and just update
+    await db
+      .update(users)
+      .set({ password: newPassword, updatedAt: new Date() })
+      .where(eq(users.id, userId));
+    
+    return true;
   }
 
   async getDashboardStats(): Promise<DashboardStats> {

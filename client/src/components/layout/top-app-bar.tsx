@@ -1,6 +1,7 @@
 import { Bell, User, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
+import { UserNav } from "@/components/user-nav";
 
 export function TopAppBar() {
   const [, setLocation] = useLocation();

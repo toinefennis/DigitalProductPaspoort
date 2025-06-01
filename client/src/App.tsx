@@ -21,6 +21,8 @@ import Export from "@/pages/export";
 import Login from "@/pages/login";
 import GS1Sync from "@/pages/gs1-sync";
 import Profile from "@/pages/profile";
+import Stories from "@/pages/stories";
+import ShareStory from "@/pages/share-story";
 import NotFound from "@/pages/not-found";
 import { useAuth } from "@/hooks/useAuth";
 

@@ -682,6 +682,80 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Stories endpoints
+  app.get("/api/stories", async (req, res) => {
+    try {
+      const { search, tag, sort } = req.query;
+      
+      // For now, return mock data until database is pushed
+      const mockStories = [
+        {
+          id: 1,
+          title: "Mijn eerste circulaire project",
+          content: "Ik heb een oude stoel gerestaureerd en er een prachtig meubelstuk van gemaakt. Het heeft me geleerd hoe waardevol hergebruik kan zijn.",
+          authorName: "Jan van der Berg",
+          authorId: "1",
+          photos: [],
+          tags: ["hergebruik", "meubels", "diy"],
+          likes: 12,
+          comments: 3,
+          views: 45,
+          isPublic: true,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: 2,
+          title: "Van afval naar kunst",
+          content: "Met oude materialen van het RepairCafé heb ik een kunstwerk gemaakt. Het laat zien dat afval eigenlijk een bron van creativiteit kan zijn.",
+          authorName: "Maria Jansen",
+          authorId: "2",
+          photos: [],
+          tags: ["kunst", "afval", "creativiteit"],
+          likes: 8,
+          comments: 1,
+          views: 23,
+          isPublic: true,
+          createdAt: new Date(Date.now() - 86400000).toISOString(),
+          updatedAt: new Date(Date.now() - 86400000).toISOString(),
+        }
+      ];
+      
+      res.json(mockStories);
+    } catch (error) {
+      console.error("Error fetching stories:", error);
+      res.status(500).json({ message: "Failed to fetch stories" });
+    }
+  });
+
+  app.post("/api/stories", async (req, res) => {
+    try {
+      const sessionUser = (req as any).session?.user;
+      if (!sessionUser) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      // For now, return success response until database is pushed
+      const mockStory = {
+        id: Math.floor(Math.random() * 1000),
+        ...req.body,
+        authorName: sessionUser.fullName || sessionUser.username,
+        authorId: sessionUser.id.toString(),
+        photos: [],
+        likes: 0,
+        comments: 0,
+        views: 0,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      res.status(201).json(mockStory);
+    } catch (error) {
+      console.error("Error creating story:", error);
+      res.status(500).json({ message: "Failed to create story" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

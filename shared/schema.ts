@@ -202,6 +202,31 @@ export const gs1ProductMappingsRelations = relations(gs1ProductMappings, ({ one 
   }),
 }));
 
+// Stories table for user-generated content
+export const stories = pgTable("stories", {
+  id: serial("id").primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  content: text("content").notNull(),
+  authorName: varchar("author_name", { length: 255 }).notNull(),
+  authorId: varchar("author_id", { length: 50 }).notNull(),
+  photos: jsonb("photos").default([]),
+  tags: jsonb("tags").default([]),
+  likes: integer("likes").default(0),
+  comments: integer("comments").default(0),
+  views: integer("views").default(0),
+  isPublic: boolean("is_public").default(true),
+  productId: integer("product_id"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const storiesRelations = relations(stories, ({ one }) => ({
+  product: one(products, {
+    fields: [stories.productId],
+    references: [products.id],
+  }),
+}));
+
 export const insertProductSchema = createInsertSchema(products).omit({
   id: true,
   createdAt: true,
@@ -224,6 +249,15 @@ export const insertNotificationSchema = createInsertSchema(notifications).omit({
   createdAt: true,
 });
 
+export const insertStorySchema = createInsertSchema(stories).omit({
+  id: true,
+  likes: true,
+  comments: true,
+  views: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export type InsertProduct = z.infer<typeof insertProductSchema>;
 export type Product = typeof products.$inferSelect;
 export type InsertEvent = z.infer<typeof insertEventSchema>;
@@ -232,6 +266,8 @@ export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertNotification = z.infer<typeof insertNotificationSchema>;
 export type Notification = typeof notifications.$inferSelect;
+export type InsertStory = z.infer<typeof insertStorySchema>;
+export type Story = typeof stories.$inferSelect;
 
 // Statistics type for dashboard
 export type DashboardStats = {

@@ -81,10 +81,10 @@ export default function ProductDetail() {
   const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      if (file.size > 10 * 1024 * 1024) { // 10MB limit
+      if (file.size > 15 * 1024 * 1024) { // 15MB limit
         toast({
           title: "Bestand te groot",
-          description: "De foto mag maximaal 10MB zijn.",
+          description: "De foto mag maximaal 15MB zijn.",
           variant: "destructive",
         });
         return;

@@ -312,6 +312,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // GS1 Sync API endpoints
+  app.get("/api/gs1/partners", async (req, res) => {
+    try {
+      const { gs1Service } = await import("./gs1-service");
+      const partners = await gs1Service.getAllPartners();
+      res.json(partners);
+    } catch (error) {
+      console.error("Error fetching GS1 partners:", error);
+      res.status(500).json({ message: "Failed to fetch GS1 partners" });
+    }
+  });
+
+  app.post("/api/gs1/partners", async (req, res) => {
+    try {
+      const { gs1Service } = await import("./gs1-service");
+      const partner = await gs1Service.addPartner(req.body);
+      res.status(201).json(partner);
+    } catch (error) {
+      console.error("Error adding GS1 partner:", error);
+      res.status(500).json({ message: "Failed to add GS1 partner" });
+    }
+  });
+
+  app.patch("/api/gs1/partners/:id", async (req, res) => {
+    try {
+      const { gs1Service } = await import("./gs1-service");
+      const partner = await gs1Service.updatePartner(req.params.id, req.body);
+      res.json(partner);
+    } catch (error) {
+      console.error("Error updating GS1 partner:", error);
+      res.status(500).json({ message: "Failed to update GS1 partner" });
+    }
+  });
+
+  app.post("/api/gs1/sync", async (req, res) => {
+    try {
+      const { gs1Service } = await import("./gs1-service");
+      const { partnerId } = req.body;
+      const eventId = await gs1Service.syncPartner(partnerId);
+      res.json({ eventId, message: "Sync started successfully" });
+    } catch (error) {
+      console.error("Error starting GS1 sync:", error);
+      res.status(500).json({ message: "Failed to start sync" });
+    }
+  });
+
+  app.get("/api/gs1/sync-events", async (req, res) => {
+    try {
+      const { gs1Service } = await import("./gs1-service");
+      const events = await gs1Service.getSyncEvents();
+      res.json(events);
+    } catch (error) {
+      console.error("Error fetching sync events:", error);
+      res.status(500).json({ message: "Failed to fetch sync events" });
+    }
+  });
+
+  app.get("/api/gs1/sync-status", async (req, res) => {
+    try {
+      const { gs1Service } = await import("./gs1-service");
+      const status = gs1Service.getSyncStatus();
+      res.json(status);
+    } catch (error) {
+      console.error("Error fetching sync status:", error);
+      res.status(500).json({ message: "Failed to fetch sync status" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

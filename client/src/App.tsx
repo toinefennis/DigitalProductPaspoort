@@ -18,6 +18,7 @@ import Notifications from "@/pages/notifications";
 import LoanOverview from "@/pages/loan-overview";
 import Export from "@/pages/export";
 import Login from "@/pages/login";
+import GS1Sync from "@/pages/gs1-sync";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -32,6 +33,7 @@ function Router() {
       <Route path="/loans" component={LoanOverview} />
       <Route path="/export" component={Export} />
       <Route path="/login" component={Login} />
+      <Route path="/gs1-sync" component={GS1Sync} />
       <Route path="/product/:id" component={ProductDetail} />
       <Route path="/product/gtin/:gtin" component={ProductDetail} />
       <Route path="/add-product" component={AddProduct} />

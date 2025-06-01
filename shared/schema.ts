@@ -132,6 +132,76 @@ export const userSessionsRelations = relations(userSessions, ({ one }) => ({
   }),
 }));
 
+// GS1 Partners table for inventory synchronization
+export const gs1Partners = pgTable("gs1_partners", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  gln: varchar("gln", { length: 13 }).notNull().unique(), // Global Location Number
+  endpoint: varchar("endpoint", { length: 500 }).notNull(),
+  status: varchar("status", { length: 20 }).notNull().default("disconnected"), // 'connected', 'disconnected', 'error'
+  syncEnabled: boolean("sync_enabled").default(true),
+  lastSync: timestamp("last_sync"),
+  apiKey: varchar("api_key", { length: 255 }),
+  certificate: text("certificate"), // GDSN certificate
+  settings: jsonb("settings").$type<{
+    syncInterval?: number;
+    syncTypes?: string[];
+    autoRetry?: boolean;
+  }>().default({}),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// GS1 Sync Events table for tracking synchronization activities
+export const gs1SyncEvents = pgTable("gs1_sync_events", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  partnerId: varchar("partner_id", { length: 36 }).references(() => gs1Partners.id).notNull(),
+  type: varchar("type", { length: 50 }).notNull(), // 'inventory_update', 'product_master', 'trade_item'
+  status: varchar("status", { length: 20 }).notNull(), // 'success', 'failed', 'pending'
+  details: text("details"),
+  recordsProcessed: integer("records_processed"),
+  errorMessage: text("error_message"),
+  startedAt: timestamp("started_at").notNull(),
+  completedAt: timestamp("completed_at"),
+  metadata: jsonb("metadata").$type<{
+    productCount?: number;
+    updateType?: string;
+    sourceSystem?: string;
+  }>().default({}),
+});
+
+// GS1 Product Mappings table for tracking GS1 identifiers
+export const gs1ProductMappings = pgTable("gs1_product_mappings", {
+  id: serial("id").primaryKey(),
+  productId: integer("product_id").references(() => products.id).notNull(),
+  gtin: varchar("gtin", { length: 14 }).notNull(),
+  gln: varchar("gln", { length: 13 }).notNull(), // Partner GLN
+  externalId: varchar("external_id", { length: 255 }), // Partner's internal ID
+  lastSynced: timestamp("last_synced"),
+  syncStatus: varchar("sync_status", { length: 20 }).default("pending"), // 'synced', 'pending', 'error'
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Relations for GS1 tables
+export const gs1PartnersRelations = relations(gs1Partners, ({ many }) => ({
+  syncEvents: many(gs1SyncEvents),
+}));
+
+export const gs1SyncEventsRelations = relations(gs1SyncEvents, ({ one }) => ({
+  partner: one(gs1Partners, {
+    fields: [gs1SyncEvents.partnerId],
+    references: [gs1Partners.id],
+  }),
+}));
+
+export const gs1ProductMappingsRelations = relations(gs1ProductMappings, ({ one }) => ({
+  product: one(products, {
+    fields: [gs1ProductMappings.productId],
+    references: [products.id],
+  }),
+}));
+
 export const insertProductSchema = createInsertSchema(products).omit({
   id: true,
   createdAt: true,

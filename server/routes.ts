@@ -770,6 +770,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { id } = req.params;
       const { title, content, tags, isPublic } = req.body;
 
+      console.log("Update story request:", { id, title, content, tags, isPublic, userId: sessionUser.id });
+
+      if (!title || !content) {
+        return res.status(400).json({ message: "Title and content are required" });
+      }
+
       // Get the story to check ownership
       const stories = await storage.getAllStories();
       const story = stories.find(s => s.id === parseInt(id));
@@ -778,25 +784,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Story not found" });
       }
 
+      console.log("Found story:", { storyId: story.id, authorId: story.authorId, userId: sessionUser.id });
+
       // Check if user is the author or has moderation privileges
       const canEdit = story.authorId === sessionUser.id.toString() || 
                      sessionUser.role === 'admin' || 
                      sessionUser.role === 'manager';
 
       if (!canEdit) {
+        console.log("Permission denied:", { authorId: story.authorId, userId: sessionUser.id, role: sessionUser.role });
         return res.status(403).json({ message: "Insufficient permissions" });
       }
 
       // Process tags
       const processedTags = typeof tags === 'string' 
         ? tags.split(',').map((tag: string) => tag.trim()).filter(Boolean)
-        : tags || [];
+        : Array.isArray(tags) ? tags : [];
 
       const updates = {
-        title,
-        content,
+        title: title.trim(),
+        content: content.trim(),
         tags: processedTags,
-        isPublic: isPublic !== false,
+        isPublic: isPublic === true || isPublic === 'true',
       };
 
       const updatedStory = await storage.updateStory(parseInt(id), updates);

@@ -101,6 +101,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const fs = await import('fs');
       const path = await import('path');
+      const url = await import('url');
+      const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
       const co2MaterialData = JSON.parse(fs.readFileSync(path.join(__dirname, 'co2-material-data.json'), 'utf8'));
       let composition;
       

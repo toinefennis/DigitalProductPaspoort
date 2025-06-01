@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -22,7 +22,9 @@ import {
   MessageCircle,
   Eye,
   Plus,
-  Trash2
+  Trash2,
+  Package,
+  ArrowLeft
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
@@ -39,13 +41,24 @@ const storySchema = z.object({
 type StoryFormData = z.infer<typeof storySchema>;
 
 export default function ShareStory() {
-  const [location, setLocation] = useLocation();
+  const [location, navigate] = useLocation();
   const [selectedPhotos, setSelectedPhotos] = useState<File[]>([]);
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
   const [showShareOptions, setShowShareOptions] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user: currentUser } = useAuth();
+
+  // Parse URL parameters for product-linked stories
+  const urlParams = new URLSearchParams(location.split('?')[1] || '');
+  const productId = urlParams.get('productId');
+  const gtin = urlParams.get('gtin');
+
+  // Fetch product data if productId is provided
+  const { data: product } = useQuery({
+    queryKey: [`/api/products/${productId}`],
+    enabled: !!productId,
+  });
 
   const {
     register,

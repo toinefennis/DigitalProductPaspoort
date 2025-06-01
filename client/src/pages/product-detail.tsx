@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Tag, QrCode, Wrench, Clock, CheckCircle, Edit3, Save, X, Leaf, Globe, Droplets } from "lucide-react";
+import { ArrowLeft, Tag, QrCode, Wrench, Clock, CheckCircle, Edit3, Save, X, Leaf, Globe, Droplets, Share2 } from "lucide-react";
 import { EventTimeline } from "@/components/event-timeline";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -41,7 +41,7 @@ type EditFormData = z.infer<typeof editFormSchema>;
 
 export default function ProductDetail() {
   const params = useParams();
-  const [, setLocation] = useLocation();
+  const [, navigate] = useLocation();
   const [isEditing, setIsEditing] = useState(false);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
@@ -399,6 +399,17 @@ export default function ProductDetail() {
               Product Bewerken
             </>
           )}
+        </Button>
+        
+        {/* Share Product Story Button */}
+        <Button
+          variant="secondary"
+          size="sm"
+          className="w-full"
+          onClick={() => navigate(`/share-story?productId=${product.id}&gtin=${product.gtin}`)}
+        >
+          <Share2 className="h-4 w-4 mr-2" />
+          Deel Product Story
         </Button>
         
         {/* GTIN Registry Conversion Button (Manager/Admin only) */}

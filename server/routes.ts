@@ -820,9 +820,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
 
       console.log("Calling storage.updateStory with:", updates);
-      const updatedStory = await storage.updateStory(parseInt(id), updates);
-      console.log("Storage update successful:", updatedStory);
-      res.json(updatedStory);
+      
+      try {
+        const updatedStory = await storage.updateStory(parseInt(id), updates);
+        console.log("Storage update successful:", updatedStory);
+        res.json(updatedStory);
+      } catch (storageError) {
+        console.error("Storage error details:", storageError);
+        throw storageError;
+      }
     } catch (error) {
       console.error("Error updating story:", error);
       res.status(500).json({ message: "Failed to update story" });

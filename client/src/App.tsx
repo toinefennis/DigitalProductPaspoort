@@ -21,8 +21,26 @@ import Login from "@/pages/login";
 import GS1Sync from "@/pages/gs1-sync";
 import Profile from "@/pages/profile";
 import NotFound from "@/pages/not-found";
+import { useAuth } from "@/hooks/useAuth";
 
 function Router() {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gwc-primary mx-auto mb-4"></div>
+          <p>Laden...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Login />;
+  }
+
   return (
     <Switch>
       <Route path="/" component={Dashboard} />
@@ -33,7 +51,6 @@ function Router() {
       <Route path="/notifications" component={Notifications} />
       <Route path="/loans" component={LoanOverview} />
       <Route path="/export" component={Export} />
-      <Route path="/login" component={Login} />
       <Route path="/gs1-sync" component={GS1Sync} />
       <Route path="/profile" component={Profile} />
       <Route path="/product/:id" component={ProductDetail} />

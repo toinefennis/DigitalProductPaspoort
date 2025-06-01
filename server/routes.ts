@@ -51,6 +51,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Serve uploaded files
   app.use("/uploads", express.static(uploadDir));
 
+  // Photo upload endpoint
+  app.post("/api/upload/photo", upload.single("photo"), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No photo uploaded" });
+      }
+
+      const photoUrl = `/uploads/${req.file.filename}`;
+      console.log("Photo uploaded successfully:", photoUrl);
+      res.json({ url: photoUrl });
+    } catch (error) {
+      console.error("Error uploading photo:", error);
+      res.status(500).json({ message: "Failed to upload photo" });
+    }
+  });
+
   // Dashboard stats
   app.get("/api/dashboard/stats", async (req, res) => {
     try {

@@ -222,15 +222,27 @@ export default function ProductDetail() {
         >
           <ArrowLeft className="h-5 w-5" />
         </Button>
+      </div>
 
-        {/* Edit button overlay */}
+      {/* Edit Button */}
+      <div className="px-4 pt-4">
         <Button
-          variant="ghost"
-          size="icon"
-          className="absolute top-4 right-4 bg-black bg-opacity-50 text-white hover:bg-black hover:bg-opacity-70"
+          variant="outline"
+          size="sm"
+          className="w-full"
           onClick={() => setIsEditing(!isEditing)}
         >
-          {isEditing ? <X className="h-5 w-5" /> : <Edit3 className="h-5 w-5" />}
+          {isEditing ? (
+            <>
+              <X className="h-4 w-4 mr-2" />
+              Annuleren
+            </>
+          ) : (
+            <>
+              <Edit3 className="h-4 w-4 mr-2" />
+              Product Bewerken
+            </>
+          )}
         </Button>
       </div>
 

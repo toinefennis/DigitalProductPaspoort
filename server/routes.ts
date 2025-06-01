@@ -1094,6 +1094,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Link story to product
+  app.patch("/api/stories/:id/link-product", async (req, res) => {
+    try {
+      const storyId = parseInt(req.params.id);
+      const { productId } = req.body;
+      
+      const sessionUser = (req as any).session?.user;
+      if (!sessionUser) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+      
+      // Check if user has permission to edit stories
+      const story = await storage.getAllStories().then(stories => 
+        stories.find(s => s.id === storyId)
+      );
+      
+      if (!story) {
+        return res.status(404).json({ message: "Story not found" });
+      }
+      
+      const isAuthor = story.authorId === String(sessionUser.id) || story.userId === sessionUser.id;
+      const isAdmin = sessionUser.role === 'admin';
+      const isManager = sessionUser.role === 'manager';
+      const canEdit = isAuthor || isAdmin || isManager;
+      
+      if (!canEdit) {
+        return res.status(403).json({ message: "Permission denied" });
+      }
+      
+      const updatedStory = await storage.linkStoryToProduct(storyId, productId);
+      res.json(updatedStory);
+    } catch (error) {
+      console.error("Error linking story to product:", error);
+      res.status(500).json({ message: "Failed to link story to product" });
+    }
+  });
+
   app.delete("/api/stories/:id", async (req, res) => {
     try {
       const sessionUser = (req as any).session?.user;

@@ -62,7 +62,7 @@ interface Story {
 }
 
 export default function Stories() {
-  const [location, navigate] = useLocation();
+  const [location, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTag, setSelectedTag] = useState("all");
   const [sortBy, setSortBy] = useState("recent");
@@ -312,7 +312,7 @@ export default function Stories() {
             </p>
           </div>
           <Button
-            onClick={() => navigate("/share-story")}
+            onClick={() => setLocation("/share-story")}
             className="bg-gwc-primary hover:bg-gwc-primary/90"
           >
             <Plus className="h-4 w-4 mr-2" />
@@ -378,7 +378,7 @@ export default function Stories() {
                   Wees de eerste om een circulair verhaal te delen!
                 </p>
                 <Button
-                  onClick={() => navigate("/share-story")}
+                  onClick={() => setLocation("/share-story")}
                   className="bg-gwc-primary hover:bg-gwc-primary/90"
                 >
                   <Plus className="h-4 w-4 mr-2" />
@@ -504,7 +504,7 @@ export default function Stories() {
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => navigate(`/products/${story.product?.id}`)}
+                            onClick={() => setLocation(`/products/${story.product?.id}`)}
                             className="border-blue-300 text-blue-700 hover:bg-blue-100"
                           >
                             Bekijk Product

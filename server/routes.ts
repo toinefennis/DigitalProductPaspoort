@@ -169,6 +169,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Update product
   app.patch("/api/products/:id", async (req, res) => {
     try {
+      console.log("Update product request:", req.body);
       const productId = parseInt(req.params.id);
       if (isNaN(productId)) {
         return res.status(400).json({ message: "Invalid product ID" });
@@ -180,7 +181,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         updateData.materialProperties = JSON.parse(updateData.materialProperties);
       }
 
+      // Handle photo URL
+      if (updateData.photo) {
+        updateData.photoUrl = updateData.photo;
+        delete updateData.photo;
+      }
+
+      console.log("Processed update data:", updateData);
       const updatedProduct = await storage.updateProduct(productId, updateData);
+      console.log("Update successful:", updatedProduct.id);
       res.json(updatedProduct);
     } catch (error) {
       console.error("Error updating product:", error);

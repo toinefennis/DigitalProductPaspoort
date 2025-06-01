@@ -161,6 +161,8 @@ export default function ProductDetail() {
       queryClient.invalidateQueries({ queryKey: [`/api/products/gtin/${gtin}`] });
       queryClient.invalidateQueries({ queryKey: ["/api/products"] });
       setIsEditing(false);
+      setPhotoFile(null);
+      setPhotoPreview(null);
     },
     onError: (error: any) => {
       toast({

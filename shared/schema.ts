@@ -41,10 +41,19 @@ export const events = pgTable("events", {
   eventType: text("event_type").notNull(), // 'creatie', 'schoonmaak', 'wassen', 'reparatie', 'impregneren', 'refurbish', 'uitleen', 'opslag', 'recycle', 'retour'
   description: text("description").notNull(),
   photoUrl: text("photo_url"),
+  
+  // Loan system fields
   loanReference: text("loan_reference"), // For loan events
   expectedReturn: timestamp("expected_return"), // For loan events
   returnCondition: text("return_condition"), // For return events
   returnNotes: text("return_notes"), // For return events
+  
+  // Borrower information
+  borrowerName: text("borrower_name"), // Full name of borrower
+  borrowerEmail: text("borrower_email"), // Email of borrower
+  borrowerPhone: text("borrower_phone"), // Phone number of borrower
+  borrowerAddress: text("borrower_address"), // Address of borrower
+  
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

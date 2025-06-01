@@ -16,6 +16,8 @@ import { insertEventSchema, type Product } from "@shared/schema";
 
 const formSchema = insertEventSchema.extend({
   photo: z.instanceof(File).optional(),
+  // Add loan duration helper field
+  loanDurationWeeks: z.number().min(1).max(52).default(3),
 }).omit({
   productId: true,
   photoUrl: true,
@@ -281,17 +283,77 @@ export default function EventLog() {
           {/* Loan Form Fields */}
           {selectedEventType === "uitleen" && (
             <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label htmlFor="borrowerName">Naam uitlener *</Label>
+                  <Input
+                    id="borrowerName"
+                    {...register("borrowerName")}
+                    placeholder="Voor- en achternaam"
+                    className={errors.borrowerName ? "border-red-500" : ""}
+                  />
+                  {errors.borrowerName && (
+                    <p className="text-sm text-red-500 mt-1">{errors.borrowerName.message}</p>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="borrowerPhone">Telefoonnummer</Label>
+                  <Input
+                    id="borrowerPhone"
+                    {...register("borrowerPhone")}
+                    placeholder="06-12345678"
+                  />
+                </div>
+              </div>
+
               <div>
-                <Label htmlFor="loanReference">Uitgeleend aan *</Label>
+                <Label htmlFor="borrowerEmail">Email adres *</Label>
                 <Input
-                  id="loanReference"
-                  {...register("loanReference")}
-                  placeholder="Naam of referentie nummer"
-                  className={errors.loanReference ? "border-red-500" : ""}
+                  id="borrowerEmail"
+                  type="email"
+                  {...register("borrowerEmail")}
+                  placeholder="email@voorbeeld.com"
+                  className={errors.borrowerEmail ? "border-red-500" : ""}
                 />
-                {errors.loanReference && (
-                  <p className="text-sm text-red-500 mt-1">{errors.loanReference.message}</p>
+                {errors.borrowerEmail && (
+                  <p className="text-sm text-red-500 mt-1">{errors.borrowerEmail.message}</p>
                 )}
+              </div>
+
+              <div>
+                <Label htmlFor="borrowerAddress">Adres</Label>
+                <Textarea
+                  id="borrowerAddress"
+                  {...register("borrowerAddress")}
+                  rows={2}
+                  placeholder="Straat, huisnummer, postcode, plaats"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label htmlFor="loanDurationWeeks">Uitleentermijn (weken)</Label>
+                  <Input
+                    id="loanDurationWeeks"
+                    type="number"
+                    min="1"
+                    max="52"
+                    defaultValue="3"
+                    {...register("loanDurationWeeks", { valueAsNumber: true })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="loanReference">Referentie</Label>
+                  <Input
+                    id="loanReference"
+                    {...register("loanReference")}
+                    placeholder="Naam of referentie nummer"
+                    className={errors.loanReference ? "border-red-500" : ""}
+                  />
+                  {errors.loanReference && (
+                    <p className="text-sm text-red-500 mt-1">{errors.loanReference.message}</p>
+                  )}
+                </div>
               </div>
               
               <div>

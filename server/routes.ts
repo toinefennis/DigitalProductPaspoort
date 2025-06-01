@@ -433,9 +433,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      // Get all recent events to analyze loan status
-      const allEvents = await storage.getRecentEvents(500);
-      const loanEvents = allEvents.filter(event => event.eventType === "uitleen");
+      // Get all events to properly track loan statuses
+      const allEvents = await storage.getRecentEvents(1000);
+      
+      // Find all loan events with valid borrower info
+      const loanEvents = allEvents.filter(event => 
+        event.eventType === "uitleen" && 
+        event.borrowerName && 
+        event.borrowerEmail
+      );
+      
+      console.log(`Found ${loanEvents.length} loan events`);
       
       // Filter out loans that have been returned
       const activeLoanEvents = loanEvents.filter(loanEvent => {
@@ -443,17 +451,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const returnEvent = allEvents.find(event => 
           event.productId === loanEvent.productId &&
           event.eventType === "retour" &&
-          new Date(event.createdAt) > new Date(loanEvent.createdAt)
+          new Date(event.createdAt || 0) > new Date(loanEvent.createdAt || 0)
         );
+        
+        console.log(`Loan ${loanEvent.id} for product ${loanEvent.productId}: ${returnEvent ? 'returned' : 'active'}`);
         
         // If no return event found, loan is still active
         return !returnEvent;
       });
       
+      console.log(`Found ${activeLoanEvents.length} active loan events`);
+      
       // Filter based on user role - regular users only see their own loans
       let filteredLoans = activeLoanEvents;
       if (sessionUser.role !== 'admin' && sessionUser.role !== 'manager') {
         filteredLoans = activeLoanEvents.filter(event => event.borrowerEmail === sessionUser.email);
+        console.log(`User ${sessionUser.email} has ${filteredLoans.length} active loans`);
       }
       
       res.json(filteredLoans);
@@ -1090,7 +1103,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Story not found" });
       }
       
-      const isAuthor = story.authorId === String(sessionUser.id) || story.userId === sessionUser.id;
+      const isAuthor = story.authorId === String(sessionUser.id);
       const isAdmin = sessionUser.role === 'admin';
       const isManager = sessionUser.role === 'manager';
       const canEdit = isAuthor || isAdmin || isManager;

@@ -59,6 +59,8 @@ export default function Stories() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTag, setSelectedTag] = useState("all");
   const [sortBy, setSortBy] = useState("recent");
+  const [editingStory, setEditingStory] = useState<number | null>(null);
+  const [editForm, setEditForm] = useState({ title: "", content: "", tags: "" });
   const { user: currentUser } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -134,7 +136,51 @@ export default function Stories() {
   };
 
   const handleEdit = (story: Story) => {
-    setLocation(`/edit-story/${story.id}`);
+    setEditingStory(story.id);
+    setEditForm({
+      title: story.title,
+      content: story.content,
+      tags: story.tags.join(", ")
+    });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingStory(null);
+    setEditForm({ title: "", content: "", tags: "" });
+  };
+
+  const handleSaveEdit = async (storyId: number) => {
+    try {
+      const response = await fetch(`/api/stories/${storyId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          title: editForm.title,
+          content: editForm.content,
+          tags: editForm.tags,
+          isPublic: true
+        }),
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('Bijwerken mislukt');
+      }
+
+      toast({
+        title: "Verhaal bijgewerkt",
+        description: "Je verhaal is succesvol aangepast.",
+      });
+
+      queryClient.invalidateQueries({ queryKey: ["/api/stories"] });
+      setEditingStory(null);
+    } catch (error) {
+      toast({
+        title: "Fout bij bijwerken",
+        description: "Er is iets misgegaan bij het bijwerken van je verhaal.",
+        variant: "destructive",
+      });
+    }
   };
 
   // Social media sharing functions
@@ -321,12 +367,59 @@ export default function Stories() {
                 </CardHeader>
 
                 <CardContent className="space-y-4">
-                  {/* Story Content */}
-                  <p className="text-gray-700 leading-relaxed">
-                    {story.content.length > 200 
-                      ? `${story.content.substring(0, 200)}...` 
-                      : story.content}
-                  </p>
+                  {/* Story Content - Edit Mode */}
+                  {editingStory === story.id ? (
+                    <div className="space-y-4 border border-blue-200 p-4 rounded-lg bg-blue-50">
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Titel</label>
+                        <Input
+                          value={editForm.title}
+                          onChange={(e) => setEditForm(prev => ({ ...prev, title: e.target.value }))}
+                          placeholder="Verhaal titel..."
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Verhaal</label>
+                        <Textarea
+                          value={editForm.content}
+                          onChange={(e) => setEditForm(prev => ({ ...prev, content: e.target.value }))}
+                          placeholder="Vertel je verhaal..."
+                          className="min-h-[100px]"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Tags</label>
+                        <Input
+                          value={editForm.tags}
+                          onChange={(e) => setEditForm(prev => ({ ...prev, tags: e.target.value }))}
+                          placeholder="reparatie, hergebruik, duurzaam (gescheiden door komma's)"
+                        />
+                      </div>
+                      <div className="flex space-x-2">
+                        <Button
+                          onClick={() => handleSaveEdit(story.id)}
+                          size="sm"
+                          className="bg-green-600 hover:bg-green-700"
+                        >
+                          Opslaan
+                        </Button>
+                        <Button
+                          onClick={handleCancelEdit}
+                          variant="outline"
+                          size="sm"
+                        >
+                          Annuleren
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    /* Normal Story Content */
+                    <p className="text-gray-700 leading-relaxed">
+                      {story.content.length > 200 
+                        ? `${story.content.substring(0, 200)}...` 
+                        : story.content}
+                    </p>
+                  )}
 
                   {/* Photos */}
                   {story.photos.length > 0 && (

@@ -5,11 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Calendar, User, Mail, Phone, MapPin, Package, Clock } from "lucide-react";
 import { formatDistanceToNow, format } from "date-fns";
 import { nl } from "date-fns/locale";
+import { useAuth } from "@/hooks/useAuth";
 import type { Event, Product } from "@shared/schema";
 
 type LoanEvent = Event & { product: Product };
 
 export default function LoanOverview() {
+  const { user: currentUser } = useAuth();
   const { data: loanEvents, isLoading } = useQuery<LoanEvent[]>({
     queryKey: ["/api/loans/active"],
   });
@@ -31,9 +33,19 @@ export default function LoanOverview() {
     );
   }
 
-  const activeLoanEvents = loanEvents?.filter(event => 
-    event.eventType === "uitleen" && event.borrowerName
-  ) || [];
+  // Filter loan events based on user role
+  const userRole = (currentUser as any)?.role;
+  const currentUserEmail = (currentUser as any)?.email;
+  
+  const activeLoanEvents = loanEvents?.filter(event => {
+    if (event.eventType !== "uitleen" || !event.borrowerName) return false;
+    
+    // Admins and managers can see all loans
+    if (userRole === 'admin' || userRole === 'manager') return true;
+    
+    // Regular users can only see their own loans
+    return event.borrowerEmail === currentUserEmail;
+  }) || [];
 
   return (
     <div className="h-full overflow-y-auto pb-20">

@@ -62,11 +62,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Recent activities
+  // Recent activities - Filter by user role  
   app.get("/api/dashboard/activities", async (req, res) => {
     try {
+      const sessionUser = (req as any).session?.user;
+      if (!sessionUser) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
       const activities = await storage.getRecentEvents(10);
-      res.json(activities);
+      
+      // Filter based on user role - regular users only see their own activities
+      let filteredActivities = activities;
+      if (sessionUser.role !== 'admin' && sessionUser.role !== 'manager') {
+        filteredActivities = activities.filter(event => 
+          !event.borrowerEmail || event.borrowerEmail === sessionUser.email
+        );
+      }
+      
+      res.json(filteredActivities);
     } catch (error) {
       console.error("Error fetching recent activities:", error);
       res.status(500).json({ message: "Failed to fetch recent activities" });
@@ -242,12 +256,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get active loans for loan overview
+  // Get active loans for loan overview - Filter by user role
   app.get("/api/loans/active", async (req, res) => {
     try {
+      const sessionUser = (req as any).session?.user;
+      if (!sessionUser) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
       const activeLoans = await storage.getRecentEvents(100);
       const loanEvents = activeLoans.filter(event => event.eventType === "uitleen");
-      res.json(loanEvents);
+      
+      // Filter based on user role - regular users only see their own loans
+      let filteredLoans = loanEvents;
+      if (sessionUser.role !== 'admin' && sessionUser.role !== 'manager') {
+        filteredLoans = loanEvents.filter(event => event.borrowerEmail === sessionUser.email);
+      }
+      
+      res.json(filteredLoans);
     } catch (error) {
       console.error("Error fetching active loans:", error);
       res.status(500).json({ message: "Failed to fetch active loans" });

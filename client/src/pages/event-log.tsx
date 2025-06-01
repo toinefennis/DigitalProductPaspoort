@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { X, Package, Wrench, Clock, RotateCcw, Camera } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { insertEventSchema, type Product } from "@shared/schema";
 
 const formSchema = insertEventSchema.extend({

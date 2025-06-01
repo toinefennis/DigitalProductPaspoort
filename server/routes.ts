@@ -901,31 +901,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Loans endpoints
-  app.get("/api/loans/active", async (req, res) => {
-    try {
-      const sessionUser = (req as any).session?.user;
-      if (!sessionUser) {
-        return res.status(401).json({ message: "Not authenticated" });
-      }
 
-      // Get all active loan events
-      const loanEvents = await storage.getActiveLoans();
-
-      // Filter based on user role
-      let filteredLoanEvents = loanEvents;
-      if (sessionUser.role !== 'admin' && sessionUser.role !== 'manager') {
-        filteredLoanEvents = loanEvents.filter(event => 
-          event.borrowerEmail === sessionUser.email
-        );
-      }
-      
-      res.json(filteredLoanEvents);
-    } catch (error) {
-      console.error("Error fetching active loans:", error);
-      res.status(500).json({ message: "Failed to fetch active loans" });
-    }
-  });
 
   // Stories endpoints
   app.get("/api/stories", async (req, res) => {

@@ -3,14 +3,42 @@ import { useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Download, Database, FileText, Calendar } from "lucide-react";
+import { Download, Database, FileText, Calendar, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { apiRequest } from "@/lib/queryClient";
 
 export default function Export() {
   const [exportType, setExportType] = useState("products");
   const [exportFormat, setExportFormat] = useState("csv");
   const { toast } = useToast();
+  const { user: currentUser } = useAuth();
+
+  // Check if user has permission to export data
+  const hasExportAccess = (currentUser as any)?.role === 'admin' || (currentUser as any)?.role === 'manager';
+
+  if (!hasExportAccess) {
+    return (
+      <div className="h-full flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardContent className="pt-6">
+            <div className="text-center">
+              <Lock className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <h2 className="text-lg font-medium mb-2">Geen toegang</h2>
+              <p className="text-gray-600 mb-4">
+                Je hebt geen toestemming om gegevens te exporteren.
+                Alleen beheerders en managers hebben toegang tot deze functie.
+              </p>
+              <p className="text-xs text-gray-500">
+                Dit is ter bescherming van privacy gegevens volgens de AVG wetgeving.
+                Gewone gebruikers kunnen geen persoonlijke informatie van anderen exporteren.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   const exportMutation = useMutation({
     mutationFn: async ({ type, format }: { type: string; format: string }) => {

@@ -10,9 +10,10 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { UserPlus, Crown, User, Shield } from "lucide-react";
+import { UserPlus, Crown, User, Shield, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { useAuth } from "@/hooks/useAuth";
 import type { User as UserType } from "@shared/schema";
 
 const userSchema = z.object({
@@ -30,6 +31,32 @@ export default function Users() {
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { user: currentUser } = useAuth();
+
+  // Check if user has permission to view user management
+  const hasUserManagementAccess = (currentUser as any)?.role === 'admin' || (currentUser as any)?.role === 'manager';
+
+  if (!hasUserManagementAccess) {
+    return (
+      <div className="h-full flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardContent className="pt-6">
+            <div className="text-center">
+              <Lock className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <h2 className="text-lg font-medium mb-2">Geen toegang</h2>
+              <p className="text-gray-600 mb-4">
+                Je hebt geen toestemming om gebruikersbeheer te bekijken.
+                Alleen beheerders en managers hebben toegang tot deze functie.
+              </p>
+              <p className="text-xs text-gray-500">
+                Dit is ter bescherming van privacy gegevens volgens de AVG wetgeving.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   const { data: users, isLoading } = useQuery<UserType[]>({
     queryKey: ["/api/users"],

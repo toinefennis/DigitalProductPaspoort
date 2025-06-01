@@ -254,9 +254,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Export data endpoints
+  // Export data endpoints - Only admin and manager can export data
   app.get("/api/export/:type", async (req, res) => {
     try {
+      const sessionUser = (req as any).session?.user;
+      if (!sessionUser) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      // Check if user has permission to export data
+      if (sessionUser.role !== 'admin' && sessionUser.role !== 'manager') {
+        return res.status(403).json({ message: "Insufficient permissions. Only administrators and managers can export data." });
+      }
+
       const { type } = req.params;
       const { format = "csv" } = req.query;
       
@@ -443,9 +453,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // GS1 Sync API endpoints
+  // GS1 Sync API endpoints - Admin only
   app.get("/api/gs1/partners", async (req, res) => {
     try {
+      const sessionUser = (req as any).session?.user;
+      if (!sessionUser) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      // Only admins can manage GS1 integrations
+      if (sessionUser.role !== 'admin') {
+        return res.status(403).json({ message: "Insufficient permissions. Only administrators can manage GS1 integrations." });
+      }
+
       const { gs1Service } = await import("./gs1-service");
       const partners = await gs1Service.getAllPartners();
       res.json(partners);
@@ -457,6 +477,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/gs1/partners", async (req, res) => {
     try {
+      const sessionUser = (req as any).session?.user;
+      if (!sessionUser) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      if (sessionUser.role !== 'admin') {
+        return res.status(403).json({ message: "Insufficient permissions. Only administrators can manage GS1 integrations." });
+      }
+
       const { gs1Service } = await import("./gs1-service");
       const partner = await gs1Service.addPartner(req.body);
       res.status(201).json(partner);
@@ -468,6 +497,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.patch("/api/gs1/partners/:id", async (req, res) => {
     try {
+      const sessionUser = (req as any).session?.user;
+      if (!sessionUser) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      if (sessionUser.role !== 'admin') {
+        return res.status(403).json({ message: "Insufficient permissions. Only administrators can manage GS1 integrations." });
+      }
+
       const { gs1Service } = await import("./gs1-service");
       const partner = await gs1Service.updatePartner(req.params.id, req.body);
       res.json(partner);

@@ -67,17 +67,29 @@ function ActivityCard({ activity, onDelete }: {
   return (
     <Card className="shadow-material-1">
       <CardContent className="p-4">
-        <div className="flex items-start space-x-3">
-          <div className={`flex-shrink-0 w-10 h-10 ${getEventColor(activity.eventType)} rounded-full flex items-center justify-center`}>
-            {getEventIcon(activity.eventType)}
+        <div className="flex items-start justify-between">
+          <div className="flex items-start space-x-3 flex-1">
+            <div className={`flex-shrink-0 w-10 h-10 ${getEventColor(activity.eventType)} rounded-full flex items-center justify-center`}>
+              {getEventIcon(activity.eventType)}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-900">{activity.description}</p>
+              <p className="text-xs text-gray-500">
+                {format(new Date(activity.createdAt), "PPp", { locale: nl })}
+              </p>
+              <p className="text-xs text-gwc-primary">GTIN: {activity.product.gtin}</p>
+            </div>
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-gray-900">{activity.description}</p>
-            <p className="text-xs text-gray-500">
-              {format(new Date(activity.createdAt), "PPp", { locale: nl })}
-            </p>
-            <p className="text-xs text-gwc-primary">GTIN: {activity.product.gtin}</p>
-          </div>
+          {isAdmin && onDelete && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onDelete(activity.id)}
+              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>
@@ -85,6 +97,9 @@ function ActivityCard({ activity, onDelete }: {
 }
 
 export default function Dashboard() {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
   const { data: stats, isLoading: statsLoading } = useQuery<DashboardStats>({
     queryKey: ["/api/dashboard/stats"],
   });
@@ -92,6 +107,33 @@ export default function Dashboard() {
   const { data: activities, isLoading: activitiesLoading } = useQuery<(Event & { product: Product })[]>({
     queryKey: ["/api/dashboard/activities"],
   });
+
+  const deleteEventMutation = useMutation({
+    mutationFn: async (eventId: number) => {
+      return apiRequest(`/api/events/${eventId}`, "DELETE");
+    },
+    onSuccess: () => {
+      toast({
+        title: "Event verwijderd",
+        description: "Het event is succesvol verwijderd uit de historie.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/activities"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/stats"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Fout bij verwijderen",
+        description: error.message || "Er is een fout opgetreden bij het verwijderen van het event.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleDeleteEvent = (eventId: number) => {
+    if (confirm("Weet je zeker dat je dit event wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.")) {
+      deleteEventMutation.mutate(eventId);
+    }
+  };
 
   if (statsLoading || activitiesLoading) {
     return (
@@ -153,7 +195,11 @@ export default function Dashboard() {
         {activities && activities.length > 0 ? (
           <div className="space-y-3">
             {activities.map((activity) => (
-              <ActivityCard key={activity.id} activity={activity} />
+              <ActivityCard 
+                key={activity.id} 
+                activity={activity} 
+                onDelete={handleDeleteEvent}
+              />
             ))}
           </div>
         ) : (

@@ -36,6 +36,7 @@ export interface IStorage {
   createEvent(event: InsertEvent): Promise<Event>;
   getEventsByProductId(productId: number): Promise<Event[]>;
   getRecentEvents(limit?: number): Promise<(Event & { product: Product })[]>;
+  deleteEvent(eventId: number): Promise<void>;
   
   // User operations
   createUser(user: InsertUser): Promise<User>;
@@ -174,6 +175,10 @@ export class DatabaseStorage implements IStorage {
       ...result.events,
       product: result.products!,
     }));
+  }
+
+  async deleteEvent(eventId: number): Promise<void> {
+    await db.delete(events).where(eq(events.id, eventId));
   }
 
   async createNotification(notification: InsertNotification): Promise<Notification> {

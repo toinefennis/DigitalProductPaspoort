@@ -433,13 +433,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      const activeLoans = await storage.getRecentEvents(100);
-      const loanEvents = activeLoans.filter(event => event.eventType === "uitleen");
+      // Get all recent events to analyze loan status
+      const allEvents = await storage.getRecentEvents(500);
+      const loanEvents = allEvents.filter(event => event.eventType === "uitleen");
+      
+      // Filter out loans that have been returned
+      const activeLoanEvents = loanEvents.filter(loanEvent => {
+        // Check if there's a return event for this product after the loan date
+        const returnEvent = allEvents.find(event => 
+          event.productId === loanEvent.productId &&
+          event.eventType === "retour" &&
+          new Date(event.createdAt) > new Date(loanEvent.createdAt)
+        );
+        
+        // If no return event found, loan is still active
+        return !returnEvent;
+      });
       
       // Filter based on user role - regular users only see their own loans
-      let filteredLoans = loanEvents;
+      let filteredLoans = activeLoanEvents;
       if (sessionUser.role !== 'admin' && sessionUser.role !== 'manager') {
-        filteredLoans = loanEvents.filter(event => event.borrowerEmail === sessionUser.email);
+        filteredLoans = activeLoanEvents.filter(event => event.borrowerEmail === sessionUser.email);
       }
       
       res.json(filteredLoans);

@@ -230,6 +230,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get active loans for loan overview
+  app.get("/api/loans/active", async (req, res) => {
+    try {
+      const activeLoans = await storage.getRecentEvents(100);
+      const loanEvents = activeLoans.filter(event => event.eventType === "uitleen");
+      res.json(loanEvents);
+    } catch (error) {
+      console.error("Error fetching active loans:", error);
+      res.status(500).json({ message: "Failed to fetch active loans" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

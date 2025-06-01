@@ -95,8 +95,18 @@ export default function AddProduct() {
         formData.append("photo", selectedPhoto);
       }
 
-      const response = await apiRequest("POST", "/api/products", undefined);
-      return response.json();
+      const response = await fetch("/api/products", {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to create product");
+      }
+
+      return await response.json();
     },
     onSuccess: () => {
       toast({

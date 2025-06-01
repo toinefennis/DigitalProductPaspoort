@@ -15,6 +15,7 @@ import Products from "@/pages/products";
 import Settings from "@/pages/settings";
 import Users from "@/pages/users";
 import Notifications from "@/pages/notifications";
+import LoanOverview from "@/pages/loan-overview";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -26,6 +27,7 @@ function Router() {
       <Route path="/settings" component={Settings} />
       <Route path="/users" component={Users} />
       <Route path="/notifications" component={Notifications} />
+      <Route path="/loans" component={LoanOverview} />
       <Route path="/product/:id" component={ProductDetail} />
       <Route path="/product/gtin/:gtin" component={ProductDetail} />
       <Route path="/add-product" component={AddProduct} />

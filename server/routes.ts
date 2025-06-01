@@ -69,7 +69,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/materials/:material/care", async (req, res) => {
     try {
       const materialName = decodeURIComponent(req.params.material);
-      const material = materialCareData.find(m => 
+      const material = materialCareData.find((m: any) => 
         m.Materiaal.toLowerCase() === materialName.toLowerCase()
       );
       

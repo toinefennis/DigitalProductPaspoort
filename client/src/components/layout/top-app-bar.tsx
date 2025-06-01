@@ -33,14 +33,7 @@ export function TopAppBar() {
           >
             <Bell className="h-5 w-5" />
           </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-white hover:bg-white hover:bg-opacity-10"
-            onClick={() => setLocation("/users")}
-          >
-            <User className="h-5 w-5" />
-          </Button>
+          <UserNav />
         </div>
       </div>
     </header>

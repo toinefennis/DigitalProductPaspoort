@@ -717,7 +717,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/stories", async (req, res) => {
+  app.post("/api/stories", upload.array('photos', 5), async (req, res) => {
     try {
       const sessionUser = (req as any).session?.user;
       if (!sessionUser) {
@@ -726,20 +726,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const { title, content, tags, isPublic, productId } = req.body;
       
+      if (!title || !content) {
+        return res.status(400).json({ message: "Title and content are required" });
+      }
+      
       // Process tags from string to array
       const processedTags = typeof tags === 'string' 
         ? tags.split(',').map((tag: string) => tag.trim()).filter(Boolean)
-        : tags || [];
+        : Array.isArray(tags) ? tags : [];
+
+      // Handle photo uploads
+      const uploadedFiles = req.files as Express.Multer.File[];
+      const photoUrls = uploadedFiles ? uploadedFiles.map(file => `/uploads/${file.filename}`) : [];
 
       const storyData = {
-        title,
-        content,
+        title: title.trim(),
+        content: content.trim(),
         authorName: sessionUser.fullName || sessionUser.username,
         authorId: sessionUser.id.toString(),
-        photos: [],
+        photos: photoUrls,
         tags: processedTags,
-        isPublic: isPublic !== false,
-        productId: productId || null,
+        isPublic: isPublic === 'true' || isPublic === true,
+        productId: productId ? parseInt(productId) : null,
         status: "approved", // Auto-approve for MVP
       };
 

@@ -449,6 +449,18 @@ export default function ProductDetail() {
               </div>
 
               <div>
+                <Label htmlFor="gtin">GTIN Barcode</Label>
+                <Input
+                  id="gtin"
+                  {...editForm.register("gtin")}
+                  placeholder="Bijv. 1234567890123"
+                />
+                <div className="text-xs text-gray-500 mt-1">
+                  13-cijferige GTIN code voor product identificatie
+                </div>
+              </div>
+
+              <div>
                 <Label htmlFor="description">Beschrijving</Label>
                 <Textarea
                   id="description"

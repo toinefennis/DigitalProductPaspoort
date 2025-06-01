@@ -31,6 +31,9 @@ export const products = pgTable("products", {
     certifications?: string[];
   }>().default({}),
   
+  // GS1 registration status
+  gs1Registered: boolean("gs1_registered").default(false),
+  
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -216,6 +219,9 @@ export const stories = pgTable("stories", {
   views: integer("views").default(0),
   isPublic: boolean("is_public").default(true),
   productId: integer("product_id"),
+  status: varchar("status", { length: 20 }).default("approved"), // 'pending', 'approved', 'rejected'
+  moderatedBy: varchar("moderated_by", { length: 50 }),
+  moderationNotes: text("moderation_notes"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

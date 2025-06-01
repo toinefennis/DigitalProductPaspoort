@@ -604,6 +604,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/logout", async (req, res) => {
+    try {
+      (req as any).session.destroy((err: any) => {
+        if (err) {
+          console.error("Logout error:", err);
+          return res.status(500).json({ message: "Logout failed" });
+        }
+        res.redirect("/");
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+      res.status(500).json({ message: "Logout failed" });
+    }
+  });
+
   app.post("/api/auth/logout", async (req, res) => {
     try {
       (req as any).session.destroy((err: any) => {
@@ -685,9 +700,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Stories endpoints
   app.get("/api/stories", async (req, res) => {
     try {
+      const sessionUser = (req as any).session?.user;
       const { search, tag, sort } = req.query;
       
-      // For now, return mock data until database is pushed
+      // Return mock data with moderation support
       const mockStories = [
         {
           id: 1,
@@ -701,6 +717,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           comments: 3,
           views: 45,
           isPublic: true,
+          status: "approved",
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         },
@@ -716,12 +733,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
           comments: 1,
           views: 23,
           isPublic: true,
+          status: "approved",
           createdAt: new Date(Date.now() - 86400000).toISOString(),
           updatedAt: new Date(Date.now() - 86400000).toISOString(),
         }
       ];
       
-      res.json(mockStories);
+      // Filter by approval status for regular users
+      let filteredStories = mockStories;
+      if (!sessionUser || (sessionUser.role !== 'admin' && sessionUser.role !== 'manager')) {
+        filteredStories = mockStories.filter(story => story.status === 'approved');
+      }
+      
+      res.json(filteredStories);
     } catch (error) {
       console.error("Error fetching stories:", error);
       res.status(500).json({ message: "Failed to fetch stories" });

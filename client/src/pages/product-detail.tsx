@@ -106,6 +106,8 @@ export default function ProductDetail() {
 
   const updateMutation = useMutation({
     mutationFn: async (data: EditFormData) => {
+      console.log("Starting product update...");
+      
       // Process material properties
       const materialProperties = {
         composition: data.materialComposition || undefined,
@@ -118,30 +120,41 @@ export default function ProductDetail() {
       // Upload photo if provided
       let photoUrl = undefined;
       if (photoFile) {
+        console.log("Uploading photo...");
         const formData = new FormData();
         formData.append('photo', photoFile);
 
-        const photoResponse = await fetch('/api/upload/photo', {
-          method: 'POST',
-          body: formData,
-          credentials: 'include',
-        });
+        try {
+          const photoResponse = await fetch('/api/upload/photo', {
+            method: 'POST',
+            body: formData,
+            credentials: 'include',
+          });
 
-        if (!photoResponse.ok) {
-          throw new Error('Foto upload mislukt');
+          if (!photoResponse.ok) {
+            throw new Error('Foto upload mislukt');
+          }
+
+          const photoResult = await photoResponse.json();
+          photoUrl = photoResult.url;
+          console.log("Photo uploaded successfully:", photoUrl);
+        } catch (error) {
+          console.error("Photo upload failed:", error);
+          throw error;
         }
-
-        const photoResult = await photoResponse.json();
-        photoUrl = photoResult.url;
       }
 
       const updateData = {
         ...data,
-        photo: photoUrl,
         materialProperties: Object.keys(materialProperties).some(key => materialProperties[key as keyof typeof materialProperties]) 
           ? materialProperties 
           : undefined,
       };
+
+      // Add photo URL if available
+      if (photoUrl) {
+        updateData.photo = photoUrl;
+      }
 
       // Remove individual material property fields
       delete updateData.materialComposition;
@@ -150,7 +163,10 @@ export default function ProductDetail() {
       delete updateData.materialRecyclability;
       delete updateData.materialCertifications;
 
-      return await apiRequest("PATCH", `/api/products/${product!.id}`, updateData);
+      console.log("Sending product update:", updateData);
+      const result = await apiRequest("PATCH", `/api/products/${product!.id}`, updateData);
+      console.log("Product update completed");
+      return result;
     },
     onSuccess: () => {
       toast({

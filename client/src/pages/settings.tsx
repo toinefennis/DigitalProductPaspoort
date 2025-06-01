@@ -92,6 +92,14 @@ export default function SettingsPage() {
               <Download className="h-4 w-4 mr-2" />
               Exporteer Database
             </Button>
+            <Button 
+              variant="outline" 
+              className="w-full"
+              onClick={() => setLocation("/gs1-sync")}
+            >
+              <Database className="h-4 w-4 mr-2" />
+              GS1 Inventory Sync
+            </Button>
             <Button variant="outline" className="w-full">
               Importeer Gegevens
             </Button>

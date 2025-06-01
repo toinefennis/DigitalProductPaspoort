@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { db } from './db';
-import { gs1Partners, gs1SyncEvents, gs1ProductMappings, products } from '@shared/schema';
+import { gs1Partners, gs1SyncEvents, gs1ProductMappings, products, events } from '@shared/schema';
 import { eq, desc } from 'drizzle-orm';
 
 interface GS1Product {
@@ -125,12 +125,26 @@ export class GS1SyncService {
   }
 
   private async simulateConnectionTest(partner: any): Promise<boolean> {
-    // Simulate network request
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // For demo purposes, randomly succeed/fail
-    // In real implementation, this would make actual HTTP requests to GS1 endpoints
-    return Math.random() > 0.2; // 80% success rate for demo
+    try {
+      // Test connection to GS1 sandbox endpoint
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      
+      const response = await fetch(partner.endpoint + '/health', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${partner.apiKey || 'sandbox-key'}`,
+        },
+        signal: controller.signal,
+      });
+      
+      clearTimeout(timeoutId);
+      return response.ok;
+    } catch (error) {
+      console.error('GS1 connection test failed:', error);
+      return false;
+    }
   }
 
   async syncPartner(partnerId: string): Promise<string> {
@@ -197,25 +211,224 @@ export class GS1SyncService {
   }
 
   private async performSync(partner: any): Promise<{ recordsProcessed: number; details: string }> {
-    // Simulate sync process with GS1 partner
-    const delay = 2000 + Math.random() * 3000; // 2-5 seconds
-    await new Promise(resolve => setTimeout(resolve, delay));
+    try {
+      // Step 1: Fetch product data from GS1 sandbox
+      const productData = await this.fetchGS1ProductData(partner);
+      
+      // Step 2: Fetch inventory updates from GS1 sandbox
+      const inventoryData = await this.fetchGS1InventoryData(partner);
+      
+      // Step 3: Process and update local database
+      const recordsProcessed = await this.processGS1Data(partner, productData, inventoryData);
+      
+      // Step 4: Send local updates back to partner (if any)
+      await this.sendLocalUpdatestoGS1(partner);
+      
+      return {
+        recordsProcessed,
+        details: `Successfully synchronized ${recordsProcessed} products with ${partner.name} via GS1 sandbox`,
+      };
+    } catch (error) {
+      console.error('GS1 sync error:', error);
+      throw new Error(`GS1 sync failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
 
-    // In real implementation, this would:
-    // 1. Connect to partner's GS1 GDSN endpoint
-    // 2. Retrieve product master data and inventory updates
-    // 3. Process and update local database
-    // 4. Send any local updates back to partner
+  private async fetchGS1ProductData(partner: any) {
+    // Fetch product master data from GS1 GDSN sandbox
+    const response = await fetch(`${partner.endpoint}/gdsn/trade-items`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${partner.apiKey}`,
+        'GLN': partner.gln,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch product data: ${response.statusText}`);
+    }
+
+    return await response.json();
+  }
+
+  private async fetchGS1InventoryData(partner: any) {
+    // Fetch inventory updates from GS1 EPCIS sandbox
+    const response = await fetch(`${partner.endpoint}/epcis/events`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${partner.apiKey}`,
+        'GLN': partner.gln,
+      },
+      // Add query parameters for inventory events
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch inventory data: ${response.statusText}`);
+    }
+
+    return await response.json();
+  }
+
+  private async processGS1Data(partner: any, productData: any, inventoryData: any): Promise<number> {
+    let recordsProcessed = 0;
+
+    // Process product master data
+    if (productData?.tradeItems) {
+      for (const tradeItem of productData.tradeItems) {
+        await this.updateLocalProduct(tradeItem, partner.gln);
+        recordsProcessed++;
+      }
+    }
+
+    // Process inventory events
+    if (inventoryData?.events) {
+      for (const event of inventoryData.events) {
+        await this.updateLocalInventory(event, partner.gln);
+        recordsProcessed++;
+      }
+    }
+
+    return recordsProcessed;
+  }
+
+  private async updateLocalProduct(tradeItem: any, partnerGln: string) {
+    // Update local product database with GS1 trade item data
+    const { gtin, productName, brand, description } = tradeItem;
     
-    const recordsProcessed = Math.floor(Math.random() * 100) + 10; // 10-110 records
+    // Check if product exists locally
+    const existingProduct = await db.select().from(products).where(eq(products.gtin, gtin));
     
-    // Simulate updating some products
-    await this.simulateProductUpdates(partner.gln, recordsProcessed);
+    if (existingProduct.length > 0) {
+      // Update existing product
+      await db.update(products)
+        .set({
+          name: productName,
+          brand: brand,
+          description: description,
+          updatedAt: new Date(),
+        })
+        .where(eq(products.gtin, gtin));
+    } else {
+      // Create new product
+      await db.insert(products).values({
+        gtin: gtin,
+        name: productName,
+        type: 'trade_item',
+        brand: brand,
+        description: description,
+        status: 'beschikbaar',
+      });
+    }
+
+    // Update GS1 mapping
+    await this.updateGS1Mapping(gtin, partnerGln);
+  }
+
+  private async updateLocalInventory(event: any, partnerGln: string) {
+    // Process EPCIS inventory events
+    const { epcList, eventType, eventTime, readPoint } = event;
     
-    return {
-      recordsProcessed,
-      details: `Successfully synchronized ${recordsProcessed} products with ${partner.name}`,
-    };
+    for (const epc of epcList || []) {
+      // Extract GTIN from EPC
+      const gtin = this.extractGTINFromEPC(epc);
+      
+      if (gtin) {
+        // Find local product
+        const [product] = await db.select().from(products).where(eq(products.gtin, gtin));
+        
+        if (product) {
+          // Update product status based on event type
+          const status = this.mapEPCISEventToStatus(eventType);
+          
+          await db.update(products)
+            .set({ status, updatedAt: new Date() })
+            .where(eq(products.id, product.id));
+          
+          // Create event log
+          await db.insert(events).values({
+            productId: product.id,
+            eventType: eventType,
+            description: `GS1 ${eventType} event from ${partnerGln}`,
+          });
+        }
+      }
+    }
+  }
+
+  private async sendLocalUpdatestoGS1(partner: any) {
+    // Send local product updates back to GS1 partner
+    // This would include any local changes that need to be shared
+    try {
+      const localUpdates = await this.getLocalUpdatesForPartner(partner.gln);
+      
+      if (localUpdates.length > 0) {
+        await fetch(`${partner.endpoint}/gdsn/trade-items`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${partner.apiKey}`,
+            'GLN': partner.gln,
+          },
+          body: JSON.stringify({ tradeItems: localUpdates }),
+        });
+      }
+    } catch (error) {
+      console.warn('Failed to send local updates to GS1:', error);
+      // Non-critical error, don't fail the entire sync
+    }
+  }
+
+  private async updateGS1Mapping(gtin: string, partnerGln: string) {
+    // Update or create GS1 product mapping
+    const [product] = await db.select().from(products).where(eq(products.gtin, gtin));
+    
+    if (product) {
+      await db.insert(gs1ProductMappings).values({
+        productId: product.id,
+        gtin: gtin,
+        gln: partnerGln,
+        lastSynced: new Date(),
+        syncStatus: 'synced',
+      }).onConflictDoUpdate({
+        target: [gs1ProductMappings.productId, gs1ProductMappings.gln],
+        set: {
+          lastSynced: new Date(),
+          syncStatus: 'synced',
+          updatedAt: new Date(),
+        },
+      });
+    }
+  }
+
+  private extractGTINFromEPC(epc: string): string | null {
+    // Extract GTIN from EPC (Electronic Product Code)
+    // EPC format: urn:epc:id:sgtin:company.item.serial
+    const match = epc.match(/sgtin:(\d+)\.(\d+)\./);
+    if (match) {
+      const company = match[1];
+      const item = match[2];
+      // Convert to GTIN-14 format
+      return company + item.padStart(5, '0') + '0'; // Simplified conversion
+    }
+    return null;
+  }
+
+  private mapEPCISEventToStatus(eventType: string): string {
+    switch (eventType) {
+      case 'ObjectEvent': return 'beschikbaar';
+      case 'AggregationEvent': return 'verpakt';
+      case 'TransformationEvent': return 'verwerkt';
+      case 'TransactionEvent': return 'verkocht';
+      default: return 'onbekend';
+    }
+  }
+
+  private async getLocalUpdatesForPartner(partnerGln: string) {
+    // Get local product updates that need to be sent to this partner
+    // For now, return empty array
+    return [];
   }
 
   private async simulateProductUpdates(partnerGln: string, count: number) {

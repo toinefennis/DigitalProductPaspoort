@@ -14,7 +14,12 @@ import {
   Filter,
   Search,
   Calendar,
-  User
+  User,
+  Shield,
+  Trash2,
+  CheckCircle,
+  XCircle,
+  AlertTriangle
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -34,6 +39,9 @@ interface Story {
   comments: number;
   views: number;
   isPublic: boolean;
+  status?: string;
+  moderatedBy?: string;
+  moderationNotes?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -44,6 +52,9 @@ export default function Stories() {
   const [selectedTag, setSelectedTag] = useState("all");
   const [sortBy, setSortBy] = useState("recent");
   const { user: currentUser } = useAuth();
+  
+  // Check if user can moderate
+  const canModerate = (currentUser as any)?.role === 'admin' || (currentUser as any)?.role === 'manager';
 
   // Fetch stories
   const { data: stories, isLoading } = useQuery<Story[]>({

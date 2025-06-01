@@ -759,7 +759,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      // For now, return success response until database is pushed
       const mockStory = {
         id: Math.floor(Math.random() * 1000),
         ...req.body,
@@ -769,6 +768,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         likes: 0,
         comments: 0,
         views: 0,
+        status: "approved", // Auto-approve for MVP
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -777,6 +777,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error creating story:", error);
       res.status(500).json({ message: "Failed to create story" });
+    }
+  });
+
+  // Story moderation endpoints (admin/manager only)
+  app.patch("/api/stories/:id/moderate", async (req, res) => {
+    try {
+      const sessionUser = (req as any).session?.user;
+      if (!sessionUser) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      if (sessionUser.role !== 'admin' && sessionUser.role !== 'manager') {
+        return res.status(403).json({ message: "Insufficient permissions" });
+      }
+
+      const { id } = req.params;
+      const { status, moderationNotes } = req.body;
+
+      // In a real implementation, this would update the database
+      const updatedStory = {
+        id: parseInt(id),
+        status,
+        moderationNotes,
+        moderatedBy: sessionUser.username,
+        updatedAt: new Date().toISOString(),
+      };
+
+      res.json(updatedStory);
+    } catch (error) {
+      console.error("Error moderating story:", error);
+      res.status(500).json({ message: "Failed to moderate story" });
+    }
+  });
+
+  app.delete("/api/stories/:id", async (req, res) => {
+    try {
+      const sessionUser = (req as any).session?.user;
+      if (!sessionUser) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      if (sessionUser.role !== 'admin' && sessionUser.role !== 'manager') {
+        return res.status(403).json({ message: "Insufficient permissions" });
+      }
+
+      const { id } = req.params;
+      
+      // In a real implementation, this would delete from database
+      res.json({ message: "Story deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting story:", error);
+      res.status(500).json({ message: "Failed to delete story" });
     }
   });
 

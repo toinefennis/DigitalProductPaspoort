@@ -13,6 +13,8 @@ import AddProduct from "@/pages/add-product";
 import EventLog from "@/pages/event-log";
 import Products from "@/pages/products";
 import Settings from "@/pages/settings";
+import Users from "@/pages/users";
+import Notifications from "@/pages/notifications";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -22,6 +24,8 @@ function Router() {
       <Route path="/scanner" component={Scanner} />
       <Route path="/products" component={Products} />
       <Route path="/settings" component={Settings} />
+      <Route path="/users" component={Users} />
+      <Route path="/notifications" component={Notifications} />
       <Route path="/product/:id" component={ProductDetail} />
       <Route path="/product/gtin/:gtin" component={ProductDetail} />
       <Route path="/add-product" component={AddProduct} />

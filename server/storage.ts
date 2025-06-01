@@ -31,6 +31,19 @@ export interface IStorage {
   getEventsByProductId(productId: number): Promise<Event[]>;
   getRecentEvents(limit?: number): Promise<(Event & { product: Product })[]>;
   
+  // User operations
+  createUser(user: InsertUser): Promise<User>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  getUserByUsername(username: string): Promise<User | undefined>;
+  getAllUsers(): Promise<User[]>;
+  updateUserRole(userId: number, role: string): Promise<User>;
+  
+  // Notification operations
+  createNotification(notification: InsertNotification): Promise<Notification>;
+  getUserNotifications(userId: number, unreadOnly?: boolean): Promise<Notification[]>;
+  markNotificationAsRead(notificationId: number): Promise<void>;
+  markAllNotificationsAsRead(userId: number): Promise<void>;
+  
   // Dashboard statistics
   getDashboardStats(): Promise<DashboardStats>;
 }

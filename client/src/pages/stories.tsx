@@ -714,6 +714,63 @@ export default function Stories() {
           </div>
         )}
 
+        {/* Product Link Modal */}
+        {linkingStory && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+              <h3 className="text-lg font-semibold mb-4">Product Koppelen</h3>
+              <p className="text-gray-600 mb-4">
+                Selecteer een product om aan dit verhaal te koppelen:
+              </p>
+              
+              {products && products.length > 0 ? (
+                <div className="space-y-2 max-h-60 overflow-y-auto">
+                  {products.map((product: any) => (
+                    <button
+                      key={product.id}
+                      onClick={() => linkStoryMutation.mutate({ 
+                        storyId: linkingStory, 
+                        productId: product.id 
+                      })}
+                      className="w-full p-3 text-left border rounded-lg hover:bg-gray-50 transition-colors"
+                      disabled={linkStoryMutation.isPending}
+                    >
+                      <div className="font-medium">{product.name}</div>
+                      <div className="text-sm text-gray-500">{product.gtin}</div>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500 text-center py-4">
+                  Geen producten beschikbaar om te koppelen.
+                </p>
+              )}
+              
+              <div className="flex gap-2 mt-6">
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => setLinkingStory(null)}
+                  disabled={linkStoryMutation.isPending}
+                >
+                  Annuleren
+                </Button>
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => linkStoryMutation.mutate({ 
+                    storyId: linkingStory, 
+                    productId: null 
+                  })}
+                  disabled={linkStoryMutation.isPending}
+                >
+                  Ontkoppelen
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* MVP Disclaimer */}
         <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <p className="text-xs text-blue-700 text-center">

@@ -21,7 +21,7 @@ import {
   type ProductWithEvents 
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, count, and } from "drizzle-orm";
+import { eq, desc, count, and, isNotNull } from "drizzle-orm";
 
 export interface IStorage {
   // Product operations
@@ -187,16 +187,18 @@ export class DatabaseStorage implements IStorage {
     const results = await db
       .select()
       .from(events)
-      .leftJoin(products, eq(events.productId, products.id))
-      .where(eq(events.eventType, "uitleen"))
+      .innerJoin(products, eq(events.productId, products.id))
+      .where(and(
+        eq(events.eventType, "uitleen"),
+        isNotNull(events.borrowerName),
+        isNotNull(events.borrowerEmail)
+      ))
       .orderBy(desc(events.createdAt));
     
-    return results
-      .filter(result => result.events.borrowerName && result.events.borrowerEmail)
-      .map(result => ({
-        ...result.events,
-        product: result.products!,
-      }));
+    return results.map(result => ({
+      ...result.events,
+      product: result.products,
+    }));
   }
 
   async createNotification(notification: InsertNotification): Promise<Notification> {

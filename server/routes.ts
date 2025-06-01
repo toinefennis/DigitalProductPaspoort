@@ -1124,6 +1124,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const updatedStory = await storage.linkStoryToProduct(storyId, productId);
+      
+      // Create an event in product history when story is linked
+      if (productId) {
+        await storage.createEvent({
+          productId: productId,
+          eventType: "verhaal_gekoppeld",
+          description: `Verhaal "${story.title}" gekoppeld aan product`,
+          metadata: {
+            storyId: storyId,
+            storyTitle: story.title,
+            authorName: story.authorName
+          }
+        });
+      }
+      
       res.json(updatedStory);
     } catch (error) {
       console.error("Error linking story to product:", error);

@@ -4,14 +4,18 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { X, Camera, QrCode, Plus } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
+import { X, Camera, QrCode, Plus, Package, Recycle, Database, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { apiRequest } from "@/lib/queryClient";
 import { insertProductSchema } from "@shared/schema";
 
@@ -23,6 +27,8 @@ const formSchema = insertProductSchema.extend({
   materialDurability: z.string().optional(),
   materialRecyclability: z.string().optional(),
   materialCertifications: z.string().optional(),
+  databaseType: z.enum(['product', 'material', 'gtin']).default('product'),
+  addToGtinRegistry: z.boolean().default(false),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -34,8 +40,13 @@ export default function AddProduct() {
   const [additionalPhotos, setAdditionalPhotos] = useState<File[]>([]);
   const [inputSources, setInputSources] = useState<string[]>([]);
   const [newInputSource, setNewInputSource] = useState("");
+  const [activeTab, setActiveTab] = useState("product");
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { user: currentUser } = useAuth();
+
+  // Check user permissions for GTIN registration
+  const canManageGtin = (currentUser as any)?.role === 'admin' || (currentUser as any)?.role === 'manager';
 
   // Parse URL parameters for pre-filled data from scanner
   const [currentLocation] = useLocation();
@@ -47,66 +58,70 @@ export default function AddProduct() {
   console.log('Window location search:', window.location.search);
   console.log('URL params:', urlParams.toString());
   console.log('Extracted GTIN:', prefilledGtin);
-
+  
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
-    watch,
     reset,
+    watch,
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      type: "product",
+      status: "available",
       gtin: prefilledGtin,
-      type: "",
-      status: "beschikbaar",
       sourceGtins: [],
-      additionalPhotos: [],
+      materialProperties: {},
+      databaseType: 'product',
+      addToGtinRegistry: false,
     },
   });
 
-  // Update GTIN field when prefilledGtin changes
-  useEffect(() => {
-    console.log('Prefilled GTIN from URL:', prefilledGtin);
-    if (prefilledGtin) {
-      setValue("gtin", prefilledGtin);
+  console.log('Prefilled GTIN from URL:', prefilledGtin);
+
+  // Handle photo selection
+  const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedPhoto(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPhotoPreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
     }
-  }, [prefilledGtin, setValue]);
+  };
 
-  const productType = watch("type");
+  // Handle additional photo selection
+  const handleAdditionalPhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    setAdditionalPhotos(prev => [...prev, ...files]);
+  };
 
-  const createProductMutation = useMutation({
+  // Remove additional photo
+  const removeAdditionalPhoto = (index: number) => {
+    setAdditionalPhotos(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // Add input source
+  const addInputSource = () => {
+    if (newInputSource.trim()) {
+      setInputSources(prev => [...prev, newInputSource.trim()]);
+      setNewInputSource("");
+    }
+  };
+
+  // Remove input source
+  const removeInputSource = (index: number) => {
+    setInputSources(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // Create mutation
+  const createMutation = useMutation({
     mutationFn: async (data: FormData) => {
-      const formData = new FormData();
-      
-      // Add all form fields
-      Object.entries(data).forEach(([key, value]) => {
-        if (key === "photo" || key === "sourceGtinsInput") return;
-        if (key === "sourceGtins") {
-          formData.append(key, JSON.stringify(value));
-        } else if (value !== undefined && value !== null) {
-          formData.append(key, value.toString());
-        }
-      });
-
-      // Add photo if selected
-      if (selectedPhoto) {
-        formData.append("photo", selectedPhoto);
-      }
-
-      const response = await fetch("/api/products", {
-        method: "POST",
-        body: formData,
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Failed to create product");
-      }
-
-      return await response.json();
+      return await apiRequest("POST", "/api/products", data);
     },
     onSuccess: () => {
       toast({
@@ -126,63 +141,22 @@ export default function AddProduct() {
     },
   });
 
-  const handlePhotoSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedPhoto(file);
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setPhotoPreview(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleAdditionalPhotosSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files || []);
-    if (files.length > 0) {
-      setAdditionalPhotos(prev => [...prev, ...files]);
-    }
-  };
-
-  const removeAdditionalPhoto = (index: number) => {
-    setAdditionalPhotos(prev => prev.filter((_, i) => i !== index));
-  };
-
-  const addInputSource = () => {
-    if (newInputSource.trim() && !inputSources.includes(newInputSource.trim())) {
-      const updatedSources = [...inputSources, newInputSource.trim()];
-      setInputSources(updatedSources);
-      setValue("sourceGtins", updatedSources);
-      setNewInputSource("");
-    }
-  };
-
-  const removeInputSource = (index: number) => {
-    const updatedSources = inputSources.filter((_, i) => i !== index);
-    setInputSources(updatedSources);
-    setValue("sourceGtins", updatedSources);
-  };
-
   const onSubmit = (data: FormData) => {
-    // Process material properties into the correct format
-    const materialProperties = {
-      composition: data.materialComposition || undefined,
-      weight: data.materialWeight || undefined,
-      durability: data.materialDurability || undefined,
-      recyclability: data.materialRecyclability || undefined,
-      certifications: data.materialCertifications ? data.materialCertifications.split(',').map(c => c.trim()).filter(c => c) : undefined,
-    };
-
+    // Process form data
     const submitData = {
       ...data,
       sourceGtins: inputSources,
-      materialProperties: Object.keys(materialProperties).some(key => materialProperties[key as keyof typeof materialProperties]) 
-        ? materialProperties 
-        : undefined,
+      materialProperties: {
+        composition: data.materialComposition || "",
+        weight: data.materialWeight || "",
+        durability: data.materialDurability || "",
+        recyclability: data.materialRecyclability || "",
+        certifications: data.materialCertifications || "",
+      },
     };
-    
-    // Remove the individual material property fields since they're now in materialProperties
+
+    // Remove temporary fields
+    delete submitData.sourceGtinsInput;
     delete submitData.materialComposition;
     delete submitData.materialWeight;
     delete submitData.materialDurability;
@@ -234,11 +208,131 @@ export default function AddProduct() {
       });
   };
 
+  const ProductForm = ({ databaseType }: { databaseType: 'product' | 'material' | 'gtin' }) => (
+    <form onSubmit={handleSubmit((data) => onSubmit({...data, databaseType}))} className="space-y-6">
+      {/* Photo Upload */}
+      <div>
+        <Label className="block text-sm font-medium mb-2">Productfoto</Label>
+        <div className="border-2 border-dashed border-gray-300 rounded-lg h-48 flex items-center justify-center bg-gray-50 relative overflow-hidden">
+          {photoPreview ? (
+            <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
+          ) : (
+            <div className="text-center">
+              <Camera className="h-12 w-12 text-gray-400 mx-auto mb-2" />
+              <p className="text-sm text-gray-600">Tap om foto toe te voegen</p>
+            </div>
+          )}
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handlePhotoSelect}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          />
+        </div>
+      </div>
+
+      {/* Basic Information */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="name">Productnaam *</Label>
+          <Input
+            id="name"
+            {...register("name")}
+            placeholder="Bijv. Laptop Dell XPS"
+          />
+          {errors.name && (
+            <p className="text-sm text-red-600 mt-1">{errors.name.message}</p>
+          )}
+        </div>
+
+        <div>
+          <Label htmlFor="gtin">GTIN/Barcode</Label>
+          <Input
+            id="gtin"
+            {...register("gtin")}
+            placeholder="Bijv. 1234567890123"
+          />
+          {errors.gtin && (
+            <p className="text-sm text-red-600 mt-1">{errors.gtin.message}</p>
+          )}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="type">Type *</Label>
+          <Select onValueChange={(value) => setValue("type", value)} defaultValue={watch("type")}>
+            <SelectTrigger>
+              <SelectValue placeholder="Selecteer type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="product">Product</SelectItem>
+              <SelectItem value="component">Component</SelectItem>
+              <SelectItem value="material">Materiaal</SelectItem>
+              <SelectItem value="tool">Gereedschap</SelectItem>
+              <SelectItem value="equipment">Apparatuur</SelectItem>
+            </SelectContent>
+          </Select>
+          {errors.type && (
+            <p className="text-sm text-red-600 mt-1">{errors.type.message}</p>
+          )}
+        </div>
+
+        <div>
+          <Label htmlFor="brand">Merk</Label>
+          <Input
+            id="brand"
+            {...register("brand")}
+            placeholder="Bijv. Dell"
+          />
+        </div>
+      </div>
+
+      <div>
+        <Label htmlFor="description">Beschrijving</Label>
+        <Textarea
+          id="description"
+          {...register("description")}
+          placeholder="Beschrijf het product..."
+          className="h-20"
+        />
+      </div>
+
+      {databaseType === 'product' && canManageGtin && (
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="addToGtinRegistry"
+            checked={watch("addToGtinRegistry")}
+            onCheckedChange={(checked) => setValue("addToGtinRegistry", !!checked)}
+          />
+          <Label htmlFor="addToGtinRegistry" className="text-sm">
+            Ook toevoegen aan GTIN registratie database
+          </Label>
+        </div>
+      )}
+
+      <div className="flex items-center justify-between pt-4">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => setLocation("/")}
+        >
+          Annuleren
+        </Button>
+        <Button type="submit">
+          {databaseType === 'product' && 'Product Toevoegen'}
+          {databaseType === 'material' && 'Materiaal Toevoegen'}
+          {databaseType === 'gtin' && 'GTIN Registreren'}
+        </Button>
+      </div>
+    </form>
+  );
+
   return (
     <div className="h-full overflow-y-auto pb-20">
       <div className="p-4">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-xl font-medium">Nieuw Product</h1>
+          <h1 className="text-xl font-medium">Item Toevoegen</h1>
           <Button
             variant="ghost"
             size="icon"
@@ -248,357 +342,112 @@ export default function AddProduct() {
           </Button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          {/* Photo Upload */}
-          <div>
-            <Label className="block text-sm font-medium mb-2">Productfoto</Label>
-            <div className="border-2 border-dashed border-gray-300 rounded-lg h-48 flex items-center justify-center bg-gray-50 relative overflow-hidden">
-              {photoPreview ? (
-                <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
-              ) : (
-                <div className="text-center">
-                  <Camera className="h-12 w-12 text-gray-400 mx-auto mb-2" />
-                  <p className="text-sm text-gray-600">Tap om foto toe te voegen</p>
-                </div>
-              )}
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handlePhotoSelect}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-              />
-            </div>
-          </div>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="product" className="flex items-center space-x-2">
+              <Package className="h-4 w-4" />
+              <span>Product</span>
+            </TabsTrigger>
+            <TabsTrigger value="material" className="flex items-center space-x-2">
+              <Recycle className="h-4 w-4" />
+              <span>Materiaal</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="gtin" 
+              className="flex items-center space-x-2"
+              disabled={!canManageGtin}
+            >
+              <Database className="h-4 w-4" />
+              <span>GTIN</span>
+              {!canManageGtin && <Lock className="h-3 w-3" />}
+            </TabsTrigger>
+          </TabsList>
 
-          {/* Additional Photos */}
-          <div>
-            <Label className="block text-sm font-medium mb-2">Extra foto's</Label>
-            <div className="space-y-2">
-              {/* Additional photos preview */}
-              {additionalPhotos.length > 0 && (
-                <div className="grid grid-cols-3 gap-2">
-                  {additionalPhotos.map((photo, index) => (
-                    <div key={index} className="relative">
-                      <img 
-                        src={URL.createObjectURL(photo)} 
-                        alt={`Extra foto ${index + 1}`}
-                        className="w-full h-20 object-cover rounded border"
-                      />
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="sm"
-                        className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0"
-                        onClick={() => removeAdditionalPhoto(index)}
-                      >
-                        ×
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              )}
-              
-              {/* Add more photos button */}
-              <div className="border-2 border-dashed border-gray-300 rounded-lg h-20 flex items-center justify-center bg-gray-50 relative">
-                <div className="text-center">
-                  <Camera className="h-6 w-6 text-gray-400 mx-auto mb-1" />
-                  <p className="text-xs text-gray-600">Voeg extra foto's toe</p>
-                </div>
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={handleAdditionalPhotosSelect}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Product Name */}
-          <div>
-            <Label htmlFor="name">Productnaam *</Label>
-            <Input
-              id="name"
-              {...register("name")}
-              placeholder="Bijv. Blauwe winterjas"
-              className={errors.name ? "border-red-500" : ""}
-            />
-            {errors.name && (
-              <p className="text-sm text-red-500 mt-1">{errors.name.message}</p>
-            )}
-          </div>
-
-          {/* Brand */}
-          <div>
-            <Label htmlFor="brand">Merk</Label>
-            <Input
-              id="brand"
-              {...register("brand")}
-              placeholder="Bijv. Nike, H&M, Patagonia"
-            />
-          </div>
-
-          {/* Product Type */}
-          <div>
-            <Label htmlFor="type">Type *</Label>
-            <Select onValueChange={(value) => setValue("type", value)}>
-              <SelectTrigger className={errors.type ? "border-red-500" : ""}>
-                <SelectValue placeholder="Selecteer type..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="kledingstuk">Kledingstuk</SelectItem>
-                <SelectItem value="materiaal">Materiaalbatch</SelectItem>
-                <SelectItem value="remake">Remake Artikel</SelectItem>
-                <SelectItem value="overig">Overig</SelectItem>
-              </SelectContent>
-            </Select>
-            {errors.type && (
-              <p className="text-sm text-red-500 mt-1">{errors.type.message}</p>
-            )}
-          </div>
-
-          {/* GTIN */}
-          <div>
-            <Label htmlFor="gtin">GTIN Code *</Label>
-            <div className="flex space-x-2">
-              <Input
-                id="gtin"
-                {...register("gtin")}
-                value={watch("gtin") || ""}
-                placeholder="8720796166279"
-                className={`flex-1 ${errors.gtin ? "border-red-500" : ""}`}
-                onChange={(e) => setValue("gtin", e.target.value)}
-              />
-              <Button
-                type="button"
-                variant="outline"
-                className="bg-gwc-secondary text-white hover:bg-gwc-secondary/90"
-                onClick={() => setLocation("/scanner")}
-              >
-                <QrCode className="h-4 w-4" />
-              </Button>
-            </div>
-            {errors.gtin && (
-              <p className="text-sm text-red-500 mt-1">{errors.gtin.message}</p>
-            )}
-          </div>
-
-          {/* Description */}
-          <div>
-            <Label htmlFor="description">Omschrijving</Label>
-            <Textarea
-              id="description"
-              {...register("description")}
-              rows={3}
-              placeholder="Korte omschrijving van het product..."
-            />
-          </div>
-
-          {/* Collection */}
-          <div>
-            <Label htmlFor="collection">Collectie</Label>
-            <Input
-              id="collection"
-              {...register("collection")}
-              placeholder="Bijv. Winter 2024, Sportkleding"
-            />
-          </div>
-
-          {/* Material */}
-          <div>
-            <Label htmlFor="material">Hoofdmateriaal</Label>
-            <Input
-              id="material"
-              {...register("material")}
-              placeholder="Bijv. 80% Gerecycled Polyester, 20% Katoen"
-            />
-          </div>
-
-          {/* Product Story */}
-          <div>
-            <Label htmlFor="story">Productverhaal</Label>
-            <Textarea
-              id="story"
-              {...register("story")}
-              rows={3}
-              placeholder="Vertel het verhaal achter dit product..."
-            />
-          </div>
-
-          {/* Origin */}
-          <div>
-            <Label htmlFor="origin">Herkomst</Label>
-            <Input
-              id="origin"
-              {...register("origin")}
-              placeholder="Bijv. Nederland, Bangladesh, Italië"
-            />
-          </div>
-
-          {/* Washing Instructions */}
-          <div>
-            <Label htmlFor="washingInstructions">Wasinstructies</Label>
-            <Textarea
-              id="washingInstructions"
-              {...register("washingInstructions")}
-              rows={2}
-              placeholder="Wasvoorschriften en verzorgingsinstructies..."
-            />
-          </div>
-
-          {/* CO2 Footprint */}
-          <div>
-            <Label htmlFor="co2Footprint">CO2 Voetafdruk</Label>
-            <Input
-              id="co2Footprint"
-              {...register("co2Footprint")}
-              placeholder="Bijv. 5.2 kg CO2eq"
-            />
-          </div>
-
-          {/* ESG Score */}
-          <div>
-            <Label htmlFor="esgScore">ESG/CSRD Score</Label>
-            <Input
-              id="esgScore"
-              {...register("esgScore")}
-              placeholder="Bijv. A+, 85/100, Goud"
-            />
-          </div>
-
-          {/* Material Properties */}
-          <div className="space-y-3">
-            <Label className="block text-sm font-medium">Materiaaleigenschappen</Label>
-            
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label htmlFor="materialComposition" className="text-xs">Samenstelling</Label>
-                <Input
-                  id="materialComposition"
-                  {...register("materialComposition")}
-                  placeholder="100% Katoen"
-                  className="text-sm"
-                />
-              </div>
-              <div>
-                <Label htmlFor="materialWeight" className="text-xs">Gewicht</Label>
-                <Input
-                  id="materialWeight"
-                  {...register("materialWeight")}
-                  placeholder="250g/m²"
-                  className="text-sm"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label htmlFor="materialDurability" className="text-xs">Duurzaamheid</Label>
-                <Input
-                  id="materialDurability"
-                  {...register("materialDurability")}
-                  placeholder="Hoog, Gemiddeld, Laag"
-                  className="text-sm"
-                />
-              </div>
-              <div>
-                <Label htmlFor="materialRecyclability" className="text-xs">Recycleerbaarheid</Label>
-                <Input
-                  id="materialRecyclability"
-                  {...register("materialRecyclability")}
-                  placeholder="100% Recycleerbaar"
-                  className="text-sm"
-                />
-              </div>
-            </div>
-
-            <div>
-              <Label htmlFor="materialCertifications" className="text-xs">Certificeringen</Label>
-              <Input
-                id="materialCertifications"
-                {...register("materialCertifications")}
-                placeholder="GOTS, OEKO-TEX, Cradle to Cradle"
-                className="text-sm"
-              />
-            </div>
-          </div>
-
-          {/* Input Sources (for remakes/batches) */}
-          {(productType === "remake" || productType === "materiaal") && (
-            <div>
-              <Label className="block text-sm font-medium mb-2">Input Bronnen</Label>
-              <div className="space-y-2">
-                {/* Existing sources */}
-                {inputSources.map((source, index) => (
-                  <div key={index} className="flex items-center space-x-2">
-                    <Input value={source} readOnly className="flex-1" />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      onClick={() => removeInputSource(index)}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
-                
-                {/* Add new source */}
-                <div className="flex space-x-2">
-                  <Input
-                    placeholder="GTIN van bron product"
-                    value={newInputSource}
-                    onChange={(e) => setNewInputSource(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        addInputSource();
-                      }
-                    }}
-                    className="flex-1"
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setLocation("/scanner")}
-                  >
-                    <QrCode className="h-4 w-4" />
-                  </Button>
-                </div>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  className="text-gwc-primary text-sm flex items-center"
-                  onClick={addInputSource}
-                  disabled={!newInputSource.trim()}
-                >
-                  <Plus className="h-4 w-4 mr-1" />
-                  Voeg bron toe
-                </Button>
-              </div>
+          {!canManageGtin && (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+              <p className="text-sm text-amber-800">
+                GTIN registratie is alleen beschikbaar voor managers en beheerders.
+              </p>
             </div>
           )}
 
-          {/* Submit Buttons */}
-          <div className="flex space-x-3 pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              className="flex-1"
-              onClick={() => setLocation("/")}
+          <TabsContent value="product">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Package className="h-5 w-5" />
+                  <span>Product Database</span>
+                </CardTitle>
+                <p className="text-sm text-gray-600">
+                  Voeg een nieuw product toe aan de standaard productdatabase voor inventaris en uitlening.
+                </p>
+              </CardHeader>
+              <CardContent>
+                <ProductForm databaseType="product" />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="material">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Recycle className="h-5 w-5" />
+                  <span>Materialenbank</span>
+                </CardTitle>
+                <p className="text-sm text-gray-600">
+                  Voeg materialen toe aan de materialenbank voor hergebruik en circulaire economie.
+                </p>
+              </CardHeader>
+              <CardContent>
+                <ProductForm databaseType="material" />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="gtin">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Database className="h-5 w-5" />
+                  <span>GTIN Registratie</span>
+                  <Badge variant="secondary">Admin/Manager</Badge>
+                </CardTitle>
+                <p className="text-sm text-gray-600">
+                  Registreer nieuwe GTIN codes in de centrale database voor GS1 compliantie.
+                </p>
+              </CardHeader>
+              <CardContent>
+                {canManageGtin ? (
+                  <ProductForm databaseType="gtin" />
+                ) : (
+                  <div className="text-center py-8">
+                    <Lock className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-600">
+                      Alleen managers en beheerders kunnen GTIN registraties uitvoeren.
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+
+        {/* MVP Disclaimer */}
+        <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-xs text-blue-700 text-center">
+            <strong>MVP Disclaimer:</strong> Dit is een proof-of-concept voor het Groningen Werkt Circulair pilot project. 
+            Voor meer informatie bezoek{" "}
+            <a 
+              href="https://groningenwerktcirculair.info" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="underline hover:text-blue-800"
             >
-              Annuleren
-            </Button>
-            <Button
-              type="submit"
-              className="flex-1 bg-gwc-primary hover:bg-gwc-primary/90 text-white"
-              disabled={createProductMutation.isPending}
-            >
-              {createProductMutation.isPending ? "Aanmaken..." : "Product Aanmaken"}
-            </Button>
-          </div>
-        </form>
+              groningenwerktcirculair.info
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   );

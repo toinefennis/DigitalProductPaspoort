@@ -23,6 +23,7 @@ import GS1Sync from "@/pages/gs1-sync";
 import Profile from "@/pages/profile";
 import Stories from "@/pages/stories";
 import ShareStory from "@/pages/share-story";
+import EditStory from "@/pages/edit-story";
 import NotFound from "@/pages/not-found";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -58,6 +59,7 @@ function Router() {
       <Route path="/profile" component={Profile} />
       <Route path="/stories" component={Stories} />
       <Route path="/share-story" component={ShareStory} />
+      <Route path="/edit-story/:id" component={EditStory} />
       <Route path="/product/:id" component={ProductDetail} />
       <Route path="/product/gtin/:gtin" component={ProductDetail} />
       <Route path="/add-product" component={AddProduct} />

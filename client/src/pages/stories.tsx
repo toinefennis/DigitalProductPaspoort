@@ -398,14 +398,53 @@ export default function Stories() {
                     </div>
 
                     <div className="flex items-center space-x-2">
-                      <Button variant="ghost" size="sm">
-                        <Heart className="h-4 w-4 mr-1" />
-                        Like
-                      </Button>
-                      <Button variant="ghost" size="sm">
-                        <Share2 className="h-4 w-4 mr-1" />
-                        Delen
-                      </Button>
+                      {/* Edit button for author */}
+                      {currentUser && story.authorId === currentUser.id.toString() && (
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => handleEdit(story)}
+                        >
+                          <Edit className="h-4 w-4 mr-1" />
+                          Bewerken
+                        </Button>
+                      )}
+                      
+                      {/* Share buttons */}
+                      <div className="flex items-center space-x-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => shareOnFacebook(story)}
+                          title="Delen op Facebook"
+                        >
+                          <Facebook className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => shareOnTwitter(story)}
+                          title="Delen op Twitter"
+                        >
+                          <Twitter className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => shareOnLinkedIn(story)}
+                          title="Delen op LinkedIn"
+                        >
+                          <Linkedin className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => copyStoryLink(story)}
+                          title="Link kopiëren"
+                        >
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
 

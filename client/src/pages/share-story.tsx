@@ -133,13 +133,8 @@ export default function ShareStory() {
   });
 
   const onSubmit = (data: StoryFormData) => {
-    // Process tags
-    const processedData = {
-      ...data,
-      tags: data.tags?.split(',').map(tag => tag.trim()).filter(Boolean) || [],
-    };
-    
-    createStoryMutation.mutate(processedData);
+    // Process tags - keep them as a comma-separated string for the form submission
+    createStoryMutation.mutate(data);
   };
 
   // Social media sharing functions

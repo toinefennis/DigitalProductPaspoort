@@ -60,7 +60,7 @@ export default function Stories() {
   }) || [];
 
   // Get unique tags
-  const allTags = [...new Set(stories?.flatMap(story => story.tags) || [])];
+  const allTags = Array.from(new Set(stories?.flatMap(story => story.tags) || []));
 
   if (isLoading) {
     return (

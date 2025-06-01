@@ -1,11 +1,12 @@
 import { useLocation } from "wouter";
-import { Home, QrCode, Package, Settings } from "lucide-react";
+import { Home, QrCode, Package, BookOpen, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
   { icon: Home, label: "Dashboard", path: "/" },
   { icon: QrCode, label: "Scannen", path: "/scanner" },
   { icon: Package, label: "Producten", path: "/products" },
+  { icon: BookOpen, label: "Verhalen", path: "/stories" },
   { icon: Settings, label: "Instellingen", path: "/settings" },
 ];
 

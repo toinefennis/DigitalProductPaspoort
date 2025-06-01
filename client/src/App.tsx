@@ -56,6 +56,8 @@ function Router() {
       <Route path="/export" component={Export} />
       <Route path="/gs1-sync" component={GS1Sync} />
       <Route path="/profile" component={Profile} />
+      <Route path="/stories" component={Stories} />
+      <Route path="/share-story" component={ShareStory} />
       <Route path="/product/:id" component={ProductDetail} />
       <Route path="/product/gtin/:gtin" component={ProductDetail} />
       <Route path="/add-product" component={AddProduct} />

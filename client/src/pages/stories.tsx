@@ -19,7 +19,12 @@ import {
   Trash2,
   CheckCircle,
   XCircle,
-  AlertTriangle
+  AlertTriangle,
+  Edit,
+  Facebook,
+  Twitter,
+  Linkedin,
+  Copy
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -126,6 +131,42 @@ export default function Stories() {
     if (confirm(`Weet je zeker dat je het verhaal "${story.title}" wilt verwijderen?`)) {
       deleteStoryMutation.mutate(story.id);
     }
+  };
+
+  const handleEdit = (story: Story) => {
+    setLocation(`/edit-story/${story.id}`);
+  };
+
+  // Social media sharing functions
+  const shareOnFacebook = (story: Story) => {
+    const url = `${window.location.origin}/stories`;
+    const text = `${story.title} - Bekijk meer verhalen over circulaire economie`;
+    const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`;
+    window.open(shareUrl, '_blank', 'width=600,height=400');
+  };
+
+  const shareOnTwitter = (story: Story) => {
+    const url = `${window.location.origin}/stories`;
+    const text = `Inspirerend verhaal: "${story.title}" 🌱 Ontdek meer circulaire verhalen op Groningen Werkt Circulair! #GroningenWerktCirculair #Duurzaamheid #CirculaireEconomie`;
+    const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+    window.open(shareUrl, '_blank', 'width=600,height=400');
+  };
+
+  const shareOnLinkedIn = (story: Story) => {
+    const url = `${window.location.origin}/stories`;
+    const summary = `Ontdek inspirerende verhalen over circulaire economie en duurzaamheid in Groningen. "${story.title}" en meer verhalen op het Groningen Werkt Circulair platform.`;
+    const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}&title=${encodeURIComponent('Groningen Werkt Circulair - Verhalen')}&summary=${encodeURIComponent(summary)}`;
+    window.open(shareUrl, '_blank', 'width=600,height=400');
+  };
+
+  const copyStoryLink = (story: Story) => {
+    const shareUrl = `${window.location.origin}/stories`;
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      toast({
+        title: "Link gekopieerd!",
+        description: "De link naar de verhalen pagina is naar het klembord gekopieerd.",
+      });
+    });
   };
 
   // Fetch stories

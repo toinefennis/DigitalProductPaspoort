@@ -72,21 +72,48 @@ const gtinRegistrySchema = z.object({
 
 type GtinRegistryFormData = z.infer<typeof gtinRegistrySchema>;
 
-// Country codes for dropdowns
+// ISO 3166-1 alpha-2 country codes for EU and common export markets
 const countryCodes = [
-  { code: "DE", name: "Germany" },
-  { code: "NL", name: "Netherlands" },
-  { code: "BE", name: "Belgium" },
-  { code: "FR", name: "France" },
-  { code: "IT", name: "Italy" },
-  { code: "ES", name: "Spain" },
+  { code: "AT", name: "Oostenrijk" },
+  { code: "BE", name: "België" },
+  { code: "BG", name: "Bulgarije" },
+  { code: "CH", name: "Zwitserland" },
+  { code: "CY", name: "Cyprus" },
+  { code: "CZ", name: "Tsjechië" },
+  { code: "DE", name: "Duitsland" },
+  { code: "DK", name: "Denemarken" },
+  { code: "EE", name: "Estland" },
+  { code: "ES", name: "Spanje" },
+  { code: "FI", name: "Finland" },
+  { code: "FR", name: "Frankrijk" },
+  { code: "GR", name: "Griekenland" },
+  { code: "HR", name: "Kroatië" },
+  { code: "HU", name: "Hongarije" },
+  { code: "IE", name: "Ierland" },
+  { code: "IT", name: "Italië" },
+  { code: "LT", name: "Litouwen" },
+  { code: "LU", name: "Luxemburg" },
+  { code: "LV", name: "Letland" },
+  { code: "MT", name: "Malta" },
+  { code: "NL", name: "Nederland" },
+  { code: "NO", name: "Noorwegen" },
+  { code: "PL", name: "Polen" },
   { code: "PT", name: "Portugal" },
+  { code: "RO", name: "Roemenië" },
+  { code: "SE", name: "Zweden" },
+  { code: "SI", name: "Slovenië" },
+  { code: "SK", name: "Slowakije" },
+  { code: "GB", name: "Verenigd Koninkrijk" },
+  { code: "US", name: "Verenigde Staten" },
+  { code: "CA", name: "Canada" },
+  { code: "JP", name: "Japan" },
   { code: "CN", name: "China" },
   { code: "IN", name: "India" },
   { code: "BD", name: "Bangladesh" },
   { code: "VN", name: "Vietnam" },
-  { code: "TR", name: "Turkey" },
-  { code: "US", name: "United States" },
+  { code: "TR", name: "Turkije" },
+  { code: "PK", name: "Pakistan" },
+  { code: "TH", name: "Thailand" },
 ];
 
 // Product categories
@@ -402,15 +429,34 @@ export default function GtinRegistry() {
                     </TabsList>
 
                     {/* Basic Information Tab */}
-                    <TabsContent value="basic" className="space-y-4">
+                    <TabsContent value="basic" className="space-y-6">
+                      <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                        <h4 className="font-medium text-blue-900 mb-2">Basis Productidentificatie</h4>
+                        <p className="text-sm text-blue-700">
+                          Verplichte basisinformatie conform ESPR Digital Product Passport vereisten. 
+                          Deze velden vormen de kern van de productidentiteit in het EU DPP systeem.
+                        </p>
+                      </div>
+
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor="gtin">GTIN *</Label>
+                          <Label htmlFor="gtin" className="text-sm font-medium">
+                            GTIN (Global Trade Item Number) *
+                          </Label>
                           <Input
                             id="gtin"
                             {...form.register("gtin")}
-                            placeholder="1234567890123"
+                            placeholder="01234567890128"
+                            className="font-mono"
                           />
+                          <p className="text-xs text-gray-500 mt-1">
+                            14-cijferige GS1 GTIN voor unieke productidentificatie. 
+                            <a href="https://www.gs1.org/standards/barcodes/ean-upc" 
+                               target="_blank" 
+                               className="text-blue-600 hover:underline ml-1">
+                              Meer info ↗
+                            </a>
+                          </p>
                           {form.formState.errors.gtin && (
                             <p className="text-sm text-red-500 mt-1">
                               {form.formState.errors.gtin.message}
@@ -418,17 +464,58 @@ export default function GtinRegistry() {
                           )}
                         </div>
                         <div>
-                          <Label htmlFor="productName">Productnaam *</Label>
+                          <Label htmlFor="productName" className="text-sm font-medium">
+                            Commerciële Productnaam *
+                          </Label>
                           <Input
                             id="productName"
                             {...form.register("productName")}
-                            placeholder="Duurzaam Katoenen T-shirt"
+                            placeholder="Duurzaam Katoenen T-shirt Model Eco-Life"
                           />
+                          <p className="text-xs text-gray-500 mt-1">
+                            Volledige commerciële naam zoals gebruikt in marketing en verkoop
+                          </p>
                           {form.formState.errors.productName && (
                             <p className="text-sm text-red-500 mt-1">
                               {form.formState.errors.productName.message}
                             </p>
                           )}
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="uniqueProductId" className="text-sm font-medium">
+                            Unieke Product Identificator (URI)
+                          </Label>
+                          <Input
+                            id="uniqueProductId"
+                            {...form.register("uniqueProductId")}
+                            placeholder="https://id.gs1.org/01/01234567890128/21/SERIAL123"
+                            className="font-mono text-xs"
+                          />
+                          <p className="text-xs text-gray-500 mt-1">
+                            GS1 Digital Link URI formaat voor wereldwijde unieke identificatie. 
+                            <a href="https://www.gs1.org/standards/gs1-digital-link" 
+                               target="_blank" 
+                               className="text-blue-600 hover:underline ml-1">
+                              GS1 Digital Link ↗
+                            </a>
+                          </p>
+                        </div>
+                        <div>
+                          <Label htmlFor="registrationId" className="text-sm font-medium">
+                            DPP Registratie ID
+                          </Label>
+                          <Input
+                            id="registrationId"
+                            {...form.register("registrationId")}
+                            placeholder="DPP-EU-2024-TEX-123456"
+                            className="font-mono"
+                          />
+                          <p className="text-xs text-gray-500 mt-1">
+                            Registratie-identificator in het centrale EU DPP register
+                          </p>
                         </div>
                       </div>
 
@@ -507,23 +594,48 @@ export default function GtinRegistry() {
                     </TabsContent>
 
                     {/* Production Tab */}
-                    <TabsContent value="production" className="space-y-4">
+                    <TabsContent value="production" className="space-y-6">
+                      <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                        <h4 className="font-medium text-orange-900 mb-2">Productie & Toeleveringsketen Traceerbaarheid</h4>
+                        <p className="text-sm text-orange-700">
+                          Essentiële informatie voor toeleveringsketen transparantie conform ESPR en GS1 EPCIS 2.0 standaarden. 
+                          Deze gegevens maken volledige traceerbaarheid mogelijk van grondstof tot eindproduct.
+                        </p>
+                      </div>
+
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor="uniqueProductId">Unieke Product ID (URI)</Label>
-                          <Input
-                            id="uniqueProductId"
-                            {...form.register("uniqueProductId")}
-                            placeholder="https://id.gs1.org/01/01234567890128"
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="productionDate">Productiedatum</Label>
+                          <Label htmlFor="productionDate" className="text-sm font-medium">
+                            Productiedatum
+                          </Label>
                           <Input
                             id="productionDate"
                             type="date"
                             {...form.register("productionDate")}
                           />
+                          <p className="text-xs text-gray-500 mt-1">
+                            Datum van productie of laatste substantiële transformatie (ISO 8601)
+                          </p>
+                        </div>
+                        <div>
+                          <Label htmlFor="countryOfOrigin" className="text-sm font-medium">
+                            Land van Herkomst
+                          </Label>
+                          <Select onValueChange={(value) => form.setValue("countryOfOrigin", value)}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecteer herkomstland" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {countryCodes.map((country) => (
+                                <SelectItem key={country.code} value={country.code}>
+                                  {country.name} ({country.code})
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <p className="text-xs text-gray-500 mt-1">
+                            Land waar het eindproduct is ontstaan conform ISO 3166-1 alpha-2
+                          </p>
                         </div>
                       </div>
 
@@ -610,18 +722,35 @@ export default function GtinRegistry() {
                     </TabsContent>
 
                     {/* Materials Tab */}
-                    <TabsContent value="materials" className="space-y-4">
+                    <TabsContent value="materials" className="space-y-6">
+                      <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                        <h4 className="font-medium text-green-900 mb-2">Materiaalsamenstelling & Herkomst</h4>
+                        <p className="text-sm text-green-700">
+                          Cruciale informatie voor transparantie, circulariteit en compliance met biologische/gerecyclede claims. 
+                          Alle materiaalprocenten moeten optellen tot 100% conform EU Textiel Etiketteringsverordening.
+                        </p>
+                      </div>
+
                       <div>
-                        <Label htmlFor="fiberComposition">Vezelsamenstelling (JSON)</Label>
+                        <Label htmlFor="fiberComposition" className="text-sm font-medium">
+                          Vezelsamenstelling per Component (JSON)
+                        </Label>
                         <Textarea
                           id="fiberComposition"
                           {...form.register("fiberComposition")}
-                          rows={3}
-                          placeholder='[{"vezel": "CO", "percentage": 95}, {"vezel": "EL", "percentage": 5}]'
+                          rows={4}
+                          placeholder='[{"component": "hoofdstof", "vezels": [{"code": "CO", "naam": "Katoen", "percentage": 95}, {"code": "EL", "naam": "Elastaan", "percentage": 5}]}, {"component": "voering", "vezels": [{"code": "PES", "naam": "Polyester", "percentage": 100}]}]'
+                          className="font-mono text-xs"
                         />
-                        <p className="text-xs text-gray-500 mt-1">
-                          JSON formaat: Array van objecten met vezel en percentage
-                        </p>
+                        <div className="text-xs text-gray-500 mt-1 space-y-1">
+                          <p>JSON structuur voor gedetailleerde vezelsamenstelling per kledingcomponent</p>
+                          <p>Gebruik ISO vezeltypes: CO=Katoen, PES=Polyester, EL=Elastaan, WO=Wol, etc.</p>
+                          <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32011R1007" 
+                             target="_blank" 
+                             className="text-blue-600 hover:underline">
+                            EU Textiellabeling Verordening ↗
+                          </a>
+                        </div>
                       </div>
 
                       <div>
@@ -656,15 +785,57 @@ export default function GtinRegistry() {
                     </TabsContent>
 
                     {/* Sustainability Tab */}
-                    <TabsContent value="sustainability" className="space-y-4">
+                    <TabsContent value="sustainability" className="space-y-6">
+                      <div className="bg-emerald-50 p-4 rounded-lg border border-emerald-200">
+                        <h4 className="font-medium text-emerald-900 mb-2">Duurzaamheid & Milieu-impact</h4>
+                        <p className="text-sm text-emerald-700">
+                          Essentiële milieudata conform ESPR ecodesign vereisten. Deze gegevens worden gebruikt voor 
+                          LCA (Life Cycle Assessment) berekeningen en ondersteunen de EU Green Deal doelstellingen.
+                        </p>
+                      </div>
+
                       <div>
-                        <Label htmlFor="sustainabilityData">Duurzaamheidsdata (JSON)</Label>
+                        <Label htmlFor="sustainabilityData" className="text-sm font-medium">
+                          Milieu-impact Metrieken (JSON)
+                        </Label>
                         <Textarea
                           id="sustainabilityData"
                           {...form.register("sustainabilityData")}
-                          rows={3}
-                          placeholder='{"co2_footprint": "2.1 kg CO2e", "water_usage": "1200L", "energy_consumption": "15 kWh"}'
+                          rows={5}
+                          placeholder='{"co2_footprint": {"value": 2.1, "unit": "kg CO2e", "scope": "cradle-to-gate"}, "water_footprint": {"blue_water": 1200, "green_water": 800, "unit": "L"}, "energy_consumption": {"renewable": 75, "non_renewable": 25, "total_kwh": 15}, "land_use": {"value": 0.5, "unit": "m²"}, "chemical_footprint": {"restricted_substances": 0, "azo_dyes": false}}'
+                          className="font-mono text-xs"
                         />
+                        <div className="text-xs text-gray-500 mt-1 space-y-1">
+                          <p>Gestructureerde milieu-impact data volgens internationale LCA standaarden</p>
+                          <p>Inclusief CO₂ voetafdruk, waterverbruik, energieverbruik en landgebruik</p>
+                          <a href="https://eplca.jrc.ec.europa.eu/LCDN/developerEF.xhtml" 
+                             target="_blank" 
+                             className="text-blue-600 hover:underline">
+                            EU Environmental Footprint ↗
+                          </a>
+                        </div>
+                      </div>
+
+                      <div>
+                        <Label htmlFor="circularityData" className="text-sm font-medium">
+                          Circulariteit & Reparatie Indicatoren (JSON)
+                        </Label>
+                        <Textarea
+                          id="circularityData"
+                          {...form.register("circularityData")}
+                          rows={4}
+                          placeholder='{"recyclability": {"percentage": 95, "process": "mechanical", "infrastructure_available": true}, "repairability": {"score": 8, "max_score": 10, "repair_instructions": "available", "spare_parts": "5_years"}, "durability": {"wash_cycles": 50, "color_fastness": "grade_4", "dimensional_stability": "±3%"}, "disassembly": {"time_minutes": 15, "tools_required": ["scissors"], "separable_components": ["buttons", "zipper"]}}'
+                          className="font-mono text-xs"
+                        />
+                        <div className="text-xs text-gray-500 mt-1 space-y-1">
+                          <p>Circulariteit metrieken voor recycling, reparatie en duurzaamheid</p>
+                          <p>Ondersteunt EU Circulaire Economie Actieplan doelstellingen</p>
+                          <a href="https://environment.ec.europa.eu/strategy/circular-economy-action-plan_en" 
+                             target="_blank" 
+                             className="text-blue-600 hover:underline">
+                            EU Circular Economy Action Plan ↗
+                          </a>
+                        </div>
                       </div>
 
                       <div>
@@ -699,15 +870,56 @@ export default function GtinRegistry() {
                     </TabsContent>
 
                     {/* Compliance Tab */}
-                    <TabsContent value="compliance" className="space-y-4">
+                    <TabsContent value="compliance" className="space-y-6">
+                      <div className="bg-red-50 p-4 rounded-lg border border-red-200">
+                        <h4 className="font-medium text-red-900 mb-2">Regelgevingscompliance & Chemische Veiligheid</h4>
+                        <p className="text-sm text-red-700">
+                          Verplichte compliance informatie conform REACH, ESPR en andere EU regelgeving. 
+                          Markttoezichtautoriteiten gebruiken deze data voor verificatie van DPP naleving.
+                        </p>
+                      </div>
+
                       <div>
-                        <Label htmlFor="chemicalCompliance">Chemische Compliance (JSON)</Label>
+                        <Label htmlFor="chemicalCompliance" className="text-sm font-medium">
+                          REACH & Chemische Veiligheid (JSON)
+                        </Label>
                         <Textarea
                           id="chemicalCompliance"
                           {...form.register("chemicalCompliance")}
-                          rows={3}
-                          placeholder='{"reach_compliant": true, "restricted_substances": [], "oeko_tex": "Standard 100"}'
+                          rows={5}
+                          placeholder='{"reach_compliant": true, "svhc_substances": [], "restricted_substances": {"annex_xvii": [], "pops": [], "cmr_substances": []}, "chemical_safety": {"skin_sensitization": "passed", "carcinogenic": false, "mutagenic": false, "toxic_reproduction": false}, "test_certificates": {"oeko_tex": {"standard": "Standard 100", "certificate_id": "21.0.12345", "valid_until": "2025-12-31"}, "bluesign": {"certificate_id": "BLU123", "component_level": "approved"}}}'
+                          className="font-mono text-xs"
                         />
+                        <div className="text-xs text-gray-500 mt-1 space-y-1">
+                          <p>Volledige REACH compliance data inclusief SVHC, beperkte stoffen en testcertificaten</p>
+                          <p>SVHC = Substances of Very High Concern, POPs = Persistent Organic Pollutants</p>
+                          <a href="https://echa.europa.eu/regulations/reach" 
+                             target="_blank" 
+                             className="text-blue-600 hover:underline">
+                            REACH Verordening ↗
+                          </a>
+                        </div>
+                      </div>
+
+                      <div>
+                        <Label htmlFor="socialCompliance" className="text-sm font-medium">
+                          Sociale Compliance & Arbeidsstandaarden (JSON)
+                        </Label>
+                        <Textarea
+                          id="socialCompliance"
+                          {...form.register("socialCompliance")}
+                          rows={4}
+                          placeholder='{"labor_standards": {"ilo_compliant": true, "child_labor": false, "forced_labor": false, "freedom_association": true, "collective_bargaining": true}, "certifications": [{"name": "Fair Wear Foundation", "level": "Leader", "valid_until": "2025-06-30"}, {"name": "GOTS Social Criteria", "certificate_id": "GOTS-SC-2024-001"}], "supply_chain_transparency": {"tier_1_disclosed": 100, "tier_2_disclosed": 85, "due_diligence": "completed"}}'
+                          className="font-mono text-xs"
+                        />
+                        <div className="text-xs text-gray-500 mt-1 space-y-1">
+                          <p>Sociale compliance data volgens ILO conventies en EU due diligence wetgeving</p>
+                          <a href="https://www.ilo.org/global/standards/lang--en/index.htm" 
+                             target="_blank" 
+                             className="text-blue-600 hover:underline">
+                            ILO Arbeidsstandaarden ↗
+                          </a>
+                        </div>
                       </div>
 
                       <div>
@@ -741,18 +953,35 @@ export default function GtinRegistry() {
                     </TabsContent>
 
                     {/* Market Tab */}
-                    <TabsContent value="market" className="space-y-4">
+                    <TabsContent value="market" className="space-y-6">
+                      <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                        <h4 className="font-medium text-purple-900 mb-2">Marktinformatie & Regulatoire Compliance</h4>
+                        <p className="text-sm text-purple-700">
+                          Marktspecifieke informatie voor regulatory compliance en markttoezicht. 
+                          Deze data ondersteunt ESPR implementatie en nationale markttoezicht autoriteiten.
+                        </p>
+                      </div>
+
                       <div>
-                        <Label htmlFor="intendedMarkets">Beoogde Markten (JSON)</Label>
+                        <Label htmlFor="intendedMarkets" className="text-sm font-medium">
+                          Beoogde Doelmarkten (JSON Array)
+                        </Label>
                         <Textarea
                           id="intendedMarkets"
                           {...form.register("intendedMarkets")}
                           rows={3}
-                          placeholder='["NL", "DE", "BE", "FR"]'
+                          placeholder='["NL", "DE", "BE", "FR", "DK", "SE", "NO", "FI", "AT", "CH"]'
+                          className="font-mono"
                         />
-                        <p className="text-xs text-gray-500 mt-1">
-                          Array van ISO 3166-1 alpha-2 landcodes
-                        </p>
+                        <div className="text-xs text-gray-500 mt-1 space-y-1">
+                          <p>ISO 3166-1 alpha-2 landcodes voor markten waar het product wordt verkocht</p>
+                          <p>Bepaalt welke nationale ESPR implementaties van toepassing zijn</p>
+                          <a href="https://www.iso.org/iso-3166-country-codes.html" 
+                             target="_blank" 
+                             className="text-blue-600 hover:underline">
+                            ISO 3166 Landcodes ↗
+                          </a>
+                        </div>
                       </div>
 
                       <div>

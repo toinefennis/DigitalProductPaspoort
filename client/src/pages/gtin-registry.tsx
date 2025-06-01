@@ -237,7 +237,25 @@ export default function GtinRegistry() {
     if (conversionData) {
       try {
         const data = JSON.parse(conversionData);
-        form.reset(data);
+        console.log('Loading conversion data:', data);
+        
+        // Set editing mode and populate form
+        setIsEditing(true);
+        form.reset({
+          gtin: data.gtin || "",
+          productName: data.productName || "",
+          brandName: data.brandName || "",
+          modelNumber: data.modelNumber || "",
+          productCategory: data.productCategory || "",
+          productDescription: data.productDescription || "",
+          productWeight: data.productWeight || 1,
+          productSize: data.productSize || "",
+          productColor: data.productColor || "",
+          fiberComposition: data.fiberComposition || "",
+          countryOfOrigin: data.countryOfOrigin || "",
+          productionDate: data.productionDate || "",
+        });
+        
         sessionStorage.removeItem('gtinConversionData');
         toast({
           title: "Product geconverteerd",
@@ -245,9 +263,14 @@ export default function GtinRegistry() {
         });
       } catch (error) {
         console.error('Error parsing conversion data:', error);
+        toast({
+          title: "Conversie fout",
+          description: "Er is een probleem opgetreden bij het laden van de conversie data.",
+          variant: "destructive",
+        });
       }
     }
-  }, [form]);
+  }, [form, toast]);
 
   // Create mutation
   const createMutation = useMutation({
@@ -269,10 +292,7 @@ export default function GtinRegistry() {
         regulatoryCompliance: data.regulatoryCompliance ? JSON.parse(data.regulatoryCompliance) : null,
       };
       
-      return await apiRequest("/api/gtin-registry", {
-        method: "POST",
-        body: JSON.stringify(processedData),
-      });
+      return await apiRequest("POST", "/api/gtin-registry", processedData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/gtin-registry"] });
@@ -302,10 +322,7 @@ export default function GtinRegistry() {
         productWeight: data.productWeight ? Number(data.productWeight) : undefined,
       };
       
-      return await apiRequest(`/api/gtin-registry/${selectedRegistry.id}`, {
-        method: "PATCH",
-        body: JSON.stringify(processedData),
-      });
+      return await apiRequest("PATCH", `/api/gtin-registry/${selectedRegistry.id}`, processedData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/gtin-registry"] });
@@ -329,9 +346,7 @@ export default function GtinRegistry() {
   // Delete mutation
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
-      return await apiRequest(`/api/gtin-registry/${id}`, {
-        method: "DELETE",
-      });
+      return await apiRequest("DELETE", `/api/gtin-registry/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/gtin-registry"] });

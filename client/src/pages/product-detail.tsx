@@ -248,6 +248,7 @@ export default function ProductDetail() {
       brandName: product.brand || '',
       productDescription: product.description || '',
       productWeight: 1, // Default weight
+      productCategory: product.type || '',
       fiberComposition: product.material ? JSON.stringify([{
         component: "hoofdstof",
         vezels: [{
@@ -257,17 +258,23 @@ export default function ProductDetail() {
         }]
       }]) : '',
       countryOfOrigin: product.origin || '',
-      productionDate: new Date().toISOString().split('T')[0]
+      productionDate: new Date().toISOString().split('T')[0],
+      productSize: product.materialProperties?.size || '',
+      productColor: product.materialProperties?.color || ''
     };
     
     // Store the data temporarily and navigate
     sessionStorage.setItem('gtinConversionData', JSON.stringify(prefilledData));
-    setLocation('/gtin-registry?convert=true');
     
     toast({
       title: "Conversie gestart",
       description: "Product wordt geconverteerd naar GTIN register met vooringevulde gegevens.",
     });
+    
+    // Navigate after a short delay to ensure data is stored
+    setTimeout(() => {
+      setLocation('/gtin-registry');
+    }, 100);
   };
 
   // Update form when product data loads

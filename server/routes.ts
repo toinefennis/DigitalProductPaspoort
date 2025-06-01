@@ -95,11 +95,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/materials/co2/calculate', (req, res) => {
+  app.post('/api/materials/co2/calculate', async (req, res) => {
     const { fiberComposition, productWeight } = req.body;
     
     try {
-      const co2MaterialData = require('./co2-material-data.json');
+      const fs = await import('fs');
+      const path = await import('path');
+      const co2MaterialData = JSON.parse(fs.readFileSync(path.join(__dirname, 'co2-material-data.json'), 'utf8'));
       let composition;
       
       if (typeof fiberComposition === 'string') {

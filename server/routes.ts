@@ -701,48 +701,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/stories", async (req, res) => {
     try {
       const sessionUser = (req as any).session?.user;
-      const { search, tag, sort } = req.query;
       
-      // Return mock data with moderation support
-      const mockStories = [
-        {
-          id: 1,
-          title: "Mijn eerste circulaire project",
-          content: "Ik heb een oude stoel gerestaureerd en er een prachtig meubelstuk van gemaakt. Het heeft me geleerd hoe waardevol hergebruik kan zijn.",
-          authorName: "Jan van der Berg",
-          authorId: "1",
-          photos: [],
-          tags: ["hergebruik", "meubels", "diy"],
-          likes: 12,
-          comments: 3,
-          views: 45,
-          isPublic: true,
-          status: "approved",
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-        {
-          id: 2,
-          title: "Van afval naar kunst",
-          content: "Met oude materialen van het RepairCafé heb ik een kunstwerk gemaakt. Het laat zien dat afval eigenlijk een bron van creativiteit kan zijn.",
-          authorName: "Maria Jansen",
-          authorId: "2",
-          photos: [],
-          tags: ["kunst", "afval", "creativiteit"],
-          likes: 8,
-          comments: 1,
-          views: 23,
-          isPublic: true,
-          status: "approved",
-          createdAt: new Date(Date.now() - 86400000).toISOString(),
-          updatedAt: new Date(Date.now() - 86400000).toISOString(),
-        }
-      ];
+      const stories = await storage.getAllStories();
       
       // Filter by approval status for regular users
-      let filteredStories = mockStories;
+      let filteredStories = stories;
       if (!sessionUser || (sessionUser.role !== 'admin' && sessionUser.role !== 'manager')) {
-        filteredStories = mockStories.filter(story => story.status === 'approved');
+        filteredStories = stories.filter(story => story.status === 'approved');
       }
       
       res.json(filteredStories);
@@ -759,24 +724,78 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      const mockStory = {
-        id: Math.floor(Math.random() * 1000),
-        ...req.body,
+      const { title, content, tags, isPublic, productId } = req.body;
+      
+      // Process tags from string to array
+      const processedTags = typeof tags === 'string' 
+        ? tags.split(',').map((tag: string) => tag.trim()).filter(Boolean)
+        : tags || [];
+
+      const storyData = {
+        title,
+        content,
         authorName: sessionUser.fullName || sessionUser.username,
         authorId: sessionUser.id.toString(),
         photos: [],
-        likes: 0,
-        comments: 0,
-        views: 0,
+        tags: processedTags,
+        isPublic: isPublic !== false,
+        productId: productId || null,
         status: "approved", // Auto-approve for MVP
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
       };
 
-      res.status(201).json(mockStory);
+      const newStory = await storage.createStory(storyData);
+      res.status(201).json(newStory);
     } catch (error) {
       console.error("Error creating story:", error);
       res.status(500).json({ message: "Failed to create story" });
+    }
+  });
+
+  // Story update endpoint (for author editing)
+  app.patch("/api/stories/:id", async (req, res) => {
+    try {
+      const sessionUser = (req as any).session?.user;
+      if (!sessionUser) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const { id } = req.params;
+      const { title, content, tags, isPublic } = req.body;
+
+      // Get the story to check ownership
+      const stories = await storage.getAllStories();
+      const story = stories.find(s => s.id === parseInt(id));
+      
+      if (!story) {
+        return res.status(404).json({ message: "Story not found" });
+      }
+
+      // Check if user is the author or has moderation privileges
+      const canEdit = story.authorId === sessionUser.id.toString() || 
+                     sessionUser.role === 'admin' || 
+                     sessionUser.role === 'manager';
+
+      if (!canEdit) {
+        return res.status(403).json({ message: "Insufficient permissions" });
+      }
+
+      // Process tags
+      const processedTags = typeof tags === 'string' 
+        ? tags.split(',').map((tag: string) => tag.trim()).filter(Boolean)
+        : tags || [];
+
+      const updates = {
+        title,
+        content,
+        tags: processedTags,
+        isPublic: isPublic !== false,
+      };
+
+      const updatedStory = await storage.updateStory(parseInt(id), updates);
+      res.json(updatedStory);
+    } catch (error) {
+      console.error("Error updating story:", error);
+      res.status(500).json({ message: "Failed to update story" });
     }
   });
 
@@ -795,14 +814,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { id } = req.params;
       const { status, moderationNotes } = req.body;
 
-      // In a real implementation, this would update the database
-      const updatedStory = {
-        id: parseInt(id),
-        status,
-        moderationNotes,
-        moderatedBy: sessionUser.username,
-        updatedAt: new Date().toISOString(),
-      };
+      const updatedStory = await storage.moderateStory(
+        parseInt(id), 
+        status, 
+        sessionUser.username, 
+        moderationNotes
+      );
 
       res.json(updatedStory);
     } catch (error) {
@@ -823,8 +840,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const { id } = req.params;
-      
-      // In a real implementation, this would delete from database
+      await storage.deleteStory(parseInt(id));
       res.json({ message: "Story deleted successfully" });
     } catch (error) {
       console.error("Error deleting story:", error);

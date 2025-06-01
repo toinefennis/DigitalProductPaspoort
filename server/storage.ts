@@ -2,7 +2,8 @@ import {
   products, 
   events, 
   users, 
-  notifications, 
+  notifications,
+  stories,
   type Product, 
   type InsertProduct, 
   type Event, 
@@ -11,6 +12,8 @@ import {
   type InsertUser,
   type Notification,
   type InsertNotification,
+  type Story,
+  type InsertStory,
   type DashboardStats, 
   type ProductWithEvents 
 } from "@shared/schema";
@@ -49,6 +52,13 @@ export interface IStorage {
   
   // Dashboard statistics
   getDashboardStats(): Promise<DashboardStats>;
+  
+  // Story operations
+  createStory(story: InsertStory): Promise<Story>;
+  getAllStories(): Promise<Story[]>;
+  updateStory(id: number, updates: Partial<InsertStory>): Promise<Story>;
+  deleteStory(id: number): Promise<void>;
+  moderateStory(id: number, status: string, moderatedBy: string, notes?: string): Promise<Story>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -277,6 +287,46 @@ export class DatabaseStorage implements IStorage {
       itemsOnLoan: itemsOnLoanResult[0]?.count || 0,
       remadeItems: remadeItemsResult[0]?.count || 0,
     };
+  }
+
+  // Story operations
+  async createStory(story: InsertStory): Promise<Story> {
+    const [newStory] = await db
+      .insert(stories)
+      .values(story)
+      .returning();
+    return newStory;
+  }
+
+  async getAllStories(): Promise<Story[]> {
+    return await db.select().from(stories).orderBy(desc(stories.createdAt));
+  }
+
+  async updateStory(id: number, updates: Partial<InsertStory>): Promise<Story> {
+    const [updatedStory] = await db
+      .update(stories)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(stories.id, id))
+      .returning();
+    return updatedStory;
+  }
+
+  async deleteStory(id: number): Promise<void> {
+    await db.delete(stories).where(eq(stories.id, id));
+  }
+
+  async moderateStory(id: number, status: string, moderatedBy: string, notes?: string): Promise<Story> {
+    const [moderatedStory] = await db
+      .update(stories)
+      .set({
+        status,
+        moderatedBy,
+        moderationNotes: notes,
+        updatedAt: new Date()
+      })
+      .where(eq(stories.id, id))
+      .returning();
+    return moderatedStory;
   }
 }
 

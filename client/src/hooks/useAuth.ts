@@ -25,8 +25,8 @@ export function useAuth() {
     onSuccess: () => {
       // Clear all cached data
       queryClient.clear();
-      // Reload the page to reset application state
-      window.location.href = "/";
+      // Force page reload to reset authentication state completely
+      window.location.reload();
     },
   });
 

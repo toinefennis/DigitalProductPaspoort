@@ -53,30 +53,41 @@ export default function Profile() {
   const profileForm = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      fullName: user?.fullName || "",
-      email: user?.email || "",
-      phone: user?.phone || "",
+      fullName: (user as any)?.fullName || "",
+      email: (user as any)?.email || "",
+      phone: (user as any)?.phone || "",
     },
   });
 
   // Update form when user data loads
   if (user && !profileForm.formState.isDirty) {
     profileForm.reset({
-      fullName: user.fullName || "",
-      email: user.email || "",
-      phone: user.phone || "",
+      fullName: (user as any).fullName || "",
+      email: (user as any).email || "",
+      phone: (user as any).phone || "",
     });
   }
 
   const updatePasswordMutation = useMutation({
     mutationFn: async (data: PasswordFormData) => {
-      return await apiRequest("/api/users/change-password", {
+      const response = await fetch("/api/users/change-password", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
         body: JSON.stringify({
           currentPassword: data.currentPassword,
           newPassword: data.newPassword,
         }),
       });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to change password");
+      }
+
+      return response.json();
     },
     onSuccess: () => {
       toast({
@@ -97,10 +108,21 @@ export default function Profile() {
 
   const updateProfileMutation = useMutation({
     mutationFn: async (data: ProfileFormData) => {
-      return await apiRequest("/api/users/update-profile", {
+      const response = await fetch("/api/users/update-profile", {
         method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
         body: JSON.stringify(data),
       });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to update profile");
+      }
+
+      return response.json();
     },
     onSuccess: () => {
       toast({
@@ -259,7 +281,7 @@ export default function Profile() {
                 <Mail className="h-4 w-4 text-gray-500" />
                 <span className="text-sm">Email adres</span>
               </div>
-              <span className="text-sm text-gray-600">{user.email}</span>
+              <span className="text-sm text-gray-600">{(user as any).email}</span>
             </div>
 
             <div className="flex items-center justify-between">
@@ -267,18 +289,18 @@ export default function Profile() {
                 <Shield className="h-4 w-4 text-gray-500" />
                 <span className="text-sm">Rol</span>
               </div>
-              <Badge variant={getRoleBadgeVariant(user.role)}>
-                {getRoleLabel(user.role)}
+              <Badge variant={getRoleBadgeVariant((user as any).role)}>
+                {getRoleLabel((user as any).role)}
               </Badge>
             </div>
 
-            {user.phone && (
+            {(user as any).phone && (
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <Phone className="h-4 w-4 text-gray-500" />
                   <span className="text-sm">Telefoon</span>
                 </div>
-                <span className="text-sm text-gray-600">{user.phone}</span>
+                <span className="text-sm text-gray-600">{(user as any).phone}</span>
               </div>
             )}
 

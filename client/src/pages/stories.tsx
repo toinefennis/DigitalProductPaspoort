@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation, useRoute } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -76,6 +76,25 @@ export default function Stories() {
   
   // Check if user can moderate
   const canModerate = (currentUser as any)?.role === 'admin' || (currentUser as any)?.role === 'manager';
+
+  // Check for story parameter in URL and auto-expand that story
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const storyId = urlParams.get('story');
+    if (storyId) {
+      const id = parseInt(storyId);
+      if (!isNaN(id)) {
+        setExpandedStory(id);
+        // Scroll to story after a brief delay to ensure it's rendered
+        setTimeout(() => {
+          const element = document.getElementById(`story-${id}`);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 500);
+      }
+    }
+  }, []);
 
   // Query products for linking
   const { data: products } = useQuery({
@@ -236,32 +255,32 @@ export default function Stories() {
 
   // Social media sharing functions
   const shareOnFacebook = (story: Story) => {
-    const url = `${window.location.origin}/stories`;
-    const text = `${story.title} - Bekijk meer verhalen over circulaire economie`;
+    const url = `${window.location.origin}/stories?story=${story.id}`;
+    const text = `${story.title} - Bekijk dit inspirerende verhaal over circulaire economie`;
     const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`;
     window.open(shareUrl, '_blank', 'width=600,height=400');
   };
 
   const shareOnTwitter = (story: Story) => {
-    const url = `${window.location.origin}/stories`;
-    const text = `Inspirerend verhaal: "${story.title}" 🌱 Ontdek meer circulaire verhalen op Groningen Werkt Circulair! #GroningenWerktCirculair #Duurzaamheid #CirculaireEconomie`;
+    const url = `${window.location.origin}/stories?story=${story.id}`;
+    const text = `Inspirerend verhaal: "${story.title}" 🌱 Ontdek dit circulaire verhaal op Groningen Werkt Circulair! #GroningenWerktCirculair #Duurzaamheid #CirculaireEconomie`;
     const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
     window.open(shareUrl, '_blank', 'width=600,height=400');
   };
 
   const shareOnLinkedIn = (story: Story) => {
-    const url = `${window.location.origin}/stories`;
-    const summary = `Ontdek inspirerende verhalen over circulaire economie en duurzaamheid in Groningen. "${story.title}" en meer verhalen op het Groningen Werkt Circulair platform.`;
+    const url = `${window.location.origin}/stories?story=${story.id}`;
+    const summary = `Ontdek dit inspirerende verhaal over circulaire economie: "${story.title}" op het Groningen Werkt Circulair platform.`;
     const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}&title=${encodeURIComponent('Groningen Werkt Circulair - Verhalen')}&summary=${encodeURIComponent(summary)}`;
     window.open(shareUrl, '_blank', 'width=600,height=400');
   };
 
   const copyStoryLink = (story: Story) => {
-    const shareUrl = `${window.location.origin}/stories`;
+    const shareUrl = `${window.location.origin}/stories?story=${story.id}`;
     navigator.clipboard.writeText(shareUrl).then(() => {
       toast({
         title: "Link gekopieerd!",
-        description: "De link naar de verhalen pagina is naar het klembord gekopieerd.",
+        description: "De directe link naar dit verhaal is naar het klembord gekopieerd.",
       });
     });
   };
@@ -390,7 +409,11 @@ export default function Stories() {
         ) : (
           <div className="space-y-6">
             {filteredStories.map((story) => (
-              <Card key={story.id} className="overflow-hidden">
+              <Card 
+                key={story.id} 
+                id={`story-${story.id}`}
+                className={`overflow-hidden ${expandedStory === story.id ? 'ring-2 ring-gwc-primary shadow-lg' : ''}`}
+              >
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-3">

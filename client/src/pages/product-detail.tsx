@@ -131,8 +131,12 @@ export default function ProductDetail() {
             credentials: 'include',
           });
 
+          console.log("Photo response status:", photoResponse.status);
+          
           if (!photoResponse.ok) {
-            throw new Error('Foto upload mislukt');
+            const errorText = await photoResponse.text();
+            console.error("Photo upload error response:", errorText);
+            throw new Error(`Foto upload mislukt: ${errorText || photoResponse.statusText}`);
           }
 
           const photoResult = await photoResponse.json();
@@ -144,7 +148,7 @@ export default function ProductDetail() {
         }
       }
 
-      const updateData = {
+      const updateData: any = {
         ...data,
         materialProperties: Object.keys(materialProperties).some(key => materialProperties[key as keyof typeof materialProperties]) 
           ? materialProperties 

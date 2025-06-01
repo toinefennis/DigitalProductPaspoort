@@ -24,6 +24,7 @@ import Profile from "@/pages/profile";
 import Stories from "@/pages/stories";
 import ShareStory from "@/pages/share-story";
 import EditStory from "@/pages/edit-story";
+import CreateProductStory from "@/pages/create-product-story";
 import GtinRegistry from "@/pages/gtin-registry";
 import NotFound from "@/pages/not-found";
 import { useAuth } from "@/hooks/useAuth";
@@ -62,6 +63,8 @@ function Router() {
       <Route path="/stories" component={Stories} />
       <Route path="/share-story" component={ShareStory} />
       <Route path="/edit-story/:id" component={EditStory} />
+      <Route path="/create-product-story/:productId" component={CreateProductStory} />
+      <Route path="/create-product-story/gtin/:gtin" component={CreateProductStory} />
       <Route path="/product/:id" component={ProductDetail} />
       <Route path="/product/gtin/:gtin" component={ProductDetail} />
       <Route path="/add-product" component={AddProduct} />

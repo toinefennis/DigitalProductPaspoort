@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, serial, integer, boolean, timestamp, jsonb } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -59,6 +59,70 @@ export const eventsRelations = relations(events, ({ one }) => ({
   }),
 }));
 
+// Users table for authentication and roles
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  email: varchar("email", { length: 255 }).notNull().unique(),
+  username: varchar("username", { length: 100 }).notNull().unique(),
+  password: varchar("password", { length: 255 }).notNull(),
+  role: varchar("role", { length: 50 }).notNull().default("user"), // 'admin', 'manager', 'user'
+  firstName: varchar("first_name", { length: 100 }),
+  lastName: varchar("last_name", { length: 100 }),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Notifications/Alerts table
+export const notifications = pgTable("notifications", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id),
+  title: varchar("title", { length: 255 }).notNull(),
+  message: text("message").notNull(),
+  type: varchar("type", { length: 50 }).notNull(), // 'product_change', 'status_update', 'system'
+  isRead: boolean("is_read").default(false),
+  productId: integer("product_id").references(() => products.id),
+  metadata: jsonb("metadata").$type<{
+    action?: string;
+    oldValue?: string;
+    newValue?: string;
+    changedBy?: string;
+  }>().default({}),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// User Sessions table
+export const userSessions = pgTable("user_sessions", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Relations
+export const usersRelations = relations(users, ({ many }) => ({
+  notifications: many(notifications),
+  sessions: many(userSessions),
+}));
+
+export const notificationsRelations = relations(notifications, ({ one }) => ({
+  user: one(users, {
+    fields: [notifications.userId],
+    references: [users.id],
+  }),
+  product: one(products, {
+    fields: [notifications.productId],
+    references: [products.id],
+  }),
+}));
+
+export const userSessionsRelations = relations(userSessions, ({ one }) => ({
+  user: one(users, {
+    fields: [userSessions.userId],
+    references: [users.id],
+  }),
+}));
+
 export const insertProductSchema = createInsertSchema(products).omit({
   id: true,
   createdAt: true,
@@ -70,10 +134,25 @@ export const insertEventSchema = createInsertSchema(events).omit({
   createdAt: true,
 });
 
+export const insertUserSchema = createInsertSchema(users).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertNotificationSchema = createInsertSchema(notifications).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type InsertProduct = z.infer<typeof insertProductSchema>;
 export type Product = typeof products.$inferSelect;
 export type InsertEvent = z.infer<typeof insertEventSchema>;
 export type Event = typeof events.$inferSelect;
+export type InsertUser = z.infer<typeof insertUserSchema>;
+export type User = typeof users.$inferSelect;
+export type InsertNotification = z.infer<typeof insertNotificationSchema>;
+export type Notification = typeof notifications.$inferSelect;
 
 // Statistics type for dashboard
 export type DashboardStats = {

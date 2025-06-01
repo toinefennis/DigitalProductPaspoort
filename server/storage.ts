@@ -1,4 +1,19 @@
-import { products, events, type Product, type InsertProduct, type Event, type InsertEvent, type DashboardStats, type ProductWithEvents } from "@shared/schema";
+import { 
+  products, 
+  events, 
+  users, 
+  notifications, 
+  type Product, 
+  type InsertProduct, 
+  type Event, 
+  type InsertEvent, 
+  type User,
+  type InsertUser,
+  type Notification,
+  type InsertNotification,
+  type DashboardStats, 
+  type ProductWithEvents 
+} from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, count, and } from "drizzle-orm";
 

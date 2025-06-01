@@ -975,6 +975,107 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // GTIN Registry routes (Manager/Admin only)
+  app.get("/api/gtin-registry", async (req, res) => {
+    try {
+      const sessionUser = (req as any).session?.user;
+      if (!sessionUser) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      // Check if user is manager or admin
+      if (sessionUser.role !== 'manager' && sessionUser.role !== 'admin') {
+        return res.status(403).json({ message: "Access denied. Manager or Admin role required." });
+      }
+
+      const registries = await storage.getAllGtinRegistry();
+      res.json(registries);
+    } catch (error) {
+      console.error("Error fetching GTIN registries:", error);
+      res.status(500).json({ message: "Failed to fetch GTIN registries" });
+    }
+  });
+
+  app.get("/api/gtin-registry/:id", async (req, res) => {
+    try {
+      const sessionUser = (req as any).session?.user;
+      if (!sessionUser) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      if (sessionUser.role !== 'manager' && sessionUser.role !== 'admin') {
+        return res.status(403).json({ message: "Access denied. Manager or Admin role required." });
+      }
+
+      const registry = await storage.getGtinRegistry(parseInt(req.params.id));
+      if (!registry) {
+        return res.status(404).json({ message: "GTIN registry not found" });
+      }
+      res.json(registry);
+    } catch (error) {
+      console.error("Error fetching GTIN registry:", error);
+      res.status(500).json({ message: "Failed to fetch GTIN registry" });
+    }
+  });
+
+  app.post("/api/gtin-registry", async (req, res) => {
+    try {
+      const sessionUser = (req as any).session?.user;
+      if (!sessionUser) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      if (sessionUser.role !== 'manager' && sessionUser.role !== 'admin') {
+        return res.status(403).json({ message: "Access denied. Manager or Admin role required." });
+      }
+
+      const registryData = { ...req.body, registeredBy: sessionUser.id };
+      const newRegistry = await storage.createGtinRegistry(registryData);
+      res.status(201).json(newRegistry);
+    } catch (error) {
+      console.error("Error creating GTIN registry:", error);
+      res.status(500).json({ message: "Failed to create GTIN registry" });
+    }
+  });
+
+  app.patch("/api/gtin-registry/:id", async (req, res) => {
+    try {
+      const sessionUser = (req as any).session?.user;
+      if (!sessionUser) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      if (sessionUser.role !== 'manager' && sessionUser.role !== 'admin') {
+        return res.status(403).json({ message: "Access denied. Manager or Admin role required." });
+      }
+
+      const updatedRegistry = await storage.updateGtinRegistry(parseInt(req.params.id), req.body);
+      res.json(updatedRegistry);
+    } catch (error) {
+      console.error("Error updating GTIN registry:", error);
+      res.status(500).json({ message: "Failed to update GTIN registry" });
+    }
+  });
+
+  app.delete("/api/gtin-registry/:id", async (req, res) => {
+    try {
+      const sessionUser = (req as any).session?.user;
+      if (!sessionUser) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      if (sessionUser.role !== 'manager' && sessionUser.role !== 'admin') {
+        return res.status(403).json({ message: "Access denied. Manager or Admin role required." });
+      }
+
+      await storage.deleteGtinRegistry(parseInt(req.params.id));
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting GTIN registry:", error);
+      res.status(500).json({ message: "Failed to delete GTIN registry" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

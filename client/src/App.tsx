@@ -24,6 +24,7 @@ import Profile from "@/pages/profile";
 import Stories from "@/pages/stories";
 import ShareStory from "@/pages/share-story";
 import EditStory from "@/pages/edit-story";
+import GtinRegistry from "@/pages/gtin-registry";
 import NotFound from "@/pages/not-found";
 import { useAuth } from "@/hooks/useAuth";
 

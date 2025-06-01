@@ -4,6 +4,7 @@ import {
   users, 
   notifications,
   stories,
+  gtinRegistry,
   type Product, 
   type InsertProduct, 
   type Event, 
@@ -14,6 +15,8 @@ import {
   type InsertNotification,
   type Story,
   type InsertStory,
+  type GtinRegistry,
+  type InsertGtinRegistry,
   type DashboardStats, 
   type ProductWithEvents 
 } from "@shared/schema";
@@ -59,6 +62,14 @@ export interface IStorage {
   updateStory(id: number, updates: Partial<InsertStory>): Promise<Story>;
   deleteStory(id: number): Promise<void>;
   moderateStory(id: number, status: string, moderatedBy: string, notes?: string): Promise<Story>;
+  
+  // GTIN Registry operations (Manager/Admin only)
+  createGtinRegistry(gtinData: InsertGtinRegistry): Promise<GtinRegistry>;
+  getGtinRegistry(id: number): Promise<GtinRegistry | undefined>;
+  getGtinRegistryByGtin(gtin: string): Promise<GtinRegistry | undefined>;
+  getAllGtinRegistry(): Promise<GtinRegistry[]>;
+  updateGtinRegistry(id: number, updates: Partial<InsertGtinRegistry>): Promise<GtinRegistry>;
+  deleteGtinRegistry(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -327,6 +338,42 @@ export class DatabaseStorage implements IStorage {
       .where(eq(stories.id, id))
       .returning();
     return moderatedStory;
+  }
+
+  // GTIN Registry operations (Manager/Admin only)
+  async createGtinRegistry(gtinData: InsertGtinRegistry): Promise<GtinRegistry> {
+    const [newGtinRegistry] = await db
+      .insert(gtinRegistry)
+      .values(gtinData)
+      .returning();
+    return newGtinRegistry;
+  }
+
+  async getGtinRegistry(id: number): Promise<GtinRegistry | undefined> {
+    const [registry] = await db.select().from(gtinRegistry).where(eq(gtinRegistry.id, id));
+    return registry;
+  }
+
+  async getGtinRegistryByGtin(gtin: string): Promise<GtinRegistry | undefined> {
+    const [registry] = await db.select().from(gtinRegistry).where(eq(gtinRegistry.gtin, gtin));
+    return registry;
+  }
+
+  async getAllGtinRegistry(): Promise<GtinRegistry[]> {
+    return await db.select().from(gtinRegistry).orderBy(desc(gtinRegistry.createdAt));
+  }
+
+  async updateGtinRegistry(id: number, updates: Partial<InsertGtinRegistry>): Promise<GtinRegistry> {
+    const [updatedRegistry] = await db
+      .update(gtinRegistry)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(gtinRegistry.id, id))
+      .returning();
+    return updatedRegistry;
+  }
+
+  async deleteGtinRegistry(id: number): Promise<void> {
+    await db.delete(gtinRegistry).where(eq(gtinRegistry.id, id));
   }
 }
 

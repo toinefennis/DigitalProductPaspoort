@@ -20,6 +20,7 @@ import type { ProductWithEvents, InsertProduct } from "@shared/schema";
 
 const editFormSchema = z.object({
   name: z.string().min(1, "Naam is verplicht"),
+  gtin: z.string().optional(),
   description: z.string().optional(),
   brand: z.string().optional(),
   material: z.string().optional(),
@@ -103,6 +104,7 @@ export default function ProductDetail() {
     resolver: zodResolver(editFormSchema),
     defaultValues: {
       name: "",
+      gtin: "",
       description: "",
       brand: "",
       material: "",
@@ -283,6 +285,7 @@ export default function ProductDetail() {
       const materialProps = product.materialProperties || {};
       editForm.reset({
         name: product.name || "",
+        gtin: product.gtin || "",
         description: product.description || "",
         brand: product.brand || "",
         material: product.material || "",

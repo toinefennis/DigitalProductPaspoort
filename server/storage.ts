@@ -335,7 +335,23 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllStories(): Promise<Story[]> {
-    return await db.select().from(stories).orderBy(desc(stories.createdAt));
+    const results = await db
+      .select({
+        story: stories,
+        product: products
+      })
+      .from(stories)
+      .leftJoin(products, eq(stories.productId, products.id))
+      .orderBy(desc(stories.createdAt));
+    
+    return results.map(result => ({
+      ...result.story,
+      product: result.product ? {
+        id: result.product.id,
+        name: result.product.name,
+        gtin: result.product.gtin
+      } : null
+    }));
   }
 
   async updateStory(id: number, updates: Partial<InsertStory>): Promise<Story> {

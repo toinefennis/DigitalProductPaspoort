@@ -68,12 +68,56 @@ export default function Stories() {
   const [sortBy, setSortBy] = useState("recent");
   const [editingStory, setEditingStory] = useState<number | null>(null);
   const [editForm, setEditForm] = useState({ title: "", content: "", tags: "" });
+  const [expandedStory, setExpandedStory] = useState<number | null>(null);
+  const [linkingStory, setLinkingStory] = useState<number | null>(null);
   const { user: currentUser } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
   // Check if user can moderate
   const canModerate = (currentUser as any)?.role === 'admin' || (currentUser as any)?.role === 'manager';
+
+  // Query products for linking
+  const { data: products } = useQuery({
+    queryKey: ["/api/products"],
+    enabled: linkingStory !== null,
+  });
+
+  // Link story to product function
+  const handleLinkProduct = (storyId: number) => {
+    setLinkingStory(storyId);
+  };
+
+  // Link story mutation
+  const linkStoryMutation = useMutation({
+    mutationFn: async ({ storyId, productId }: { storyId: number; productId: number | null }) => {
+      const response = await fetch(`/api/stories/${storyId}/link-product`, {
+        method: 'PATCH',
+        body: JSON.stringify({ productId }),
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to link story to product');
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/stories"] });
+      setLinkingStory(null);
+      toast({
+        title: "Product gekoppeld",
+        description: "Het verhaal is succesvol gekoppeld aan het product.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Fout bij koppelen",
+        description: error.message || "Er is een fout opgetreden bij het koppelen.",
+        variant: "destructive",
+      });
+    },
+  });
 
   // Moderation mutations
   const moderateStoryMutation = useMutation({
@@ -421,15 +465,30 @@ export default function Stories() {
                     </div>
                   ) : (
                     /* Normal Story Content */
-                    <p className="text-gray-700 leading-relaxed">
-                      {story.content.length > 200 
-                        ? `${story.content.substring(0, 200)}...` 
-                        : story.content}
-                    </p>
+                    <div className="text-gray-700 leading-relaxed">
+                      <p className="whitespace-pre-wrap">
+                        {expandedStory === story.id || story.content.length <= 200
+                          ? story.content
+                          : `${story.content.substring(0, 200)}...`
+                        }
+                      </p>
+                      {story.content.length > 200 && (
+                        <Button
+                          variant="link"
+                          size="sm"
+                          onClick={() => setExpandedStory(
+                            expandedStory === story.id ? null : story.id
+                          )}
+                          className="p-0 h-auto text-blue-600 mt-2"
+                        >
+                          {expandedStory === story.id ? "Minder tonen" : "Meer lezen"}
+                        </Button>
+                      )}
+                    </div>
                   )}
 
                   {/* Product Link */}
-                  {story.product && (
+                  {story.product ? (
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
@@ -451,6 +510,31 @@ export default function Stories() {
                         </Button>
                       </div>
                     </div>
+                  ) : (
+                    // Show link product button for users who can edit
+                    (currentUser && ((currentUser as any).role === 'admin' || (currentUser as any).role === 'manager' || story.authorId === String((currentUser as any).id))) && (
+                      <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2">
+                            <div className="w-8 h-8 bg-gray-100 rounded flex items-center justify-center">
+                              <Package className="h-4 w-4 text-gray-600" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">Product koppeling</p>
+                              <p className="text-xs text-gray-600">Nog geen product gekoppeld</p>
+                            </div>
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleLinkProduct(story.id)}
+                            className="border-gray-300 text-gray-700 hover:bg-gray-100"
+                          >
+                            Koppel Product
+                          </Button>
+                        </div>
+                      </div>
+                    )
                   )}
 
                   {/* Photos */}

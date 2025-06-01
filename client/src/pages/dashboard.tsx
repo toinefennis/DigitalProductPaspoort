@@ -110,7 +110,16 @@ export default function Dashboard() {
 
   const deleteEventMutation = useMutation({
     mutationFn: async (eventId: number) => {
-      return apiRequest(`/api/events/${eventId}`, "DELETE");
+      const response = await fetch(`/api/events/${eventId}`, {
+        method: "DELETE",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
     },
     onSuccess: () => {
       toast({

@@ -45,6 +45,10 @@ export default function EditStory() {
     isPublic: true,
   });
 
+  const [selectedPhotos, setSelectedPhotos] = useState<File[]>([]);
+  const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
+  const [existingPhotos, setExistingPhotos] = useState<string[]>([]);
+
   // Fetch story data
   const { data: stories } = useQuery<Story[]>({
     queryKey: ["/api/stories"],

@@ -808,7 +808,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         isPublic: isPublic === true || isPublic === 'true',
       };
 
+      console.log("Calling storage.updateStory with:", updates);
       const updatedStory = await storage.updateStory(parseInt(id), updates);
+      console.log("Storage update successful:", updatedStory);
       res.json(updatedStory);
     } catch (error) {
       console.error("Error updating story:", error);

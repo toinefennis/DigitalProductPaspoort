@@ -1,7 +1,10 @@
 import { Bell, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLocation } from "wouter";
 
 export function TopAppBar() {
+  const [, setLocation] = useLocation();
+
   return (
     <header className="bg-gwc-primary text-white shadow-material-2 relative z-10">
       <div className="flex items-center justify-between p-4">
@@ -16,6 +19,7 @@ export function TopAppBar() {
             variant="ghost"
             size="icon"
             className="text-white hover:bg-white hover:bg-opacity-10"
+            onClick={() => setLocation("/notifications")}
           >
             <Bell className="h-5 w-5" />
           </Button>
@@ -23,6 +27,7 @@ export function TopAppBar() {
             variant="ghost"
             size="icon"
             className="text-white hover:bg-white hover:bg-opacity-10"
+            onClick={() => setLocation("/users")}
           >
             <User className="h-5 w-5" />
           </Button>

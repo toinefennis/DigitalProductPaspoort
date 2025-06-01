@@ -37,7 +37,8 @@ export default function Login() {
         title: "Inloggen succesvol",
         description: "Je bent succesvol ingelogd",
       });
-      setLocation("/");
+      // Force page reload to update authentication state
+      window.location.href = "/";
     },
     onError: (error: any) => {
       toast({
@@ -119,6 +120,24 @@ export default function Login() {
           </div>
         </CardContent>
       </Card>
+      
+      {/* MVP Disclaimer */}
+      <div className="mt-6 text-center text-xs text-gray-500 max-w-sm">
+        <p className="mb-2">
+          Dit is een MVP (Minimum Viable Product) ontwikkeld voor demonstratiedoeleinden.
+        </p>
+        <p>
+          Meer informatie over dit project vindt u op{" "}
+          <a 
+            href="https://groningenwerktcirculair.info" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-gwc-primary hover:underline"
+          >
+            groningenwerktcirculair.info
+          </a>
+        </p>
+      </div>
     </div>
   );
 }

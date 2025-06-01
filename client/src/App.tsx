@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { TopAppBar } from "@/components/layout/top-app-bar";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { FloatingActionButton } from "@/components/layout/floating-action-button";
+import { Footer } from "@/components/layout/footer";
 import Dashboard from "@/pages/dashboard";
 import Scanner from "@/pages/scanner";
 import ProductDetail from "@/pages/product-detail";
@@ -71,6 +72,7 @@ function App() {
           <main className="flex-1 overflow-hidden">
             <Router />
           </main>
+          <Footer />
           <BottomNavigation />
           <FloatingActionButton />
         </div>

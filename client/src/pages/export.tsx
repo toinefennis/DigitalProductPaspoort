@@ -28,7 +28,8 @@ export default function Export() {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${type}_export_${new Date().toISOString().split('T')[0]}.${format}`;
+      const extension = format === 'excel' ? 'xlsx' : format;
+      a.download = `${type}_export_${new Date().toISOString().split('T')[0]}.${extension}`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -66,7 +67,7 @@ export default function Export() {
   const formatOptions = [
     { value: "csv", label: "CSV", description: "Comma-separated values" },
     { value: "json", label: "JSON", description: "JavaScript Object Notation" },
-    { value: "xlsx", label: "Excel", description: "Microsoft Excel formaat" },
+    { value: "excel", label: "Excel (GS1)", description: "GS1-compliant Excel met GDSN/EPCIS" },
   ];
 
   return (
@@ -149,6 +150,12 @@ export default function Export() {
               <p>• <strong>Actieve uitleningen:</strong> Alleen lopende uitleningen met contactgegevens</p>
               <p>• <strong>Gebruikers:</strong> Alle geregistreerde gebruikers</p>
               <p>• <strong>Volledige database:</strong> Alle tabellen en gegevens</p>
+              <br />
+              <p><strong>Excel (GS1) formaat bevat:</strong></p>
+              <p>• <strong>GS1 Product Information:</strong> GDSN-compliant productgegevens met GTIN, GLN</p>
+              <p>• <strong>EPCIS Events:</strong> Traceability events met business steps en dispositions</p>
+              <p>• <strong>Gebruikers:</strong> Contactgegevens voor borrower tracking</p>
+              <p>• Volledig compatibel met GS1 standaarden voor supply chain integratie</p>
             </div>
           </CardContent>
         </Card>

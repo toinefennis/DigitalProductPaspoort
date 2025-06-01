@@ -303,8 +303,127 @@ export async function registerRoutes(app: Express): Promise<Server> {
         } else {
           res.send('No data available');
         }
+      } else if (format === "excel") {
+        const XLSX = require('xlsx');
+        
+        // Helper functions for GS1 mapping
+        const mapEventTypeToBusinessStep = (eventType: string): string => {
+          switch (eventType) {
+            case 'aangemaakt': return 'commissioning';
+            case 'reparatie': return 'repairing';
+            case 'hergebruik': return 'reusing';
+            case 'uitlening': return 'departing';
+            case 'retournering': return 'arriving';
+            case 'recycling': return 'disposing';
+            default: return 'other';
+          }
+        };
+
+        const mapEventTypeToDisposition = (eventType: string): string => {
+          switch (eventType) {
+            case 'aangemaakt': return 'active';
+            case 'reparatie': return 'in_progress';
+            case 'hergebruik': return 'active';
+            case 'uitlening': return 'in_transit';
+            case 'retournering': return 'active';
+            case 'recycling': return 'disposed';
+            default: return 'unknown';
+          }
+        };
+
+        // Create workbook for GS1-compliant export
+        const wb = XLSX.utils.book_new();
+        
+        if (type === "products" || type === "full") {
+          const products = type === "products" ? data : (data.find((d: any) => d.table === "products")?.data || []);
+          
+          // GS1 Product Information Sheet
+          const gs1ProductData = products.map((p: any) => ({
+            'GTIN': p.gtin || '',
+            'Product Name': p.name || '',
+            'Brand Name': p.brand || '',
+            'Product Description': p.description || '',
+            'Product Type': p.type || '',
+            'Net Content': '', // Could be added to schema
+            'Country of Origin': 'NL', // Default to Netherlands
+            'Target Market': 'NL',
+            'Product Status': p.status || '',
+            'Created Date': p.createdAt ? new Date(p.createdAt).toISOString().split('T')[0] : '',
+            'Last Modified': p.updatedAt ? new Date(p.updatedAt).toISOString().split('T')[0] : '',
+            'Packaging Level': 'Consumer Unit',
+            'Is Trade Item': 'true',
+            'GLN of Information Provider': process.env.GS1_SANDBOX_GLN || '8720796166279'
+          }));
+          
+          const ws1 = XLSX.utils.json_to_sheet(gs1ProductData);
+          
+          // Set column widths
+          ws1['!cols'] = [
+            { wch: 15 }, { wch: 30 }, { wch: 20 }, { wch: 40 }, { wch: 15 },
+            { wch: 15 }, { wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 12 },
+            { wch: 12 }, { wch: 18 }, { wch: 15 }, { wch: 20 }
+          ];
+          
+          XLSX.utils.book_append_sheet(wb, ws1, 'GS1 Product Information');
+        }
+        
+        if (type === "events" || type === "full") {
+          const events = type === "events" ? data : (data.find((d: any) => d.table === "events")?.data || []);
+          
+          // EPCIS Events Sheet
+          const eventsData = events.map((e: any) => ({
+            'Event ID': e.id,
+            'GTIN': e.product?.gtin || '',
+            'Product Name': e.product?.name || '',
+            'Event Type': e.eventType,
+            'Event Description': e.description || '',
+            'Event Date': e.createdAt ? new Date(e.createdAt).toISOString() : '',
+            'Location GLN': process.env.GS1_SANDBOX_GLN || '8720796166279',
+            'Business Step': mapEventTypeToBusinessStep(e.eventType),
+            'Disposition': mapEventTypeToDisposition(e.eventType),
+            'Read Point': 'GWC Groningen',
+            'Business Location': 'GWC Repair Cafe'
+          }));
+          
+          const ws2 = XLSX.utils.json_to_sheet(eventsData);
+          ws2['!cols'] = [
+            { wch: 10 }, { wch: 15 }, { wch: 30 }, { wch: 20 }, { wch: 40 },
+            { wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 20 }
+          ];
+          
+          XLSX.utils.book_append_sheet(wb, ws2, 'EPCIS Events');
+        }
+        
+        if (type === "users" || type === "full") {
+          const users = type === "users" ? data : (data.find((d: any) => d.table === "users")?.data || []);
+          
+          // Users sheet
+          const usersData = users.map((u: any) => ({
+            'User ID': u.id,
+            'Username': u.username || '',
+            'Email': u.email || '',
+            'Role': u.role || '',
+            'Full Name': u.fullName || '',
+            'Phone': u.phone || '',
+            'Created Date': u.createdAt ? new Date(u.createdAt).toISOString().split('T')[0] : ''
+          }));
+          
+          const ws3 = XLSX.utils.json_to_sheet(usersData);
+          ws3['!cols'] = [
+            { wch: 10 }, { wch: 20 }, { wch: 30 }, { wch: 15 }, { wch: 25 }, { wch: 15 }, { wch: 12 }
+          ];
+          
+          XLSX.utils.book_append_sheet(wb, ws3, 'Users');
+        }
+        
+        // Generate Excel buffer
+        const excelBuffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+        
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', `attachment; filename="GS1-DPP-${filename}-${new Date().toISOString().split('T')[0]}.xlsx"`);
+        res.send(excelBuffer);
       } else {
-        return res.status(400).json({ message: "Unsupported format" });
+        return res.status(400).json({ message: "Unsupported format. Use json, csv, or excel" });
       }
     } catch (error) {
       console.error("Error exporting data:", error);

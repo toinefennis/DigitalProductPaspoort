@@ -237,6 +237,39 @@ export default function ProductDetail() {
     },
   });
 
+  // Convert product to GTIN registry
+  const convertToGtinRegistry = () => {
+    if (!product) return;
+    
+    // Navigate to GTIN registry with pre-filled data
+    const prefilledData = {
+      gtin: product.gtin || '',
+      productName: product.name || '',
+      brandName: product.brand || '',
+      productDescription: product.description || '',
+      productWeight: 1, // Default weight
+      fiberComposition: product.material ? JSON.stringify([{
+        component: "hoofdstof",
+        vezels: [{
+          code: product.material.toUpperCase().substring(0, 3),
+          naam: product.material,
+          percentage: 100
+        }]
+      }]) : '',
+      countryOfOrigin: product.origin || '',
+      productionDate: new Date().toISOString().split('T')[0]
+    };
+    
+    // Store the data temporarily and navigate
+    sessionStorage.setItem('gtinConversionData', JSON.stringify(prefilledData));
+    setLocation('/gtin-registry?convert=true');
+    
+    toast({
+      title: "Conversie gestart",
+      description: "Product wordt geconverteerd naar GTIN register met vooringevulde gegevens.",
+    });
+  };
+
   // Update form when product data loads
   useEffect(() => {
     if (product) {

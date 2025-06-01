@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,9 +11,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Plus, Save, Trash2, Edit, FileText, Globe, Factory, Recycle, Shield, Leaf } from "lucide-react";
+import { QRScanner } from "@/components/qr-scanner";
+import { Plus, Save, Trash2, Edit, FileText, Globe, Factory, Recycle, Shield, Leaf, QrCode, Calculator, Scan, Camera } from "lucide-react";
 import type { GtinRegistry, InsertGtinRegistry } from "@shared/schema";
 
 // Comprehensive GTIN Registry schema based on DPP requirements
@@ -125,6 +127,9 @@ const productCategories = [
 export default function GtinRegistry() {
   const [selectedRegistry, setSelectedRegistry] = useState<GtinRegistry | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [showScanner, setShowScanner] = useState(false);
+  const [co2Calculation, setCo2Calculation] = useState<any>(null);
+  const [isCalculatingCo2, setIsCalculatingCo2] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -144,6 +149,105 @@ export default function GtinRegistry() {
       productDescription: "",
     },
   });
+
+  // Handle scanning
+  const handleScan = (data: string, type: 'barcode' | 'qr') => {
+    if (type === 'barcode') {
+      form.setValue('gtin', data);
+      toast({
+        title: "GTIN gescand",
+        description: `GTIN ${data} is automatisch ingevuld.`,
+      });
+    } else if (type === 'qr' && data.startsWith('http')) {
+      form.setValue('uniqueProductId', data);
+      toast({
+        title: "Product URL gescand",
+        description: "Product URL is automatisch ingevuld.",
+      });
+    }
+    setShowScanner(false);
+  };
+
+  // Calculate CO2 footprint
+  const calculateCO2 = async () => {
+    const fiberComposition = form.getValues('fiberComposition');
+    const productWeight = parseFloat(form.getValues('productWeight')?.toString() || '1');
+
+    if (!fiberComposition) {
+      toast({
+        title: "Ontbrekende gegevens",
+        description: "Voer eerst de vezelsamenstelling in voor CO2 berekening.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsCalculatingCo2(true);
+    try {
+      const result = await apiRequest('POST', '/api/materials/co2/calculate', {
+        fiberComposition,
+        productWeight
+      }) as any;
+      
+      setCo2Calculation(result);
+      
+      // Update sustainability data with calculated CO2
+      const currentSustainabilityData = form.getValues('sustainabilityData');
+      let sustainabilityObj = {};
+      
+      if (currentSustainabilityData) {
+        try {
+          sustainabilityObj = JSON.parse(currentSustainabilityData);
+        } catch (e) {
+          sustainabilityObj = {};
+        }
+      }
+      
+      const updatedSustainability = {
+        ...sustainabilityObj,
+        co2_footprint: {
+          total_kg: result.total_co2_kg,
+          per_kg: result.co2_per_kg,
+          calculation_date: result.calculation_date,
+          components: result.components
+        }
+      };
+      
+      form.setValue('sustainabilityData', JSON.stringify(updatedSustainability, null, 2));
+      
+      toast({
+        title: "CO2 berekening voltooid",
+        description: `Totaal: ${result.total_co2_kg} kg CO2e (${result.co2_per_kg} kg CO2e/kg)`,
+      });
+      
+    } catch (error: any) {
+      toast({
+        title: "CO2 berekening mislukt",
+        description: error.message || "Er is een fout opgetreden bij de berekening.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsCalculatingCo2(false);
+    }
+  };
+
+  // Check for conversion data on load
+  useEffect(() => {
+    const conversionData = sessionStorage.getItem('gtinConversionData');
+    if (conversionData) {
+      try {
+        const data = JSON.parse(conversionData);
+        form.reset(data);
+        sessionStorage.removeItem('gtinConversionData');
+        toast({
+          title: "Product geconverteerd",
+          description: "Product gegevens zijn automatisch ingevuld vanuit het bestaande product.",
+        });
+      } catch (error) {
+        console.error('Error parsing conversion data:', error);
+      }
+    }
+  }, [form]);
 
   // Create mutation
   const createMutation = useMutation({
@@ -326,10 +430,50 @@ export default function GtinRegistry() {
             Uitgebreide productregistratie conform DPP vereisten voor textiel
           </p>
         </div>
-        <Button onClick={handleNewRegistry} className="bg-gwc-primary hover:bg-gwc-primary/90">
-          <Plus className="h-4 w-4 mr-2" />
-          Nieuwe Registratie
-        </Button>
+        <div className="flex space-x-2">
+          <Dialog open={showScanner} onOpenChange={setShowScanner}>
+            <DialogTrigger asChild>
+              <Button variant="outline">
+                <QrCode className="h-4 w-4 mr-2" />
+                GTIN/URL Scannen
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle>GTIN of Product URL Scannen</DialogTitle>
+              </DialogHeader>
+              <div className="py-4">
+                <QRScanner
+                  onScan={handleScan}
+                  onManualEntry={() => setShowScanner(false)}
+                />
+              </div>
+            </DialogContent>
+          </Dialog>
+          
+          <Button 
+            onClick={calculateCO2} 
+            variant="outline"
+            disabled={isCalculatingCo2}
+          >
+            {isCalculatingCo2 ? (
+              <>
+                <Calculator className="h-4 w-4 mr-2 animate-spin" />
+                Berekenen...
+              </>
+            ) : (
+              <>
+                <Calculator className="h-4 w-4 mr-2" />
+                CO2 Berekenen
+              </>
+            )}
+          </Button>
+          
+          <Button onClick={handleNewRegistry} className="bg-gwc-primary hover:bg-gwc-primary/90">
+            <Plus className="h-4 w-4 mr-2" />
+            Nieuwe Registratie
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

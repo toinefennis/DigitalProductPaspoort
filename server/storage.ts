@@ -152,6 +152,73 @@ export class DatabaseStorage implements IStorage {
     }));
   }
 
+  async createNotification(notification: InsertNotification): Promise<Notification> {
+    const [newNotification] = await db
+      .insert(notifications)
+      .values(notification)
+      .returning();
+    
+    return newNotification;
+  }
+
+  async getUserNotifications(userId: number, unreadOnly?: boolean): Promise<Notification[]> {
+    let query = db.select().from(notifications).where(eq(notifications.userId, userId));
+    
+    if (unreadOnly) {
+      query = query.where(eq(notifications.isRead, false));
+    }
+    
+    return await query.orderBy(desc(notifications.createdAt));
+  }
+
+  async markNotificationAsRead(notificationId: number): Promise<void> {
+    await db
+      .update(notifications)
+      .set({ isRead: true })
+      .where(eq(notifications.id, notificationId));
+  }
+
+  async markAllNotificationsAsRead(userId: number): Promise<void> {
+    await db
+      .update(notifications)
+      .set({ isRead: true })
+      .where(eq(notifications.userId, userId));
+  }
+
+  // User operations
+  async createUser(user: InsertUser): Promise<User> {
+    const [newUser] = await db
+      .insert(users)
+      .values(user)
+      .returning();
+    
+    return newUser;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return await db.select().from(users).orderBy(desc(users.createdAt));
+  }
+
+  async updateUserRole(userId: number, role: string): Promise<User> {
+    const [updatedUser] = await db
+      .update(users)
+      .set({ role })
+      .where(eq(users.id, userId))
+      .returning();
+    
+    return updatedUser;
+  }
+
   async getDashboardStats(): Promise<DashboardStats> {
     const totalProductsResult = await db
       .select({ count: count() })

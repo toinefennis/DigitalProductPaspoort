@@ -65,6 +65,17 @@ export default function EventLog() {
     }
   }, [suggestedType, setValue]);
 
+  // Calculate default return date when loan is selected
+  useEffect(() => {
+    if (selectedEventType === "uitleen") {
+      const defaultWeeks = 3;
+      const returnDate = new Date();
+      returnDate.setDate(returnDate.getDate() + (defaultWeeks * 7));
+      setValue("expectedReturn", returnDate);
+      setValue("loanDurationWeeks", defaultWeeks);
+    }
+  }, [selectedEventType, setValue]);
+
   const createEventMutation = useMutation({
     mutationFn: async (data: FormData) => {
       const formData = new FormData();

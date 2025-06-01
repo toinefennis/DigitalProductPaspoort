@@ -190,16 +190,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const event = await storage.createEvent(validatedEvent);
 
-      // Create notification for loan events
-      if (validatedEvent.eventType === "uitleen" && validatedEvent.borrowerName) {
-        await storage.createNotification({
-          userId: 1, // Default admin user
-          type: "loan_created",
-          title: "Nieuwe uitleen",
-          message: `Product "${product.name}" is uitgeleend aan ${validatedEvent.borrowerName}`,
-          productId: product.id,
-        });
-      }
+      // Create notification for loan events - temporarily disabled until notification system is fixed
+      // if (validatedEvent.eventType === "uitleen" && validatedEvent.borrowerName) {
+      //   await storage.createNotification({
+      //     userId: 1, // Default admin user
+      //     type: "loan_created",
+      //     title: "Nieuwe uitleen",
+      //     message: `Product "${product.name}" is uitgeleend aan ${validatedEvent.borrowerName}`,
+      //     productId: product.id,
+      //   });
+      // }
 
       res.status(201).json(event);
     } catch (error) {

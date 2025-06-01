@@ -787,9 +787,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("Found story:", { storyId: story.id, authorId: story.authorId, userId: sessionUser.id });
 
       // Check if user is the author or has moderation privileges
-      const canEdit = story.authorId === sessionUser.id.toString() || 
-                     sessionUser.role === 'admin' || 
-                     sessionUser.role === 'manager';
+      const isAuthor = story.authorId === sessionUser.id.toString();
+      const isAdmin = sessionUser.role === 'admin';
+      const isManager = sessionUser.role === 'manager';
+      const canEdit = isAuthor || isAdmin || isManager;
+      
+      console.log("Permission check:", { 
+        isAuthor, 
+        isAdmin, 
+        isManager, 
+        canEdit,
+        storyAuthorId: story.authorId,
+        sessionUserId: sessionUser.id,
+        sessionUserRole: sessionUser.role 
+      });
 
       if (!canEdit) {
         console.log("Permission denied:", { authorId: story.authorId, userId: sessionUser.id, role: sessionUser.role });

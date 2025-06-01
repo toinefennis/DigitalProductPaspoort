@@ -398,8 +398,12 @@ export default function Stories() {
                     </div>
 
                     <div className="flex items-center space-x-2">
-                      {/* Edit button for author */}
-                      {currentUser && story.authorId === (currentUser as any).id.toString() && (
+                      {/* Edit button for author or admin/manager */}
+                      {currentUser && (
+                        story.authorId === (currentUser as any).id.toString() || 
+                        (currentUser as any).role === 'admin' || 
+                        (currentUser as any).role === 'manager'
+                      ) && (
                         <Button 
                           variant="ghost" 
                           size="sm"

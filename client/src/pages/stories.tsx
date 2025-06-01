@@ -26,6 +26,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { formatDistanceToNow } from "date-fns";
 import { nl } from "date-fns/locale";
 import { useAuth } from "@/hooks/useAuth";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
 interface Story {
   id: number;
@@ -52,9 +55,78 @@ export default function Stories() {
   const [selectedTag, setSelectedTag] = useState("all");
   const [sortBy, setSortBy] = useState("recent");
   const { user: currentUser } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   
   // Check if user can moderate
   const canModerate = (currentUser as any)?.role === 'admin' || (currentUser as any)?.role === 'manager';
+
+  // Moderation mutations
+  const moderateStoryMutation = useMutation({
+    mutationFn: async ({ id, status, moderationNotes }: { id: number; status: string; moderationNotes?: string }) => {
+      const response = await fetch(`/api/stories/${id}/moderate`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status, moderationNotes }),
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to moderate story');
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/stories"] });
+      toast({
+        title: "Verhaal gemodereerd",
+        description: "Het verhaal is succesvol gemodereerd.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Fout",
+        description: error.message || "Er is een fout opgetreden bij het modereren.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteStoryMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await fetch(`/api/stories/${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete story');
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/stories"] });
+      toast({
+        title: "Verhaal verwijderd",
+        description: "Het verhaal is succesvol verwijderd.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Fout",
+        description: error.message || "Er is een fout opgetreden bij het verwijderen.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleModerate = (story: Story, status: string) => {
+    moderateStoryMutation.mutate({ id: story.id, status });
+  };
+
+  const handleDelete = (story: Story) => {
+    if (confirm(`Weet je zeker dat je het verhaal "${story.title}" wilt verwijderen?`)) {
+      deleteStoryMutation.mutate(story.id);
+    }
+  };
 
   // Fetch stories
   const { data: stories, isLoading } = useQuery<Story[]>({
@@ -248,6 +320,25 @@ export default function Stories() {
                     </div>
                   )}
 
+                  {/* Status Badge for Moderators */}
+                  {canModerate && story.status && (
+                    <div className="flex items-center space-x-2">
+                      <Badge 
+                        variant={story.status === 'approved' ? 'default' : story.status === 'pending' ? 'secondary' : 'destructive'}
+                        className="text-xs"
+                      >
+                        {story.status === 'approved' && <CheckCircle className="h-3 w-3 mr-1" />}
+                        {story.status === 'pending' && <AlertTriangle className="h-3 w-3 mr-1" />}
+                        {story.status === 'rejected' && <XCircle className="h-3 w-3 mr-1" />}
+                        {story.status === 'approved' ? 'Goedgekeurd' : 
+                         story.status === 'pending' ? 'In afwachting' : 'Afgewezen'}
+                      </Badge>
+                      {story.moderatedBy && (
+                        <span className="text-xs text-gray-500">door {story.moderatedBy}</span>
+                      )}
+                    </div>
+                  )}
+
                   {/* Stats and Actions */}
                   <div className="flex items-center justify-between pt-4 border-t">
                     <div className="flex items-center space-x-4 text-sm text-gray-600">
@@ -276,6 +367,54 @@ export default function Stories() {
                       </Button>
                     </div>
                   </div>
+
+                  {/* Moderation Actions for Admin/Manager */}
+                  {canModerate && (
+                    <div className="border-t pt-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <Shield className="h-4 w-4 text-blue-600" />
+                          <span className="text-sm font-medium text-blue-600">Moderatie</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          {story.status !== 'approved' && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="text-green-600 border-green-600 hover:bg-green-50"
+                              onClick={() => handleModerate(story, 'approved')}
+                              disabled={moderateStoryMutation.isPending}
+                            >
+                              <CheckCircle className="h-3 w-3 mr-1" />
+                              Goedkeuren
+                            </Button>
+                          )}
+                          {story.status !== 'rejected' && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="text-red-600 border-red-600 hover:bg-red-50"
+                              onClick={() => handleModerate(story, 'rejected')}
+                              disabled={moderateStoryMutation.isPending}
+                            >
+                              <XCircle className="h-3 w-3 mr-1" />
+                              Afwijzen
+                            </Button>
+                          )}
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="text-red-600 border-red-600 hover:bg-red-50"
+                            onClick={() => handleDelete(story)}
+                            disabled={deleteStoryMutation.isPending}
+                          >
+                            <Trash2 className="h-3 w-3 mr-1" />
+                            Verwijderen
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             ))}

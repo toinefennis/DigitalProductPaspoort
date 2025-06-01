@@ -298,6 +298,28 @@ export default function AddProduct() {
         />
       </div>
 
+      {/* GS1 Registration Option for all users but only admin/manager can enable */}
+      <div className="border-t pt-4">
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="gs1Registered"
+            checked={watch("gs1Registered") || false}
+            onCheckedChange={(checked) => setValue("gs1Registered", !!checked)}
+            disabled={!canManageGtin}
+          />
+          <Label htmlFor="gs1Registered" className="text-sm flex items-center space-x-2">
+            <span>GS1 Registratie</span>
+            {!canManageGtin && <Lock className="h-3 w-3 text-gray-400" />}
+          </Label>
+        </div>
+        <p className="text-xs text-gray-500 mt-1">
+          {canManageGtin 
+            ? "Registreer dit product in de GS1 database voor internationale tracking"
+            : "Alleen managers en beheerders kunnen GS1 registratie inschakelen"
+          }
+        </p>
+      </div>
+
       {databaseType === 'product' && canManageGtin && (
         <div className="flex items-center space-x-2">
           <Checkbox

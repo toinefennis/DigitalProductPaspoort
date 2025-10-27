@@ -9,6 +9,7 @@ import path from "path";
 import fs from "fs";
 import session from "express-session";
 import sharp from "sharp";
+import { generateAndSaveQRCode, generateProductDPPUrl } from "./qrcode-generator";
 
 // Configure multer for file uploads
 const uploadDir = path.join(process.cwd(), "uploads");
@@ -313,6 +314,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const product = await storage.createProduct(validatedProduct);
+      
+      // Generate QR code and DPP URL for the new product
+      try {
+        const { qrCodeData, dppUrl } = await generateAndSaveQRCode(product.gtin);
+        await storage.updateProduct(product.id, {
+          qrCodeData,
+          dppUrl
+        });
+        product.qrCodeData = qrCodeData;
+        product.dppUrl = dppUrl;
+      } catch (qrError) {
+        console.error("Error generating QR code:", qrError);
+        // Continue anyway - QR code is not critical for product creation
+      }
+      
       res.status(201).json(product);
     } catch (error) {
       if (error instanceof z.ZodError) {

@@ -27,6 +27,7 @@ import EditStory from "@/pages/edit-story";
 import CreateProductStory from "@/pages/create-product-story";
 import GtinRegistry from "@/pages/gtin-registry";
 import NotFound from "@/pages/not-found";
+import DPPPage from "@/pages/dpp";
 import { useAuth } from "@/hooks/useAuth";
 
 function Router() {
@@ -43,33 +44,36 @@ function Router() {
     );
   }
 
-  if (!isAuthenticated) {
-    return <Login />;
-  }
-
+  // Public routes (no authentication required)
   return (
     <Switch>
-      <Route path="/" component={Dashboard} />
-      <Route path="/scanner" component={Scanner} />
-      <Route path="/products" component={Products} />
-      <Route path="/settings" component={Settings} />
-      <Route path="/users" component={Users} />
-      <Route path="/notifications" component={Notifications} />
-      <Route path="/loans" component={LoanOverview} />
-      <Route path="/export" component={Export} />
-      <Route path="/gs1-sync" component={GS1Sync} />
-      <Route path="/gtin-registry" component={GtinRegistry} />
-      <Route path="/profile" component={Profile} />
-      <Route path="/stories" component={Stories} />
-      <Route path="/share-story" component={ShareStory} />
-      <Route path="/edit-story/:id" component={EditStory} />
-      <Route path="/create-product-story/:productId" component={CreateProductStory} />
-      <Route path="/create-product-story/gtin/:gtin" component={CreateProductStory} />
-      <Route path="/product/:id" component={ProductDetail} />
-      <Route path="/product/gtin/:gtin" component={ProductDetail} />
-      <Route path="/add-product" component={AddProduct} />
-      <Route path="/event-log/:productId" component={EventLog} />
-      <Route component={NotFound} />
+      <Route path="/dpp/:gtin" component={DPPPage} />
+      {!isAuthenticated && <Route component={Login} />}
+      {isAuthenticated && (
+        <>
+          <Route path="/" component={Dashboard} />
+          <Route path="/scanner" component={Scanner} />
+          <Route path="/products" component={Products} />
+          <Route path="/settings" component={Settings} />
+          <Route path="/users" component={Users} />
+          <Route path="/notifications" component={Notifications} />
+          <Route path="/loans" component={LoanOverview} />
+          <Route path="/export" component={Export} />
+          <Route path="/gs1-sync" component={GS1Sync} />
+          <Route path="/gtin-registry" component={GtinRegistry} />
+          <Route path="/profile" component={Profile} />
+          <Route path="/stories" component={Stories} />
+          <Route path="/share-story" component={ShareStory} />
+          <Route path="/edit-story/:id" component={EditStory} />
+          <Route path="/create-product-story/:productId" component={CreateProductStory} />
+          <Route path="/create-product-story/gtin/:gtin" component={CreateProductStory} />
+          <Route path="/product/:id" component={ProductDetail} />
+          <Route path="/product/gtin/:gtin" component={ProductDetail} />
+          <Route path="/add-product" component={AddProduct} />
+          <Route path="/event-log/:productId" component={EventLog} />
+          <Route component={NotFound} />
+        </>
+      )}
     </Switch>
   );
 }

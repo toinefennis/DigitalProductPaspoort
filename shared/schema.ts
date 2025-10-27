@@ -34,6 +34,49 @@ export const products = pgTable("products", {
   // GS1 registration status
   gs1Registered: boolean("gs1_registered").default(false),
   
+  // FASE 1: EU Compliance (ESPR 2025)
+  repairabilityIndex: integer("repairability_index"), // 1-10 scale
+  durabilityScore: integer("durability_score"), // 1-10 scale
+  careSymbols: jsonb("care_symbols").$type<Array<{
+    symbol: string;
+    code: string;
+    temperature?: number;
+    allowed?: boolean;
+    method?: string;
+    description: string;
+  }>>().default([]),
+  dppUrl: text("dpp_url"), // Digital Product Passport URL
+  qrCodeData: text("qr_code_data"), // QR code data/path
+  carbonFootprintDetailed: jsonb("carbon_footprint_detailed").$type<{
+    totalKg?: number;
+    materialPhase?: number;
+    productionPhase?: number;
+    transportPhase?: number;
+    usePhase?: number;
+    endOfLifePhase?: number;
+    calculationMethod?: string;
+    calculationDate?: string;
+  }>().default({}),
+  
+  // FASE 2: Milieu Impact (ESPR 2026)
+  waterFootprintLiters: integer("water_footprint_liters"), // Total water usage in liters
+  waterFootprintBreakdown: jsonb("water_footprint_breakdown").$type<{
+    fiber?: number;
+    production?: number;
+    dyeing?: number;
+    washingEstimated?: number;
+  }>().default({}),
+  energyConsumptionKwh: text("energy_consumption_kwh"), // Using text to support decimals
+  renewableEnergyPercentage: integer("renewable_energy_percentage"), // 0-100
+  microplasticSheddingEstimated: integer("microplastic_shedding_estimated"), // fibers per wash
+  fiberSheddingTestResults: jsonb("fiber_shedding_test_results").$type<{
+    testMethod?: string;
+    testDate?: string;
+    fibersPerWash?: number;
+    labName?: string;
+    reportUrl?: string;
+  }>().default({}),
+  
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

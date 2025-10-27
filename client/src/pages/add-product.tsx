@@ -13,11 +13,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { X, Camera, QrCode, Plus, Package, Recycle, Database, Lock } from "lucide-react";
+import { Slider } from "@/components/ui/slider";
+import { X, Camera, QrCode, Plus, Package, Recycle, Database, Lock, Leaf, Droplets } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { apiRequest } from "@/lib/queryClient";
 import { insertProductSchema } from "@shared/schema";
+import { CareSymbolsSelector, type CareSymbol } from "@/components/CareSymbolsSelector";
 
 const formSchema = insertProductSchema.extend({
   photo: z.instanceof(File).optional(),
@@ -41,7 +43,10 @@ export default function AddProduct() {
   const [inputSources, setInputSources] = useState<string[]>([]);
   const [newInputSource, setNewInputSource] = useState("");
   const [activeTab, setActiveTab] = useState("product");
-  const { toast } = useToast();
+  const [careSymbols, setCareSymbols] = useState<CareSymbol[]>([]);
+  const [repairability, setRepairability] = useState<number>(5);
+  const [durability, setDurability] = useState<number>(5);
+  const { toast} = useToast();
   const queryClient = useQueryClient();
   const { user: currentUser } = useAuth();
 
@@ -153,6 +158,10 @@ export default function AddProduct() {
         recyclability: data.materialRecyclability || "",
         certifications: data.materialCertifications || "",
       },
+      // DPP Compliance Fields
+      careSymbols: careSymbols,
+      repairabilityIndex: repairability,
+      durabilityScore: durability,
     };
 
     // Remove temporary fields
@@ -166,7 +175,7 @@ export default function AddProduct() {
     // Create FormData for file upload
     const formData = new FormData();
     Object.entries(submitData).forEach(([key, value]) => {
-      if (key === "sourceGtins" || key === "materialProperties") {
+      if (key === "sourceGtins" || key === "materialProperties" || key === "careSymbols" || key === "carbonFootprintDetailed" || key === "waterFootprintBreakdown" || key === "fiberSheddingTestResults") {
         formData.append(key, JSON.stringify(value));
       } else if (value !== undefined && value !== null) {
         formData.append(key, value.toString());
@@ -296,6 +305,129 @@ export default function AddProduct() {
           placeholder="Beschrijf het product..."
           className="h-20"
         />
+      </div>
+
+      {/* EU DPP Compliance Section */}
+      <div className="border-t pt-6 space-y-6">
+        <div className="flex items-center gap-2">
+          <Leaf className="h-5 w-5 text-green-600" />
+          <h3 className="text-lg font-semibold">Digital Product Passport (EU ESPR)</h3>
+        </div>
+
+        {/* Repairability & Durability Scores */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <Label htmlFor="repairability" className="flex items-center justify-between">
+              <span>Repareerbaarheidsindex</span>
+              <Badge variant="outline">{repairability}/10</Badge>
+            </Label>
+            <Slider
+              id="repairability"
+              data-testid="repairability-slider"
+              min={1}
+              max={10}
+              step={1}
+              value={[repairability]}
+              onValueChange={(value) => setRepairability(value[0])}
+              className="w-full"
+            />
+            <p className="text-xs text-muted-foreground">
+              Hoe gemakkelijk is dit product te repareren? (1=moeilijk, 10=zeer gemakkelijk)
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="durability" className="flex items-center justify-between">
+              <span>Duurzaamheidsscore</span>
+              <Badge variant="outline">{durability}/10</Badge>
+            </Label>
+            <Slider
+              id="durability"
+              data-testid="durability-slider"
+              min={1}
+              max={10}
+              step={1}
+              value={[durability]}
+              onValueChange={(value) => setDurability(value[0])}
+              className="w-full"
+            />
+            <p className="text-xs text-muted-foreground">
+              Hoe duurzaam/lang meegaand is dit product? (1=kort, 10=zeer lang)
+            </p>
+          </div>
+        </div>
+
+        {/* Care Symbols */}
+        <div>
+          <CareSymbolsSelector value={careSymbols} onChange={setCareSymbols} />
+        </div>
+
+        {/* Environmental Impact */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Droplets className="h-5 w-5 text-blue-600" />
+            <h4 className="font-semibold">Milieu Impact</h4>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="waterFootprint">Water Footprint (liters)</Label>
+              <Input
+                id="waterFootprint"
+                type="number"
+                {...register("waterFootprintLiters")}
+                placeholder="bijv. 2500"
+                data-testid="input-water-footprint"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Totaal waterverbruik in productie
+              </p>
+            </div>
+
+            <div>
+              <Label htmlFor="energyConsumption">Energie Verbruik (kWh)</Label>
+              <Input
+                id="energyConsumption"
+                {...register("energyConsumptionKwh")}
+                placeholder="bijv. 15.5"
+                data-testid="input-energy-consumption"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Energie gebruikt in productie
+              </p>
+            </div>
+
+            <div>
+              <Label htmlFor="renewableEnergy">Hernieuwbare Energie (%)</Label>
+              <Input
+                id="renewableEnergy"
+                type="number"
+                min="0"
+                max="100"
+                {...register("renewableEnergyPercentage")}
+                placeholder="bijv. 80"
+                data-testid="input-renewable-energy"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Percentage hernieuwbare energie
+              </p>
+            </div>
+
+            <div>
+              <Label htmlFor="microplasticShedding">Microplastic Afgifte (vezels/wasbeurt)</Label>
+              <Input
+                id="microplasticShedding"
+                type="number"
+                {...register("microplasticSheddingEstimated")}
+                placeholder="bijv. 700000"
+                data-testid="input-microplastic-shedding"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Geschat aantal vezels per wasbeurt
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* GS1 Registration Option for all users but only admin/manager can enable */}

@@ -31,6 +31,12 @@ const formSchema = insertProductSchema.extend({
   materialCertifications: z.string().optional(),
   databaseType: z.enum(['product', 'material', 'gtin']).default('product'),
   addToGtinRegistry: z.boolean().default(false),
+  // Carbon Footprint Breakdown fields
+  cfMaterial: z.string().optional(),
+  cfProduction: z.string().optional(),
+  cfTransport: z.string().optional(),
+  cfUse: z.string().optional(),
+  cfEndOfLife: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -162,6 +168,14 @@ export default function AddProduct() {
       careSymbols: careSymbols,
       repairabilityIndex: repairability,
       durabilityScore: durability,
+      // Carbon Footprint Breakdown
+      carbonFootprintDetailed: {
+        materialPhase: data.cfMaterial ? parseFloat(data.cfMaterial) : undefined,
+        productionPhase: data.cfProduction ? parseFloat(data.cfProduction) : undefined,
+        transportPhase: data.cfTransport ? parseFloat(data.cfTransport) : undefined,
+        usePhase: data.cfUse ? parseFloat(data.cfUse) : undefined,
+        endOfLifePhase: data.cfEndOfLife ? parseFloat(data.cfEndOfLife) : undefined,
+      },
     };
 
     // Remove temporary fields
@@ -171,6 +185,11 @@ export default function AddProduct() {
     delete submitData.materialDurability;
     delete submitData.materialRecyclability;
     delete submitData.materialCertifications;
+    delete submitData.cfMaterial;
+    delete submitData.cfProduction;
+    delete submitData.cfTransport;
+    delete submitData.cfUse;
+    delete submitData.cfEndOfLife;
     
     // Create FormData for file upload
     const formData = new FormData();
@@ -425,6 +444,68 @@ export default function AddProduct() {
               <p className="text-xs text-muted-foreground mt-1">
                 Geschat aantal vezels per wasbeurt
               </p>
+            </div>
+          </div>
+
+          {/* Carbon Footprint Breakdown */}
+          <div className="mt-6">
+            <Label className="text-sm font-semibold mb-2 block">Carbon Footprint Breakdown (kg CO2e)</Label>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div>
+                <Label htmlFor="cfMaterial" className="text-xs">Grondstoffen</Label>
+                <Input
+                  id="cfMaterial"
+                  type="number"
+                  step="0.1"
+                  {...register("cfMaterial")}
+                  placeholder="bijv. 2.5"
+                  data-testid="input-cf-material"
+                />
+              </div>
+              <div>
+                <Label htmlFor="cfProduction" className="text-xs">Productie</Label>
+                <Input
+                  id="cfProduction"
+                  type="number"
+                  step="0.1"
+                  {...register("cfProduction")}
+                  placeholder="bijv. 1.8"
+                  data-testid="input-cf-production"
+                />
+              </div>
+              <div>
+                <Label htmlFor="cfTransport" className="text-xs">Transport</Label>
+                <Input
+                  id="cfTransport"
+                  type="number"
+                  step="0.1"
+                  {...register("cfTransport")}
+                  placeholder="bijv. 0.7"
+                  data-testid="input-cf-transport"
+                />
+              </div>
+              <div>
+                <Label htmlFor="cfUse" className="text-xs">Gebruiksfase</Label>
+                <Input
+                  id="cfUse"
+                  type="number"
+                  step="0.1"
+                  {...register("cfUse")}
+                  placeholder="bijv. 0.3"
+                  data-testid="input-cf-use"
+                />
+              </div>
+              <div>
+                <Label htmlFor="cfEndOfLife" className="text-xs">Einde Levensduur</Label>
+                <Input
+                  id="cfEndOfLife"
+                  type="number"
+                  step="0.1"
+                  {...register("cfEndOfLife")}
+                  placeholder="bijv. 0.2"
+                  data-testid="input-cf-endoflife"
+                />
+              </div>
             </div>
           </div>
         </div>

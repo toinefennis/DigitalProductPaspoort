@@ -302,6 +302,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const productData = {
         ...req.body,
         sourceGtins: req.body.sourceGtins ? JSON.parse(req.body.sourceGtins) : [],
+        materialProperties: req.body.materialProperties ? JSON.parse(req.body.materialProperties) : {},
+        careSymbols: req.body.careSymbols ? JSON.parse(req.body.careSymbols) : [],
+        carbonFootprintDetailed: req.body.carbonFootprintDetailed ? JSON.parse(req.body.carbonFootprintDetailed) : {},
+        waterFootprintBreakdown: req.body.waterFootprintBreakdown ? JSON.parse(req.body.waterFootprintBreakdown) : {},
+        fiberSheddingTestResults: req.body.fiberSheddingTestResults ? JSON.parse(req.body.fiberSheddingTestResults) : {},
         photoUrl: req.file ? `/uploads/${req.file.filename}` : null,
       };
 

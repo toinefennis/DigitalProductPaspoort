@@ -1,18 +1,41 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { LogIn, User, Lock } from "lucide-react";
+import { LogIn, User, Lock, QrCode, UserPlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
+import QRCode from "qrcode";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [qrCodeUrl, setQrCodeUrl] = useState<string>("");
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+
+  // Generate QR code for registration
+  useEffect(() => {
+    const generateQR = async () => {
+      try {
+        const registrationUrl = `${window.location.origin}/register`;
+        const qrDataUrl = await QRCode.toDataURL(registrationUrl, {
+          width: 200,
+          margin: 2,
+          color: {
+            dark: '#1a5f3b',
+            light: '#ffffff'
+          }
+        });
+        setQrCodeUrl(qrDataUrl);
+      } catch (error) {
+        console.error("Error generating QR code:", error);
+      }
+    };
+    generateQR();
+  }, []);
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: { username: string; password: string }) => {
@@ -110,12 +133,44 @@ export default function Login() {
             </Button>
           </form>
 
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <h4 className="font-medium mb-2">Demo accounts:</h4>
-            <div className="text-sm space-y-1">
-              <p><strong>Admin:</strong> admin / admin123</p>
-              <p><strong>Manager:</strong> manager / manager123</p>
-              <p><strong>Gebruiker:</strong> user / user123</p>
+          <div className="mt-6 space-y-4">
+            <div className="text-center">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setLocation("/register")}
+                className="w-full"
+              >
+                <UserPlus className="h-4 w-4 mr-2" />
+                Nieuw Account Aanmaken
+              </Button>
+            </div>
+
+            {qrCodeUrl && (
+              <div className="p-4 bg-gray-50 rounded-lg text-center">
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <QrCode className="h-4 w-4 text-gwc-primary" />
+                  <h4 className="font-medium text-sm">Scan voor registratie</h4>
+                </div>
+                <img 
+                  src={qrCodeUrl} 
+                  alt="Registratie QR Code" 
+                  className="mx-auto rounded border-2 border-gwc-primary/20"
+                  data-testid="qr-registration"
+                />
+                <p className="text-xs text-gray-600 mt-2">
+                  Scan deze code om direct te registreren
+                </p>
+              </div>
+            )}
+
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <h4 className="font-medium mb-2">Demo accounts:</h4>
+              <div className="text-sm space-y-1">
+                <p><strong>Admin:</strong> admin / admin123</p>
+                <p><strong>Manager:</strong> manager / manager123</p>
+                <p><strong>Gebruiker:</strong> user / user123</p>
+              </div>
             </div>
           </div>
         </CardContent>

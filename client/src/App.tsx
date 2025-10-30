@@ -19,6 +19,7 @@ import Notifications from "@/pages/notifications";
 import LoanOverview from "@/pages/loan-overview";
 import Export from "@/pages/export";
 import Login from "@/pages/login";
+import Register from "@/pages/register";
 import GS1Sync from "@/pages/gs1-sync";
 import Profile from "@/pages/profile";
 import Stories from "@/pages/stories";
@@ -48,6 +49,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/dpp/:gtin" component={DPPPage} />
+      <Route path="/register" component={Register} />
       {!isAuthenticated && <Route component={Login} />}
       {isAuthenticated && (
         <>

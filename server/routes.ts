@@ -791,6 +791,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Authentication endpoints
+  // Registration endpoint
+  app.post("/api/auth/register", async (req, res) => {
+    try {
+      const { email, username, password, firstName, lastName } = req.body;
+      
+      // Validate required fields
+      if (!email || !username || !password) {
+        return res.status(400).json({ message: "Email, gebruikersnaam en wachtwoord zijn verplicht" });
+      }
+
+      // Check if username or email already exists
+      const existingUser = await storage.getUserByUsername(username);
+      if (existingUser) {
+        return res.status(400).json({ message: "Gebruikersnaam is al in gebruik" });
+      }
+
+      const existingEmail = await storage.getUserByEmail(email);
+      if (existingEmail) {
+        return res.status(400).json({ message: "E-mailadres is al in gebruik" });
+      }
+
+      // Create new user (password will be hashed in storage layer)
+      const newUser = await storage.createUser({
+        email,
+        username,
+        password, // Should be hashed in production
+        firstName: firstName || null,
+        lastName: lastName || null,
+        role: "user", // Default role for new registrations
+        isActive: true,
+      });
+
+      res.status(201).json({ 
+        message: "Registratie succesvol",
+        user: {
+          id: newUser.id,
+          username: newUser.username,
+          email: newUser.email,
+          role: newUser.role
+        }
+      });
+    } catch (error) {
+      console.error("Registration error:", error);
+      res.status(500).json({ message: "Registratie mislukt" });
+    }
+  });
+
   app.post("/api/auth/login", async (req, res) => {
     try {
       const { username, password } = req.body;

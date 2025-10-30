@@ -206,11 +206,11 @@ export default function GS1Sync() {
         </div>
 
         <Tabs defaultValue="overview" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="overview">Overzicht</TabsTrigger>
-            <TabsTrigger value="partners">Partners</TabsTrigger>
-            <TabsTrigger value="events">Sync Events</TabsTrigger>
-            <TabsTrigger value="settings">Instellingen</TabsTrigger>
+          <TabsList className="inline-flex w-full overflow-x-auto overflow-y-hidden flex-nowrap h-auto min-h-[44px]">
+            <TabsTrigger value="overview" className="whitespace-nowrap flex-shrink-0 px-4">Overzicht</TabsTrigger>
+            <TabsTrigger value="partners" className="whitespace-nowrap flex-shrink-0 px-4">Partners</TabsTrigger>
+            <TabsTrigger value="events" className="whitespace-nowrap flex-shrink-0 px-4">Sync Events</TabsTrigger>
+            <TabsTrigger value="settings" className="whitespace-nowrap flex-shrink-0 px-4">Instellingen</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview">

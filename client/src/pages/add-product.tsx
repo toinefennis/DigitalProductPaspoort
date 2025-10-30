@@ -578,18 +578,18 @@ export default function AddProduct() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="product" className="flex items-center space-x-2">
+          <TabsList className="inline-flex w-full overflow-x-auto overflow-y-hidden flex-nowrap h-auto min-h-[44px]">
+            <TabsTrigger value="product" className="flex items-center space-x-2 whitespace-nowrap flex-shrink-0 px-4">
               <Package className="h-4 w-4" />
               <span>Product</span>
             </TabsTrigger>
-            <TabsTrigger value="material" className="flex items-center space-x-2">
+            <TabsTrigger value="material" className="flex items-center space-x-2 whitespace-nowrap flex-shrink-0 px-4">
               <Recycle className="h-4 w-4" />
               <span>Materiaal</span>
             </TabsTrigger>
             <TabsTrigger 
               value="gtin" 
-              className="flex items-center space-x-2"
+              className="flex items-center space-x-2 whitespace-nowrap flex-shrink-0 px-4"
               disabled={!canManageGtin}
             >
               <Database className="h-4 w-4" />

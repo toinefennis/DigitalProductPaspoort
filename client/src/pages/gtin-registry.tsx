@@ -560,28 +560,28 @@ export default function GtinRegistry() {
               <CardContent>
                 <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
                   <Tabs defaultValue="basic" className="w-full">
-                    <TabsList className="grid w-full grid-cols-6">
-                      <TabsTrigger value="basic" className="flex items-center">
+                    <TabsList className="inline-flex w-full overflow-x-auto overflow-y-hidden flex-nowrap h-auto min-h-[44px]">
+                      <TabsTrigger value="basic" className="flex items-center whitespace-nowrap flex-shrink-0 px-3">
                         <FileText className="h-4 w-4 mr-1" />
                         Basis
                       </TabsTrigger>
-                      <TabsTrigger value="production" className="flex items-center">
+                      <TabsTrigger value="production" className="flex items-center whitespace-nowrap flex-shrink-0 px-3">
                         <Factory className="h-4 w-4 mr-1" />
                         Productie
                       </TabsTrigger>
-                      <TabsTrigger value="materials" className="flex items-center">
+                      <TabsTrigger value="materials" className="flex items-center whitespace-nowrap flex-shrink-0 px-3">
                         <Recycle className="h-4 w-4 mr-1" />
                         Materialen
                       </TabsTrigger>
-                      <TabsTrigger value="sustainability" className="flex items-center">
+                      <TabsTrigger value="sustainability" className="flex items-center whitespace-nowrap flex-shrink-0 px-3">
                         <Leaf className="h-4 w-4 mr-1" />
                         Duurzaamheid
                       </TabsTrigger>
-                      <TabsTrigger value="compliance" className="flex items-center">
+                      <TabsTrigger value="compliance" className="flex items-center whitespace-nowrap flex-shrink-0 px-3">
                         <Shield className="h-4 w-4 mr-1" />
                         Compliance
                       </TabsTrigger>
-                      <TabsTrigger value="market" className="flex items-center">
+                      <TabsTrigger value="market" className="flex items-center whitespace-nowrap flex-shrink-0 px-3">
                         <Globe className="h-4 w-4 mr-1" />
                         Markt
                       </TabsTrigger>

@@ -39,7 +39,7 @@ const formSchema = insertProductSchema.extend({
   cfEndOfLife: z.string().optional(),
 });
 
-type FormData = z.infer<typeof formSchema>;
+type ProductFormData = z.infer<typeof formSchema>;
 
 export default function AddProduct() {
   const [location, setLocation] = useLocation();
@@ -77,7 +77,7 @@ export default function AddProduct() {
     setValue,
     reset,
     watch,
-  } = useForm<FormData>({
+  } = useForm<ProductFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       type: "product",
@@ -131,7 +131,7 @@ export default function AddProduct() {
 
   // Create mutation
   const createMutation = useMutation({
-    mutationFn: async (data: FormData) => {
+    mutationFn: async (data: ProductFormData) => {
       return await apiRequest("POST", "/api/products", data);
     },
     onSuccess: () => {
@@ -152,7 +152,7 @@ export default function AddProduct() {
     },
   });
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: ProductFormData) => {
     // Process form data
     const submitData = {
       ...data,

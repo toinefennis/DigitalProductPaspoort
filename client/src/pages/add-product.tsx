@@ -18,7 +18,7 @@ import { X, Camera, QrCode, Plus, Package, Recycle, Database, Lock, Leaf, Drople
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { apiRequest } from "@/lib/queryClient";
-import { insertProductSchema } from "@shared/schema";
+import { insertProductSchema, parseOptionalInteger } from "@shared/schema";
 import { CareSymbolsSelector, type CareSymbol } from "@/components/CareSymbolsSelector";
 
 const formSchema = insertProductSchema.extend({
@@ -37,47 +37,12 @@ const formSchema = insertProductSchema.extend({
   cfTransport: z.string().optional(),
   cfUse: z.string().optional(),
   cfEndOfLife: z.string().optional(),
-  // Override numeric fields: empty string = null (not set), 0 = valid value
-  waterFootprintLiters: z.preprocess(
-    (val) => {
-      if (val === '' || val === undefined || val === null) return null;
-      const num = Number(val);
-      return isNaN(num) ? null : num;
-    },
-    z.number().nullable().optional()
-  ),
-  renewableEnergyPercentage: z.preprocess(
-    (val) => {
-      if (val === '' || val === undefined || val === null) return null;
-      const num = Number(val);
-      return isNaN(num) ? null : num;
-    },
-    z.number().nullable().optional()
-  ),
-  microplasticSheddingEstimated: z.preprocess(
-    (val) => {
-      if (val === '' || val === undefined || val === null) return null;
-      const num = Number(val);
-      return isNaN(num) ? null : num;
-    },
-    z.number().nullable().optional()
-  ),
-  repairabilityIndex: z.preprocess(
-    (val) => {
-      if (val === '' || val === undefined || val === null) return null;
-      const num = Number(val);
-      return isNaN(num) ? null : num;
-    },
-    z.number().nullable().optional()
-  ),
-  durabilityScore: z.preprocess(
-    (val) => {
-      if (val === '' || val === undefined || val === null) return null;
-      const num = Number(val);
-      return isNaN(num) ? null : num;
-    },
-    z.number().nullable().optional()
-  ),
+  // Override numeric fields: empty string = null (not set), 0 = valid, any number = valid
+  waterFootprintLiters: z.preprocess(parseOptionalInteger, z.number().int().nullable().optional()),
+  renewableEnergyPercentage: z.preprocess(parseOptionalInteger, z.number().int().nullable().optional()),
+  microplasticSheddingEstimated: z.preprocess(parseOptionalInteger, z.number().int().nullable().optional()),
+  repairabilityIndex: z.preprocess(parseOptionalInteger, z.number().int().nullable().optional()),
+  durabilityScore: z.preprocess(parseOptionalInteger, z.number().int().nullable().optional()),
 });
 
 type ProductFormData = z.infer<typeof formSchema>;

@@ -3,6 +3,15 @@ import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+// Helper function to parse optional integer values
+// Empty string/undefined/null -> null, valid number -> integer, invalid -> null
+export function parseOptionalInteger(val: unknown): number | null {
+  if (val === '' || val === undefined || val === null) return null;
+  const num = Number(val);
+  if (!Number.isFinite(num)) return null;
+  return Math.round(num);
+}
+
 export const products = pgTable("products", {
   id: serial("id").primaryKey(),
   gtin: text("gtin").notNull().unique(),
@@ -357,12 +366,12 @@ export const insertProductSchema = createInsertSchema(products).omit({
   name: z.string().default("Nieuw Product"),
   type: z.string().default("product"),
   status: z.string().default("beschikbaar"),
-  // All numeric environmental fields are optional and nullable
-  repairabilityIndex: z.number().nullable().optional(),
-  durabilityScore: z.number().nullable().optional(),
-  waterFootprintLiters: z.number().nullable().optional(),
-  renewableEnergyPercentage: z.number().nullable().optional(),
-  microplasticSheddingEstimated: z.number().nullable().optional(),
+  // All numeric environmental fields: empty = null, 0 = valid, any number = valid
+  repairabilityIndex: z.preprocess(parseOptionalInteger, z.number().int().nullable().optional()),
+  durabilityScore: z.preprocess(parseOptionalInteger, z.number().int().nullable().optional()),
+  waterFootprintLiters: z.preprocess(parseOptionalInteger, z.number().int().nullable().optional()),
+  renewableEnergyPercentage: z.preprocess(parseOptionalInteger, z.number().int().nullable().optional()),
+  microplasticSheddingEstimated: z.preprocess(parseOptionalInteger, z.number().int().nullable().optional()),
 });
 
 export const insertEventSchema = createInsertSchema(events).omit({

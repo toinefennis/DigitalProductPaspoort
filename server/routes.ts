@@ -319,12 +319,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         fiberSheddingTestResults: req.body.fiberSheddingTestResults ? JSON.parse(req.body.fiberSheddingTestResults) : {},
         photoUrl: req.file ? `/uploads/${req.file.filename}` : null,
         // Parse numeric fields for ESPR compliance
-        repairabilityIndex: req.body.repairabilityIndex ? parseInt(req.body.repairabilityIndex) : null,
-        durabilityScore: req.body.durabilityScore ? parseInt(req.body.durabilityScore) : null,
-        waterFootprintLiters: req.body.waterFootprintLiters ? parseInt(req.body.waterFootprintLiters) : null,
-        energyConsumptionKwh: req.body.energyConsumptionKwh || null,
-        renewableEnergyPercentage: req.body.renewableEnergyPercentage ? parseInt(req.body.renewableEnergyPercentage) : null,
-        microplasticSheddingEstimated: req.body.microplasticSheddingEstimated ? parseInt(req.body.microplasticSheddingEstimated) : null,
+        // Empty string = null (not set), 0 = valid value
+        repairabilityIndex: req.body.repairabilityIndex !== '' && req.body.repairabilityIndex !== undefined ? parseInt(req.body.repairabilityIndex) : null,
+        durabilityScore: req.body.durabilityScore !== '' && req.body.durabilityScore !== undefined ? parseInt(req.body.durabilityScore) : null,
+        waterFootprintLiters: req.body.waterFootprintLiters !== '' && req.body.waterFootprintLiters !== undefined ? parseInt(req.body.waterFootprintLiters) : null,
+        energyConsumptionKwh: req.body.energyConsumptionKwh !== '' ? req.body.energyConsumptionKwh : null,
+        renewableEnergyPercentage: req.body.renewableEnergyPercentage !== '' && req.body.renewableEnergyPercentage !== undefined ? parseInt(req.body.renewableEnergyPercentage) : null,
+        microplasticSheddingEstimated: req.body.microplasticSheddingEstimated !== '' && req.body.microplasticSheddingEstimated !== undefined ? parseInt(req.body.microplasticSheddingEstimated) : null,
       };
 
       const validatedProduct = insertProductSchema.parse(productData);

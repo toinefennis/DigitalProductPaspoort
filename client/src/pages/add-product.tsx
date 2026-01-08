@@ -37,25 +37,45 @@ const formSchema = insertProductSchema.extend({
   cfTransport: z.string().optional(),
   cfUse: z.string().optional(),
   cfEndOfLife: z.string().optional(),
-  // Override numeric fields to accept empty strings and transform to null
+  // Override numeric fields: empty string = null (not set), 0 = valid value
   waterFootprintLiters: z.preprocess(
-    (val) => (val === '' || val === undefined || val === null ? null : Number(val)),
+    (val) => {
+      if (val === '' || val === undefined || val === null) return null;
+      const num = Number(val);
+      return isNaN(num) ? null : num;
+    },
     z.number().nullable().optional()
   ),
   renewableEnergyPercentage: z.preprocess(
-    (val) => (val === '' || val === undefined || val === null ? null : Number(val)),
+    (val) => {
+      if (val === '' || val === undefined || val === null) return null;
+      const num = Number(val);
+      return isNaN(num) ? null : num;
+    },
     z.number().nullable().optional()
   ),
   microplasticSheddingEstimated: z.preprocess(
-    (val) => (val === '' || val === undefined || val === null ? null : Number(val)),
+    (val) => {
+      if (val === '' || val === undefined || val === null) return null;
+      const num = Number(val);
+      return isNaN(num) ? null : num;
+    },
     z.number().nullable().optional()
   ),
   repairabilityIndex: z.preprocess(
-    (val) => (val === '' || val === undefined || val === null ? null : Number(val)),
+    (val) => {
+      if (val === '' || val === undefined || val === null) return null;
+      const num = Number(val);
+      return isNaN(num) ? null : num;
+    },
     z.number().nullable().optional()
   ),
   durabilityScore: z.preprocess(
-    (val) => (val === '' || val === undefined || val === null ? null : Number(val)),
+    (val) => {
+      if (val === '' || val === undefined || val === null) return null;
+      const num = Number(val);
+      return isNaN(num) ? null : num;
+    },
     z.number().nullable().optional()
   ),
 });

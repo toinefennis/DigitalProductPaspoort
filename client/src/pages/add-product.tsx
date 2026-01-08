@@ -37,6 +37,12 @@ const formSchema = insertProductSchema.extend({
   cfTransport: z.string().optional(),
   cfUse: z.string().optional(),
   cfEndOfLife: z.string().optional(),
+  // Override numeric fields to accept empty strings
+  waterFootprintLiters: z.union([z.number(), z.string()]).optional().nullable(),
+  renewableEnergyPercentage: z.union([z.number(), z.string()]).optional().nullable(),
+  microplasticSheddingEstimated: z.union([z.number(), z.string()]).optional().nullable(),
+  repairabilityIndex: z.union([z.number(), z.string()]).optional().nullable(),
+  durabilityScore: z.union([z.number(), z.string()]).optional().nullable(),
 });
 
 type ProductFormData = z.infer<typeof formSchema>;

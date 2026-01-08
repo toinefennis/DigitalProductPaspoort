@@ -11,11 +11,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Tag, QrCode, Wrench, Clock, CheckCircle, Edit3, Save, X, Leaf, Globe, Droplets, Share2 } from "lucide-react";
+import { ArrowLeft, Tag, QrCode, Wrench, Clock, CheckCircle, Edit3, Save, X, Leaf, Globe, Droplets, Share2, Zap } from "lucide-react";
+import { Slider } from "@/components/ui/slider";
 import { EventTimeline } from "@/components/event-timeline";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/useAuth";
+import { CareSymbolsSelector, type CareSymbol } from "@/components/CareSymbolsSelector";
 import type { ProductWithEvents, InsertProduct } from "@shared/schema";
 
 const editFormSchema = z.object({
@@ -36,6 +38,17 @@ const editFormSchema = z.object({
   materialDurability: z.string().optional(),
   materialRecyclability: z.string().optional(),
   materialCertifications: z.string().optional(),
+  // ESPR Environmental Impact Fields
+  waterFootprintLiters: z.string().optional(),
+  energyConsumptionKwh: z.string().optional(),
+  renewableEnergyPercentage: z.string().optional(),
+  microplasticSheddingEstimated: z.string().optional(),
+  // Carbon footprint breakdown
+  cfMaterial: z.string().optional(),
+  cfProduction: z.string().optional(),
+  cfTransport: z.string().optional(),
+  cfUse: z.string().optional(),
+  cfEndOfLife: z.string().optional(),
 });
 
 type EditFormData = z.infer<typeof editFormSchema>;
@@ -48,6 +61,9 @@ export default function ProductDetail() {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [materials, setMaterials] = useState<any[]>([]);
   const [careInstructions, setCareInstructions] = useState<any>(null);
+  const [repairability, setRepairability] = useState<number>(5);
+  const [durability, setDurability] = useState<number>(5);
+  const [careSymbols, setCareSymbols] = useState<CareSymbol[]>([]);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -120,6 +136,16 @@ export default function ProductDetail() {
       materialDurability: "",
       materialRecyclability: "",
       materialCertifications: "",
+      // ESPR Environmental Impact
+      waterFootprintLiters: "",
+      energyConsumptionKwh: "",
+      renewableEnergyPercentage: "",
+      microplasticSheddingEstimated: "",
+      cfMaterial: "",
+      cfProduction: "",
+      cfTransport: "",
+      cfUse: "",
+      cfEndOfLife: "",
     },
   });
 
@@ -194,11 +220,29 @@ export default function ProductDetail() {
         }
       }
 
+      // Build carbon footprint breakdown
+      const carbonFootprintDetailed = {
+        materialPhase: data.cfMaterial ? parseFloat(data.cfMaterial) : undefined,
+        productionPhase: data.cfProduction ? parseFloat(data.cfProduction) : undefined,
+        transportPhase: data.cfTransport ? parseFloat(data.cfTransport) : undefined,
+        usePhase: data.cfUse ? parseFloat(data.cfUse) : undefined,
+        endOfLifePhase: data.cfEndOfLife ? parseFloat(data.cfEndOfLife) : undefined,
+      };
+
       const updateData: any = {
         ...data,
         materialProperties: Object.keys(materialProperties).some(key => materialProperties[key as keyof typeof materialProperties]) 
           ? materialProperties 
           : undefined,
+        // ESPR Compliance Fields
+        repairabilityIndex: repairability,
+        durabilityScore: durability,
+        careSymbols: careSymbols,
+        carbonFootprintDetailed: Object.values(carbonFootprintDetailed).some(v => v !== undefined) ? carbonFootprintDetailed : undefined,
+        waterFootprintLiters: data.waterFootprintLiters ? parseInt(data.waterFootprintLiters) : null,
+        energyConsumptionKwh: data.energyConsumptionKwh || null,
+        renewableEnergyPercentage: data.renewableEnergyPercentage ? parseInt(data.renewableEnergyPercentage) : null,
+        microplasticSheddingEstimated: data.microplasticSheddingEstimated ? parseInt(data.microplasticSheddingEstimated) : null,
       };
 
       // Add photo URL if available
@@ -212,6 +256,12 @@ export default function ProductDetail() {
       delete updateData.materialDurability;
       delete updateData.materialRecyclability;
       delete updateData.materialCertifications;
+      // Remove carbon footprint breakdown temp fields
+      delete updateData.cfMaterial;
+      delete updateData.cfProduction;
+      delete updateData.cfTransport;
+      delete updateData.cfUse;
+      delete updateData.cfEndOfLife;
 
       console.log("Sending product update:", updateData);
       const result = await apiRequest("PATCH", `/api/products/${product!.id}`, updateData);
@@ -261,8 +311,8 @@ export default function ProductDetail() {
       }]) : '',
       countryOfOrigin: product.origin || '',
       productionDate: new Date().toISOString().split('T')[0],
-      productSize: product.materialProperties?.size || '',
-      productColor: product.materialProperties?.color || ''
+      productSize: (product.materialProperties as any)?.size || '',
+      productColor: (product.materialProperties as any)?.color || ''
     };
     
     // Store the data temporarily and navigate
@@ -275,7 +325,7 @@ export default function ProductDetail() {
     
     // Navigate after a short delay to ensure data is stored
     setTimeout(() => {
-      setLocation('/gtin-registry');
+      navigate('/gtin-registry');
     }, 100);
   };
 
@@ -283,6 +333,13 @@ export default function ProductDetail() {
   useEffect(() => {
     if (product) {
       const materialProps = product.materialProperties || {};
+      const carbonDetails = product.carbonFootprintDetailed || {};
+      
+      // Set slider values
+      setRepairability(product.repairabilityIndex || 5);
+      setDurability(product.durabilityScore || 5);
+      setCareSymbols(product.careSymbols || []);
+      
       editForm.reset({
         name: product.name || "",
         gtin: product.gtin || "",
@@ -301,6 +358,16 @@ export default function ProductDetail() {
         materialDurability: materialProps.durability || "",
         materialRecyclability: materialProps.recyclability || "",
         materialCertifications: materialProps.certifications?.join(', ') || "",
+        // ESPR Environmental Impact
+        waterFootprintLiters: product.waterFootprintLiters?.toString() || "",
+        energyConsumptionKwh: product.energyConsumptionKwh || "",
+        renewableEnergyPercentage: product.renewableEnergyPercentage?.toString() || "",
+        microplasticSheddingEstimated: product.microplasticSheddingEstimated?.toString() || "",
+        cfMaterial: carbonDetails.materialPhase?.toString() || "",
+        cfProduction: carbonDetails.productionPhase?.toString() || "",
+        cfTransport: carbonDetails.transportPhase?.toString() || "",
+        cfUse: carbonDetails.usePhase?.toString() || "",
+        cfEndOfLife: carbonDetails.endOfLifePhase?.toString() || "",
       });
     }
   }, [product, editForm]);
@@ -334,7 +401,7 @@ export default function ProductDetail() {
             <p className="text-gray-600 mb-4">
               Het product met code {gtin || productId} bestaat niet in ons systeem.
             </p>
-            <Button onClick={() => setLocation("/")}>
+            <Button onClick={() => navigate("/")}>
               Terug naar Dashboard
             </Button>
           </CardContent>
@@ -377,7 +444,7 @@ export default function ProductDetail() {
           variant="ghost"
           size="icon"
           className="absolute top-4 left-4 bg-black bg-opacity-50 text-white hover:bg-black hover:bg-opacity-70"
-          onClick={() => setLocation("/")}
+          onClick={() => navigate("/")}
         >
           <ArrowLeft className="h-5 w-5" />
         </Button>
@@ -416,7 +483,7 @@ export default function ProductDetail() {
         </Button>
         
         {/* GTIN Registry Conversion Button (Manager/Admin only) */}
-        {(user?.role === 'manager' || user?.role === 'admin') && (
+        {((user as any)?.role === 'manager' || (user as any)?.role === 'admin') && (
           <Button
             variant="secondary"
             size="sm"
@@ -639,6 +706,186 @@ export default function ProductDetail() {
                   placeholder="GOTS, OEKO-TEX, Cradle to Cradle"
                   className="text-sm"
                 />
+              </div>
+            </div>
+
+            {/* EU ESPR DPP Compliance Section */}
+            <div className="space-y-4 border-t pt-4">
+              <h3 className="font-medium text-lg flex items-center text-green-700">
+                <Leaf className="h-5 w-5 mr-2" />
+                Digital Product Passport (EU ESPR)
+              </h3>
+
+              {/* Repairability & Durability Sliders */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label className="flex items-center justify-between">
+                    <span>Repareerbaarheidsindex</span>
+                    <Badge variant="outline">{repairability}/10</Badge>
+                  </Label>
+                  <Slider
+                    min={1}
+                    max={10}
+                    step={1}
+                    value={[repairability]}
+                    onValueChange={(value) => setRepairability(value[0])}
+                    className="w-full"
+                    data-testid="edit-repairability-slider"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Hoe gemakkelijk is dit product te repareren?
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="flex items-center justify-between">
+                    <span>Duurzaamheidsscore</span>
+                    <Badge variant="outline">{durability}/10</Badge>
+                  </Label>
+                  <Slider
+                    min={1}
+                    max={10}
+                    step={1}
+                    value={[durability]}
+                    onValueChange={(value) => setDurability(value[0])}
+                    className="w-full"
+                    data-testid="edit-durability-slider"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Hoe lang gaat dit product mee?
+                  </p>
+                </div>
+              </div>
+
+              {/* Care Symbols */}
+              <div>
+                <CareSymbolsSelector value={careSymbols} onChange={setCareSymbols} />
+              </div>
+
+              {/* Environmental Impact */}
+              <div className="space-y-4 mt-4">
+                <h4 className="font-semibold flex items-center text-blue-700">
+                  <Droplets className="h-4 w-4 mr-2" />
+                  Milieu Impact
+                </h4>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label htmlFor="waterFootprintLiters" className="text-xs">Water Footprint (liters)</Label>
+                    <Input
+                      id="waterFootprintLiters"
+                      type="number"
+                      {...editForm.register("waterFootprintLiters")}
+                      placeholder="bijv. 2500"
+                      className="text-sm"
+                      data-testid="edit-water-footprint"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="energyConsumptionKwh" className="text-xs">Energie Verbruik (kWh)</Label>
+                    <Input
+                      id="energyConsumptionKwh"
+                      {...editForm.register("energyConsumptionKwh")}
+                      placeholder="bijv. 15.5"
+                      className="text-sm"
+                      data-testid="edit-energy-consumption"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="renewableEnergyPercentage" className="text-xs">Hernieuwbare Energie (%)</Label>
+                    <Input
+                      id="renewableEnergyPercentage"
+                      type="number"
+                      min="0"
+                      max="100"
+                      {...editForm.register("renewableEnergyPercentage")}
+                      placeholder="bijv. 80"
+                      className="text-sm"
+                      data-testid="edit-renewable-energy"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="microplasticSheddingEstimated" className="text-xs">Microplastic (vezels/wasbeurt)</Label>
+                    <Input
+                      id="microplasticSheddingEstimated"
+                      type="number"
+                      {...editForm.register("microplasticSheddingEstimated")}
+                      placeholder="bijv. 700000"
+                      className="text-sm"
+                      data-testid="edit-microplastic"
+                    />
+                  </div>
+                </div>
+
+                {/* Carbon Footprint Breakdown */}
+                <div className="mt-4">
+                  <Label className="text-sm font-semibold flex items-center mb-2">
+                    <Zap className="h-4 w-4 mr-2 text-yellow-600" />
+                    Carbon Footprint Breakdown (kg CO2e)
+                  </Label>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    <div>
+                      <Label htmlFor="cfMaterial" className="text-xs">Grondstoffen</Label>
+                      <Input
+                        id="cfMaterial"
+                        type="number"
+                        step="0.1"
+                        {...editForm.register("cfMaterial")}
+                        placeholder="2.5"
+                        className="text-sm"
+                        data-testid="edit-cf-material"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="cfProduction" className="text-xs">Productie</Label>
+                      <Input
+                        id="cfProduction"
+                        type="number"
+                        step="0.1"
+                        {...editForm.register("cfProduction")}
+                        placeholder="1.8"
+                        className="text-sm"
+                        data-testid="edit-cf-production"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="cfTransport" className="text-xs">Transport</Label>
+                      <Input
+                        id="cfTransport"
+                        type="number"
+                        step="0.1"
+                        {...editForm.register("cfTransport")}
+                        placeholder="0.7"
+                        className="text-sm"
+                        data-testid="edit-cf-transport"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="cfUse" className="text-xs">Gebruiksfase</Label>
+                      <Input
+                        id="cfUse"
+                        type="number"
+                        step="0.1"
+                        {...editForm.register("cfUse")}
+                        placeholder="0.3"
+                        className="text-sm"
+                        data-testid="edit-cf-use"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="cfEndOfLife" className="text-xs">Einde Levensduur</Label>
+                      <Input
+                        id="cfEndOfLife"
+                        type="number"
+                        step="0.1"
+                        {...editForm.register("cfEndOfLife")}
+                        placeholder="0.2"
+                        className="text-sm"
+                        data-testid="edit-cf-endoflife"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -912,7 +1159,7 @@ export default function ProductDetail() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setLocation(`/product/gtin/${sourceGtin}`)}
+                      onClick={() => navigate(`/product/gtin/${sourceGtin}`)}
                     >
                       Bekijk
                     </Button>
@@ -927,14 +1174,14 @@ export default function ProductDetail() {
         <div className="grid grid-cols-2 gap-3">
           <Button
             className="flex items-center justify-center space-x-2 bg-gwc-primary hover:bg-gwc-primary/90 text-white"
-            onClick={() => setLocation(`/event-log/${product.id}?type=reparatie`)}
+            onClick={() => navigate(`/event-log/${product.id}?type=reparatie`)}
           >
             <Wrench className="h-4 w-4" />
             <span className="text-sm font-medium">Reparatie</span>
           </Button>
           <Button
             className="flex items-center justify-center space-x-2 bg-gwc-warning hover:bg-gwc-warning/90 text-white"
-            onClick={() => setLocation(`/event-log/${product.id}?type=uitleen`)}
+            onClick={() => navigate(`/event-log/${product.id}?type=uitleen`)}
           >
             <Clock className="h-4 w-4" />
             <span className="text-sm font-medium">Uitleen</span>

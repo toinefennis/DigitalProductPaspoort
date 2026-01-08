@@ -350,6 +350,8 @@ export const insertProductSchema = createInsertSchema(products).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+}).extend({
+  gtin: z.string().optional(),
 });
 
 export const insertEventSchema = createInsertSchema(events).omit({

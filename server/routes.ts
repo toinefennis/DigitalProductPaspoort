@@ -299,8 +299,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create new product
   app.post("/api/products", upload.single("photo"), async (req, res) => {
     try {
+      // Generate internal GTIN if not provided
+      let gtin = req.body.gtin;
+      if (!gtin || gtin.trim() === '') {
+        // Generate unique internal GTIN starting with 200 (internal use prefix)
+        const timestamp = Date.now().toString().slice(-10);
+        const random = Math.floor(Math.random() * 100).toString().padStart(2, '0');
+        gtin = `200${timestamp}${random}`.slice(0, 13);
+      }
+
       const productData = {
         ...req.body,
+        gtin,
         sourceGtins: req.body.sourceGtins ? JSON.parse(req.body.sourceGtins) : [],
         materialProperties: req.body.materialProperties ? JSON.parse(req.body.materialProperties) : {},
         careSymbols: req.body.careSymbols ? JSON.parse(req.body.careSymbols) : [],
@@ -308,17 +318,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
         waterFootprintBreakdown: req.body.waterFootprintBreakdown ? JSON.parse(req.body.waterFootprintBreakdown) : {},
         fiberSheddingTestResults: req.body.fiberSheddingTestResults ? JSON.parse(req.body.fiberSheddingTestResults) : {},
         photoUrl: req.file ? `/uploads/${req.file.filename}` : null,
+        // Parse numeric fields for ESPR compliance
+        repairabilityIndex: req.body.repairabilityIndex ? parseInt(req.body.repairabilityIndex) : null,
+        durabilityScore: req.body.durabilityScore ? parseInt(req.body.durabilityScore) : null,
+        waterFootprintLiters: req.body.waterFootprintLiters ? parseInt(req.body.waterFootprintLiters) : null,
+        energyConsumptionKwh: req.body.energyConsumptionKwh || null,
+        renewableEnergyPercentage: req.body.renewableEnergyPercentage ? parseInt(req.body.renewableEnergyPercentage) : null,
+        microplasticSheddingEstimated: req.body.microplasticSheddingEstimated ? parseInt(req.body.microplasticSheddingEstimated) : null,
       };
 
       const validatedProduct = insertProductSchema.parse(productData);
       
+      // Ensure gtin is set (should always be set due to auto-generation above)
+      const productGtin = validatedProduct.gtin || gtin;
+      
       // Check if GTIN already exists
-      const existingProduct = await storage.getProductByGtin(validatedProduct.gtin);
+      const existingProduct = await storage.getProductByGtin(productGtin);
       if (existingProduct) {
         return res.status(400).json({ message: "Product with this GTIN already exists" });
       }
 
-      const product = await storage.createProduct(validatedProduct);
+      // Create product with the guaranteed gtin
+      const productToCreate = {
+        ...validatedProduct,
+        gtin: productGtin
+      };
+      const product = await storage.createProduct(productToCreate as any);
       
       // Generate QR code and DPP URL for the new product
       try {
@@ -356,10 +381,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid product ID" });
       }
 
-      // Parse materialProperties if it exists
+      // Parse JSON fields if they are strings
       const updateData = { ...req.body };
       if (updateData.materialProperties && typeof updateData.materialProperties === 'string') {
         updateData.materialProperties = JSON.parse(updateData.materialProperties);
+      }
+      if (updateData.careSymbols && typeof updateData.careSymbols === 'string') {
+        updateData.careSymbols = JSON.parse(updateData.careSymbols);
+      }
+      if (updateData.carbonFootprintDetailed && typeof updateData.carbonFootprintDetailed === 'string') {
+        updateData.carbonFootprintDetailed = JSON.parse(updateData.carbonFootprintDetailed);
+      }
+
+      // Parse numeric ESPR fields
+      if (updateData.repairabilityIndex !== undefined) {
+        updateData.repairabilityIndex = updateData.repairabilityIndex ? parseInt(updateData.repairabilityIndex) : null;
+      }
+      if (updateData.durabilityScore !== undefined) {
+        updateData.durabilityScore = updateData.durabilityScore ? parseInt(updateData.durabilityScore) : null;
+      }
+      if (updateData.waterFootprintLiters !== undefined) {
+        updateData.waterFootprintLiters = updateData.waterFootprintLiters ? parseInt(updateData.waterFootprintLiters) : null;
+      }
+      if (updateData.renewableEnergyPercentage !== undefined) {
+        updateData.renewableEnergyPercentage = updateData.renewableEnergyPercentage ? parseInt(updateData.renewableEnergyPercentage) : null;
+      }
+      if (updateData.microplasticSheddingEstimated !== undefined) {
+        updateData.microplasticSheddingEstimated = updateData.microplasticSheddingEstimated ? parseInt(updateData.microplasticSheddingEstimated) : null;
       }
 
       // Handle photo URL

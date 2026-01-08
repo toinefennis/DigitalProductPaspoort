@@ -153,6 +153,9 @@ export default function AddProduct() {
   });
 
   const onSubmit = (data: ProductFormData) => {
+    console.log("Form submitted with data:", data);
+    console.log("Form errors:", errors);
+    
     // Process form data
     const submitData = {
       ...data,
@@ -237,7 +240,7 @@ export default function AddProduct() {
   };
 
   const ProductForm = ({ databaseType }: { databaseType: 'product' | 'material' | 'gtin' }) => (
-    <form onSubmit={handleSubmit((data) => onSubmit({...data, databaseType}))} className="space-y-6">
+    <form onSubmit={handleSubmit((data) => onSubmit({...data, databaseType}), (formErrors) => console.log("Form validation errors:", formErrors))} className="space-y-6">
       {/* Photo Upload */}
       <div>
         <Label className="block text-sm font-medium mb-2">Productfoto</Label>

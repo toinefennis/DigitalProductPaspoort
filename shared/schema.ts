@@ -351,7 +351,18 @@ export const insertProductSchema = createInsertSchema(products).omit({
   createdAt: true,
   updatedAt: true,
 }).extend({
+  // GTIN is optional - will be auto-generated if not provided
   gtin: z.string().optional(),
+  // Name and type have defaults if not provided
+  name: z.string().default("Nieuw Product"),
+  type: z.string().default("product"),
+  status: z.string().default("beschikbaar"),
+  // All numeric environmental fields are optional and nullable
+  repairabilityIndex: z.number().nullable().optional(),
+  durabilityScore: z.number().nullable().optional(),
+  waterFootprintLiters: z.number().nullable().optional(),
+  renewableEnergyPercentage: z.number().nullable().optional(),
+  microplasticSheddingEstimated: z.number().nullable().optional(),
 });
 
 export const insertEventSchema = createInsertSchema(events).omit({

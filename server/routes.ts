@@ -1413,8 +1413,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      if (sessionUser.role !== 'manager' && sessionUser.role !== 'admin') {
-        return res.status(403).json({ message: "Access denied. Manager or Admin role required." });
+      if (sessionUser.role !== 'admin') {
+        return res.status(403).json({ message: "Access denied. Admin role required." });
       }
 
       const mysql = require('mysql2/promise');
@@ -1581,8 +1581,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      if (sessionUser.role !== 'manager' && sessionUser.role !== 'admin') {
-        return res.status(403).json({ message: "Access denied. Manager or Admin role required." });
+      if (sessionUser.role !== 'admin') {
+        return res.status(403).json({ message: "Access denied. Admin role required." });
       }
 
       const ftp = require('basic-ftp');

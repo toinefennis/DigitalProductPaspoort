@@ -14,8 +14,8 @@ export default function Export() {
   const { toast } = useToast();
   const { user: currentUser } = useAuth();
 
-  // Check if user has permission to export data
-  const hasExportAccess = (currentUser as any)?.role === 'admin' || (currentUser as any)?.role === 'manager';
+  // Check if user has permission to export data - Admin only
+  const hasExportAccess = (currentUser as any)?.role === 'admin';
 
   if (!hasExportAccess) {
     return (
@@ -27,11 +27,10 @@ export default function Export() {
               <h2 className="text-lg font-medium mb-2">Geen toegang</h2>
               <p className="text-gray-600 mb-4">
                 Je hebt geen toestemming om gegevens te exporteren.
-                Alleen beheerders en managers hebben toegang tot deze functie.
+                Alleen administrators hebben toegang tot deze functie.
               </p>
               <p className="text-xs text-gray-500">
                 Dit is ter bescherming van privacy gegevens volgens de AVG wetgeving.
-                Gewone gebruikers kunnen geen persoonlijke informatie van anderen exporteren.
               </p>
             </div>
           </CardContent>

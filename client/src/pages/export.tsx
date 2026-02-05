@@ -186,6 +186,23 @@ export default function Export() {
 
         <Card className="mt-6">
           <CardHeader>
+            <CardTitle className="flex items-center">
+              <Upload className="h-5 w-5 mr-2 text-blue-600" />
+              Deploy DPP Presentatiepagina
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-gray-600">
+              Upload de DPP presentatiepagina naar gwcirculair.nl/dpp/[GTIN].
+              Na het deployen zijn productpaspoorten publiek toegankelijk.
+            </p>
+            
+            <FTPDeploySection />
+          </CardContent>
+        </Card>
+
+        <Card className="mt-6">
+          <CardHeader>
             <CardTitle>Exportinformatie</CardTitle>
           </CardHeader>
           <CardContent>
@@ -205,6 +222,120 @@ export default function Export() {
           </CardContent>
         </Card>
       </div>
+    </div>
+  );
+}
+
+function FTPDeploySection() {
+  const { toast } = useToast();
+  const [connectionStatus, setConnectionStatus] = useState<'idle' | 'testing' | 'success' | 'error'>('idle');
+
+  const testConnectionMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch('/api/deploy/ftp/test', {
+        method: 'GET',
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Connection test failed');
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      setConnectionStatus('success');
+      toast({
+        title: "FTP verbinding succesvol",
+        description: "Server is bereikbaar",
+      });
+    },
+    onError: (error: any) => {
+      setConnectionStatus('error');
+      toast({
+        title: "FTP verbinding mislukt",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deployMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch('/api/deploy/ftp', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Deploy failed');
+      }
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Deploy voltooid",
+        description: data.message,
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Deploy mislukt",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-3">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => {
+            setConnectionStatus('testing');
+            testConnectionMutation.mutate();
+          }}
+          disabled={testConnectionMutation.isPending}
+        >
+          {testConnectionMutation.isPending ? (
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+          ) : connectionStatus === 'success' ? (
+            <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
+          ) : connectionStatus === 'error' ? (
+            <XCircle className="h-4 w-4 mr-2 text-red-500" />
+          ) : (
+            <Database className="h-4 w-4 mr-2" />
+          )}
+          Test FTP Verbinding
+        </Button>
+        
+        {connectionStatus === 'success' && (
+          <span className="text-sm text-green-600">Verbonden</span>
+        )}
+        {connectionStatus === 'error' && (
+          <span className="text-sm text-red-600">Niet verbonden</span>
+        )}
+      </div>
+
+      <Button
+        onClick={() => deployMutation.mutate()}
+        disabled={deployMutation.isPending}
+        className="w-full"
+      >
+        {deployMutation.isPending ? (
+          <>
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            Bezig met deployen...
+          </>
+        ) : (
+          <>
+            <Upload className="h-4 w-4 mr-2" />
+            Deploy DPP Pagina naar gwcirculair.nl
+          </>
+        )}
+      </Button>
     </div>
   );
 }

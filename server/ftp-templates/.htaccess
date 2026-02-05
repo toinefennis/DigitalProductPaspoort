@@ -1,0 +1,9 @@
+RewriteEngine On
+RewriteBase /dpp/
+
+# If the request is not a file or directory
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Rewrite /dpp/[GTIN] to /dpp/index.php?gtin=[GTIN]
+RewriteRule ^([0-9]+)$ index.php?gtin=$1 [L,QSA]

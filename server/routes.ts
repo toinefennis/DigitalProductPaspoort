@@ -1573,6 +1573,88 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // FTP Upload - Deploy DPP presentation page to gwcirculair.nl
+  app.post("/api/deploy/ftp", async (req, res) => {
+    try {
+      const sessionUser = (req as any).session?.user;
+      if (!sessionUser) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      if (sessionUser.role !== 'manager' && sessionUser.role !== 'admin') {
+        return res.status(403).json({ message: "Access denied. Manager or Admin role required." });
+      }
+
+      const ftp = require('basic-ftp');
+      const client = new ftp.Client();
+      client.ftp.verbose = true;
+
+      await client.access({
+        host: process.env.FTP_HOST,
+        user: process.env.FTP_USER,
+        password: process.env.FTP_PASSWORD,
+        secure: false,
+      });
+
+      // Upload the PHP files to the dpp folder
+      const templatesDir = path.join(process.cwd(), 'server', 'ftp-templates');
+      
+      // Ensure dpp directory exists
+      try {
+        await client.ensureDir('/dpp');
+      } catch (e) {
+        // Directory might already exist
+      }
+
+      // Upload all files from ftp-templates
+      await client.uploadFromDir(templatesDir, '/dpp');
+
+      await client.close();
+
+      res.json({ 
+        success: true, 
+        message: "DPP presentatie pagina gedeployed naar gwcirculair.nl/dpp/",
+        url: "https://gwcirculair.nl/dpp/"
+      });
+    } catch (error: any) {
+      console.error("FTP deploy failed:", error);
+      res.status(500).json({ 
+        success: false, 
+        message: "FTP deploy mislukt: " + error.message 
+      });
+    }
+  });
+
+  // Test FTP connection
+  app.get("/api/deploy/ftp/test", async (req, res) => {
+    try {
+      const sessionUser = (req as any).session?.user;
+      if (!sessionUser) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const ftp = require('basic-ftp');
+      const client = new ftp.Client();
+
+      await client.access({
+        host: process.env.FTP_HOST,
+        user: process.env.FTP_USER,
+        password: process.env.FTP_PASSWORD,
+        secure: false,
+      });
+
+      await client.close();
+
+      res.json({ success: true, message: "FTP verbinding succesvol" });
+    } catch (error: any) {
+      console.error("FTP connection test failed:", error);
+      res.status(500).json({ 
+        success: false, 
+        message: "FTP verbinding mislukt: " + error.message 
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

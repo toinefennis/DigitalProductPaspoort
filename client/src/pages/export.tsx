@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Download, Database, FileText, Calendar, Lock } from "lucide-react";
+import { Download, Database, FileText, Calendar, Lock, Upload, CheckCircle, XCircle, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { apiRequest } from "@/lib/queryClient";
@@ -169,6 +169,23 @@ export default function Export() {
 
         <Card className="mt-6">
           <CardHeader>
+            <CardTitle className="flex items-center">
+              <Upload className="h-5 w-5 mr-2 text-gwc-primary" />
+              MySQL Export naar gwcirculair.nl
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-gray-600">
+              Exporteer alle producten naar de externe MySQL database op gwcirculair.nl/dpp.
+              Dit synchroniseert de productpaspoorten met de website.
+            </p>
+            
+            <MySQLExportSection />
+          </CardContent>
+        </Card>
+
+        <Card className="mt-6">
+          <CardHeader>
             <CardTitle>Exportinformatie</CardTitle>
           </CardHeader>
           <CardContent>
@@ -188,6 +205,120 @@ export default function Export() {
           </CardContent>
         </Card>
       </div>
+    </div>
+  );
+}
+
+function MySQLExportSection() {
+  const { toast } = useToast();
+  const [connectionStatus, setConnectionStatus] = useState<'idle' | 'testing' | 'success' | 'error'>('idle');
+
+  const testConnectionMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch('/api/export/mysql/test', {
+        method: 'GET',
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Connection test failed');
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      setConnectionStatus('success');
+      toast({
+        title: "Verbinding succesvol",
+        description: "MySQL database is bereikbaar",
+      });
+    },
+    onError: (error: any) => {
+      setConnectionStatus('error');
+      toast({
+        title: "Verbinding mislukt",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const exportMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch('/api/export/mysql', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Export failed');
+      }
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Export voltooid",
+        description: data.message,
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Export mislukt",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-3">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => {
+            setConnectionStatus('testing');
+            testConnectionMutation.mutate();
+          }}
+          disabled={testConnectionMutation.isPending}
+        >
+          {testConnectionMutation.isPending ? (
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+          ) : connectionStatus === 'success' ? (
+            <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
+          ) : connectionStatus === 'error' ? (
+            <XCircle className="h-4 w-4 mr-2 text-red-500" />
+          ) : (
+            <Database className="h-4 w-4 mr-2" />
+          )}
+          Test Verbinding
+        </Button>
+        
+        {connectionStatus === 'success' && (
+          <span className="text-sm text-green-600">Verbonden</span>
+        )}
+        {connectionStatus === 'error' && (
+          <span className="text-sm text-red-600">Niet verbonden</span>
+        )}
+      </div>
+
+      <Button
+        onClick={() => exportMutation.mutate()}
+        disabled={exportMutation.isPending}
+        className="w-full"
+      >
+        {exportMutation.isPending ? (
+          <>
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            Bezig met exporteren...
+          </>
+        ) : (
+          <>
+            <Upload className="h-4 w-4 mr-2" />
+            Exporteer naar MySQL Database
+          </>
+        )}
+      </Button>
     </div>
   );
 }

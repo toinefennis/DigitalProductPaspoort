@@ -1405,6 +1405,174 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // MySQL Export API - Export products to external MySQL database
+  app.post("/api/export/mysql", async (req, res) => {
+    try {
+      const sessionUser = (req as any).session?.user;
+      if (!sessionUser) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      if (sessionUser.role !== 'manager' && sessionUser.role !== 'admin') {
+        return res.status(403).json({ message: "Access denied. Manager or Admin role required." });
+      }
+
+      const mysql = require('mysql2/promise');
+      
+      const connection = await mysql.createConnection({
+        host: process.env.MYSQL_HOST,
+        user: process.env.MYSQL_USER,
+        password: process.env.MYSQL_PASSWORD,
+        database: process.env.MYSQL_DATABASE,
+      });
+
+      // Create products table if not exists
+      await connection.execute(`
+        CREATE TABLE IF NOT EXISTS products (
+          id INT PRIMARY KEY,
+          gtin VARCHAR(255) UNIQUE,
+          name VARCHAR(255),
+          type VARCHAR(100),
+          status VARCHAR(100),
+          location VARCHAR(255),
+          description TEXT,
+          photo_url VARCHAR(500),
+          owner_id INT,
+          materials TEXT,
+          source_gtins TEXT,
+          repair_history TEXT,
+          sustainability_score DECIMAL(5,2),
+          repairability_index INT,
+          durability_score INT,
+          care_symbols TEXT,
+          carbon_footprint DECIMAL(10,2),
+          carbon_footprint_breakdown TEXT,
+          water_footprint_liters INT,
+          energy_consumption_kwh DECIMAL(10,2),
+          renewable_energy_percentage INT,
+          microplastic_shedding_estimated INT,
+          created_at DATETIME,
+          updated_at DATETIME
+        )
+      `);
+
+      // Get all products from PostgreSQL
+      const products = await storage.getProducts();
+
+      let exported = 0;
+      let errors: string[] = [];
+
+      for (const product of products) {
+        try {
+          await connection.execute(`
+            INSERT INTO products (
+              id, gtin, name, type, status, location, description, photo_url, owner_id,
+              materials, source_gtins, repair_history, sustainability_score,
+              repairability_index, durability_score, care_symbols, carbon_footprint,
+              carbon_footprint_breakdown, water_footprint_liters, energy_consumption_kwh,
+              renewable_energy_percentage, microplastic_shedding_estimated, created_at, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+              name = VALUES(name),
+              type = VALUES(type),
+              status = VALUES(status),
+              location = VALUES(location),
+              description = VALUES(description),
+              photo_url = VALUES(photo_url),
+              materials = VALUES(materials),
+              source_gtins = VALUES(source_gtins),
+              repair_history = VALUES(repair_history),
+              sustainability_score = VALUES(sustainability_score),
+              repairability_index = VALUES(repairability_index),
+              durability_score = VALUES(durability_score),
+              care_symbols = VALUES(care_symbols),
+              carbon_footprint = VALUES(carbon_footprint),
+              carbon_footprint_breakdown = VALUES(carbon_footprint_breakdown),
+              water_footprint_liters = VALUES(water_footprint_liters),
+              energy_consumption_kwh = VALUES(energy_consumption_kwh),
+              renewable_energy_percentage = VALUES(renewable_energy_percentage),
+              microplastic_shedding_estimated = VALUES(microplastic_shedding_estimated),
+              updated_at = VALUES(updated_at)
+          `, [
+            product.id,
+            product.gtin,
+            product.name,
+            product.type,
+            product.status,
+            product.location,
+            product.description,
+            product.photoUrl,
+            product.ownerId,
+            JSON.stringify(product.materials || []),
+            JSON.stringify(product.sourceGtins || []),
+            JSON.stringify(product.repairHistory || []),
+            product.sustainabilityScore,
+            product.repairabilityIndex,
+            product.durabilityScore,
+            JSON.stringify(product.careSymbols || []),
+            product.carbonFootprint,
+            JSON.stringify(product.carbonFootprintBreakdown || {}),
+            product.waterFootprintLiters,
+            product.energyConsumptionKwh,
+            product.renewableEnergyPercentage,
+            product.microplasticSheddingEstimated,
+            product.createdAt,
+            product.updatedAt
+          ]);
+          exported++;
+        } catch (err: any) {
+          errors.push(`Product ${product.gtin}: ${err.message}`);
+        }
+      }
+
+      await connection.end();
+
+      res.json({
+        success: true,
+        message: `Export voltooid: ${exported} van ${products.length} producten geëxporteerd`,
+        exported,
+        total: products.length,
+        errors: errors.length > 0 ? errors : undefined
+      });
+    } catch (error: any) {
+      console.error("Error exporting to MySQL:", error);
+      res.status(500).json({ 
+        success: false,
+        message: "MySQL export mislukt: " + error.message 
+      });
+    }
+  });
+
+  // Test MySQL connection
+  app.get("/api/export/mysql/test", async (req, res) => {
+    try {
+      const sessionUser = (req as any).session?.user;
+      if (!sessionUser) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const mysql = require('mysql2/promise');
+      
+      const connection = await mysql.createConnection({
+        host: process.env.MYSQL_HOST,
+        user: process.env.MYSQL_USER,
+        password: process.env.MYSQL_PASSWORD,
+        database: process.env.MYSQL_DATABASE,
+      });
+
+      await connection.ping();
+      await connection.end();
+
+      res.json({ success: true, message: "MySQL verbinding succesvol" });
+    } catch (error: any) {
+      console.error("MySQL connection test failed:", error);
+      res.status(500).json({ 
+        success: false, 
+        message: "MySQL verbinding mislukt: " + error.message 
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

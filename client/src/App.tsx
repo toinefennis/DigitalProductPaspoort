@@ -31,6 +31,7 @@ import NotFound from "@/pages/not-found";
 import DPPPage from "@/pages/dpp";
 import Handleiding from "@/pages/handleiding";
 import Presentation from "@/pages/presentation";
+import Catalog from "@/pages/catalog";
 import { useAuth } from "@/hooks/useAuth";
 
 function Router() {
@@ -52,6 +53,7 @@ function Router() {
     <Switch>
       <Route path="/dpp/:gtin" component={DPPPage} />
       <Route path="/presentatie" component={Presentation} />
+      <Route path="/producten" component={Catalog} />
       <Route path="/register" component={Register} />
       <Route path="/handleiding" component={Handleiding} />
       {!isAuthenticated && <Route component={Login} />}

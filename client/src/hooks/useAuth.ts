@@ -1,12 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, getQueryFn } from "@/lib/queryClient";
 
 export function useAuth() {
   const queryClient = useQueryClient();
   
   const { data: user, isLoading } = useQuery({
     queryKey: ["/api/users/me"],
+    queryFn: getQueryFn({ on401: "returnNull" }),
     retry: false,
+    staleTime: Infinity,
   });
 
   const logoutMutation = useMutation({

@@ -164,35 +164,9 @@ export default function Login() {
               </div>
             )}
 
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <h4 className="font-medium mb-2">Demo accounts:</h4>
-              <div className="text-sm space-y-1">
-                <p><strong>Admin:</strong> admin / admin123</p>
-                <p><strong>Manager:</strong> manager / manager123</p>
-                <p><strong>Gebruiker:</strong> user / user123</p>
-              </div>
-            </div>
           </div>
         </CardContent>
       </Card>
-      
-      {/* MVP Disclaimer */}
-      <div className="mt-6 text-center text-xs text-gray-500 max-w-sm">
-        <p className="mb-2">
-          Dit is een MVP (Minimum Viable Product) ontwikkeld voor demonstratiedoeleinden.
-        </p>
-        <p>
-          Meer informatie over dit project vindt u op{" "}
-          <a 
-            href="https://groningenwerktcirculair.info" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="text-gwc-primary hover:underline"
-          >
-            groningenwerktcirculair.info
-          </a>
-        </p>
-      </div>
     </div>
   );
 }

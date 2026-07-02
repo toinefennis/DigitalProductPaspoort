@@ -532,7 +532,7 @@ export default function Stories() {
                           >
                             Bekijk Product
                           </Button>
-                          {(currentUser && ((currentUser as any).role === 'admin' || (currentUser as any).role === 'manager' || story.authorId === String((currentUser as any).id))) && (
+                          {(currentUser && ((currentUser as any).role === 'admin' || (currentUser as any).role === 'superadmin' || (currentUser as any).role === 'manager' || story.authorId === String((currentUser as any).id))) && (
                             <Button
                               size="sm"
                               variant="outline"
@@ -547,7 +547,7 @@ export default function Stories() {
                     </div>
                   ) : (
                     // Show link product button for users who can edit
-                    (currentUser && ((currentUser as any).role === 'admin' || (currentUser as any).role === 'manager' || story.authorId === String((currentUser as any).id))) && (
+                    (currentUser && ((currentUser as any).role === 'admin' || (currentUser as any).role === 'superadmin' || (currentUser as any).role === 'manager' || story.authorId === String((currentUser as any).id))) && (
                       <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2">
@@ -645,7 +645,7 @@ export default function Stories() {
                       {/* Edit button for author or admin/manager */}
                       {currentUser && (
                         story.authorId === (currentUser as any).id.toString() || 
-                        (currentUser as any).role === 'admin' || 
+                        (currentUser as any).role === 'admin' || (currentUser as any).role === 'superadmin' || 
                         (currentUser as any).role === 'manager'
                       ) && (
                         <Button 

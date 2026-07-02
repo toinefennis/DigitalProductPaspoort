@@ -36,7 +36,7 @@ function ActivityCard({ activity, onDelete }: {
   onDelete?: (eventId: number) => void;
 }) {
   const { user: currentUser } = useAuth();
-  const isAdmin = (currentUser as any)?.role === 'admin';
+  const isAdmin = (currentUser as any)?.role === 'admin' || (currentUser as any)?.role === 'superadmin';
 
   const getEventIcon = (eventType: string) => {
     switch (eventType) {

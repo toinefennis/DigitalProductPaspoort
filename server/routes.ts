@@ -38,6 +38,14 @@ const upload = multer({
   },
 });
 
+// Role helper functions — superadmin has all admin rights
+function isAdmin(role: string | undefined): boolean {
+  return role === 'admin' || role === 'superadmin';
+}
+function isManagerOrAbove(role: string | undefined): boolean {
+  return role === 'manager' || isAdmin(role);
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Session middleware
   app.use(session({
@@ -235,7 +243,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Filter based on user role - regular users only see their own activities
       let filteredActivities = activities;
-      if (sessionUser.role !== 'admin' && sessionUser.role !== 'manager') {
+      if (!isManagerOrAbove(sessionUser.role)) {
         filteredActivities = activities.filter(event => 
           !event.borrowerEmail || event.borrowerEmail === sessionUser.email
         );
@@ -533,7 +541,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Filter based on user role - regular users only see their own loans
       let filteredLoans = activeLoanEvents;
-      if (sessionUser.role !== 'admin' && sessionUser.role !== 'manager') {
+      if (!isManagerOrAbove(sessionUser.role)) {
         filteredLoans = activeLoanEvents.filter(event => event.borrowerEmail === sessionUser.email);
         console.log(`User ${sessionUser.email} has ${filteredLoans.length} active loans`);
       }
@@ -554,7 +562,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Check if user has permission to export data
-      if (sessionUser.role !== 'admin' && sessionUser.role !== 'manager') {
+      if (!isManagerOrAbove(sessionUser.role)) {
         return res.status(403).json({ message: "Insufficient permissions. Only administrators and managers can export data." });
       }
 
@@ -753,7 +761,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Only admins can manage GS1 integrations
-      if (sessionUser.role !== 'admin') {
+      if (!isAdmin(sessionUser.role)) {
         return res.status(403).json({ message: "Insufficient permissions. Only administrators can manage GS1 integrations." });
       }
 
@@ -773,7 +781,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      if (sessionUser.role !== 'admin') {
+      if (!isAdmin(sessionUser.role)) {
         return res.status(403).json({ message: "Insufficient permissions. Only administrators can manage GS1 integrations." });
       }
 
@@ -793,7 +801,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      if (sessionUser.role !== 'admin') {
+      if (!isAdmin(sessionUser.role)) {
         return res.status(403).json({ message: "Insufficient permissions. Only administrators can manage GS1 integrations." });
       }
 
@@ -1046,7 +1054,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/events/:id", async (req, res) => {
     try {
       const sessionUser = (req as any).session?.user;
-      if (!sessionUser || sessionUser.role !== 'admin') {
+      if (!sessionUser || !isAdmin(sessionUser.role)) {
         return res.status(403).json({ message: "Admin access required" });
       }
 
@@ -1074,7 +1082,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Filter by approval status for regular users
       let filteredStories = stories;
-      if (!sessionUser || (sessionUser.role !== 'admin' && sessionUser.role !== 'manager')) {
+      if (!sessionUser || (!isManagerOrAbove(sessionUser.role))) {
         filteredStories = stories.filter(story => story.status === 'approved');
       }
       
@@ -1156,13 +1164,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Check if user is the author or has moderation privileges
       const isAuthor = story.authorId === sessionUser.id.toString();
-      const isAdmin = sessionUser.role === 'admin';
+      const userIsAdmin = isAdmin(sessionUser.role);
       const isManager = sessionUser.role === 'manager';
-      const canEdit = isAuthor || isAdmin || isManager;
+      const canEdit = isAuthor || userIsAdmin || isManager;
       
       console.log("Permission check:", { 
         isAuthor, 
-        isAdmin, 
+        isAdmin: userIsAdmin, 
         isManager, 
         canEdit,
         storyAuthorId: story.authorId,
@@ -1211,7 +1219,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      if (sessionUser.role !== 'admin' && sessionUser.role !== 'manager') {
+      if (!isManagerOrAbove(sessionUser.role)) {
         return res.status(403).json({ message: "Insufficient permissions" });
       }
 
@@ -1253,9 +1261,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const isAuthor = story.authorId === String(sessionUser.id);
-      const isAdmin = sessionUser.role === 'admin';
+      const userIsAdmin = isAdmin(sessionUser.role);
       const isManager = sessionUser.role === 'manager';
-      const canEdit = isAuthor || isAdmin || isManager;
+      const canEdit = isAuthor || userIsAdmin || isManager;
       
       if (!canEdit) {
         return res.status(403).json({ message: "Permission denied" });
@@ -1291,7 +1299,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      if (sessionUser.role !== 'admin' && sessionUser.role !== 'manager') {
+      if (!isManagerOrAbove(sessionUser.role)) {
         return res.status(403).json({ message: "Insufficient permissions" });
       }
 
@@ -1313,7 +1321,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Check if user is manager or admin
-      if (sessionUser.role !== 'manager' && sessionUser.role !== 'admin') {
+      if (!isManagerOrAbove(sessionUser.role)) {
         return res.status(403).json({ message: "Access denied. Manager or Admin role required." });
       }
 
@@ -1332,7 +1340,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      if (sessionUser.role !== 'manager' && sessionUser.role !== 'admin') {
+      if (!isManagerOrAbove(sessionUser.role)) {
         return res.status(403).json({ message: "Access denied. Manager or Admin role required." });
       }
 
@@ -1354,7 +1362,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      if (sessionUser.role !== 'manager' && sessionUser.role !== 'admin') {
+      if (!isManagerOrAbove(sessionUser.role)) {
         return res.status(403).json({ message: "Access denied. Manager or Admin role required." });
       }
 
@@ -1374,7 +1382,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      if (sessionUser.role !== 'manager' && sessionUser.role !== 'admin') {
+      if (!isManagerOrAbove(sessionUser.role)) {
         return res.status(403).json({ message: "Access denied. Manager or Admin role required." });
       }
 
@@ -1393,7 +1401,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      if (sessionUser.role !== 'manager' && sessionUser.role !== 'admin') {
+      if (!isManagerOrAbove(sessionUser.role)) {
         return res.status(403).json({ message: "Access denied. Manager or Admin role required." });
       }
 
@@ -1413,7 +1421,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      if (sessionUser.role !== 'admin') {
+      if (!isAdmin(sessionUser.role)) {
         return res.status(403).json({ message: "Access denied. Admin role required." });
       }
 
@@ -1581,7 +1589,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      if (sessionUser.role !== 'admin') {
+      if (!isAdmin(sessionUser.role)) {
         return res.status(403).json({ message: "Access denied. Admin role required." });
       }
 

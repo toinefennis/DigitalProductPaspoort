@@ -483,7 +483,7 @@ export default function ProductDetail() {
         </Button>
         
         {/* GTIN Registry Conversion Button (Manager/Admin only) */}
-        {((user as any)?.role === 'manager' || (user as any)?.role === 'admin') && (
+        {((user as any)?.role === 'manager' || (user as any)?.role === 'admin' || (user as any)?.role === 'superadmin') && (
           <Button
             variant="secondary"
             size="sm"

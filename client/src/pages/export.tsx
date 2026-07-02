@@ -15,7 +15,7 @@ export default function Export() {
   const { user: currentUser } = useAuth();
 
   // Check if user has permission to export data - Admin only
-  const hasExportAccess = (currentUser as any)?.role === 'admin';
+  const hasExportAccess = (currentUser as any)?.role === 'admin' || (currentUser as any)?.role === 'superadmin';
 
   if (!hasExportAccess) {
     return (

@@ -99,7 +99,7 @@ export function UserNav() {
           <Settings className="mr-2 h-4 w-4" />
           <span>Instellingen</span>
         </DropdownMenuItem>
-        {(user.role === 'manager' || user.role === 'admin') && (
+        {(user.role === 'manager' || user.role === 'admin' || user.role === 'superadmin') && (
           <DropdownMenuItem onClick={() => setLocation("/gtin-registry")}>
             <Database className="mr-2 h-4 w-4" />
             <span>GTIN Register</span>

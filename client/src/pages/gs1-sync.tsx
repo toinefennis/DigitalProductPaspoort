@@ -59,7 +59,7 @@ export default function GS1Sync() {
   const { user: currentUser } = useAuth();
 
   // Check if user has permission to access GS1 sync
-  const hasGS1Access = (currentUser as any)?.role === 'admin';
+  const hasGS1Access = (currentUser as any)?.role === 'admin' || (currentUser as any)?.role === 'superadmin';
 
   if (!hasGS1Access) {
     return (

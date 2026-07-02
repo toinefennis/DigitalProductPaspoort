@@ -34,7 +34,7 @@ export default function Users() {
   const { user: currentUser } = useAuth();
 
   // Check if user has permission to view user management
-  const hasUserManagementAccess = (currentUser as any)?.role === 'admin' || (currentUser as any)?.role === 'manager';
+  const hasUserManagementAccess = (currentUser as any)?.role === 'admin' || (currentUser as any)?.role === 'superadmin' || (currentUser as any)?.role === 'manager';
 
   if (!hasUserManagementAccess) {
     return (

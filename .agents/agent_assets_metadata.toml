@@ -1,0 +1,30 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "tWsEWRDkBZrurW8p3s2vX"
+uri = "file://screenshots/desktop-overview.png"
+type = "image"
+title = "Desktop-screenshot — 1440 × 1000"
+description = "Echte PNG-opname van https://dpp.gwcirculair.nl/, zonder aanmelding of privégegevens. De hoofdroute toont het inlogscherm."
+logical_id = "35a0f0d2-82d8-41ff-b346-0fbbc449ee0b"
+content_hash = "sha256:b8f0af0e885fd585df8670dadf92167426f65e5ab7450e1c1b2297402d500096"
+size = 52988
+mtime_ms = 1791166806291
+storage_uri = "gcs://replit-rams-assets-kirk/rams/assets/repl:391cc0ff-9efa-4cc1-8e90-441cc67158d1/35a0f0d2-82d8-41ff-b346-0fbbc449ee0b/23f40076-2f79-4abb-bfe8-6ba6905fe792"
+storage_version_token = "1791166838183274"
+content_type = "image/png"
+
+[[outputs]]
+id = "x6ze9re0ZOVlDvkGQ5LZ6"
+uri = "file://client/public/assets/brand/project-logo.png"
+type = "image"
+title = "Hergebruikt projectlogo"
+description = "Transparante, bijgesneden kopie van het bestaande generated-icon.png. Het origineel is behouden; de kopie staat in de appbalk en als favicon in Preview."
+logical_id = "acd5693a-3726-43c8-996b-0b8602f2934d"
+content_hash = "sha256:1d663d17a9f59c4becddc0af68bf3762a4019609bfbd2882e0f89f90625c0469"
+size = 100561
+mtime_ms = 1791053844543
+storage_uri = "gcs://replit-rams-assets-kirk/rams/assets/repl:391cc0ff-9efa-4cc1-8e90-441cc67158d1/acd5693a-3726-43c8-996b-0b8602f2934d/51bab4b7-f8cb-4f5b-8353-3f1ec7d4f278"
+storage_version_token = "1791166839005697"
+content_type = "image/png"

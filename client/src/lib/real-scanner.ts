@@ -1,4 +1,4 @@
-import { BrowserMultiFormatReader } from '@zxing/browser';
+import { BarcodeFormat, BrowserMultiFormatReader } from '@zxing/library';
 
 export interface ScanResult {
   code: string;
@@ -52,11 +52,11 @@ export class RealScanner {
     if (!this.videoElement || !this.scanning) return;
 
     try {
-      const result = await this.codeReader.decodeOnceFromVideoDevice(undefined, this.videoElement);
+      const result = await this.codeReader.decodeFromVideoElement(this.videoElement);
       
       if (result) {
         const code = result.getText();
-        const format = result.getBarcodeFormat().toString();
+        const format = BarcodeFormat[result.getBarcodeFormat()];
         
         // Detect if it's a GS1 QR code with URL format
         let finalCode = code;
@@ -94,6 +94,7 @@ export class RealScanner {
 
   stopScanning(): void {
     this.scanning = false;
+    this.codeReader.reset();
 
     if (this.stream) {
       this.stream.getTracks().forEach(track => track.stop());

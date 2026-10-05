@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -9,13 +9,11 @@ import { useLocation } from "wouter";
 export function UserNav() {
   const [, setLocation] = useLocation();
 
-  const { data: user, isLoading } = useQuery({
-    queryKey: ["/api/users/me"],
-    retry: false,
-  });
+  const { user, isLoading } = useAuth();
 
   const getRoleBadgeVariant = (role: string) => {
     switch (role) {
+      case 'superadmin': return 'destructive';
       case 'admin': return 'destructive';
       case 'manager': return 'default';
       case 'user': return 'secondary';
@@ -25,6 +23,7 @@ export function UserNav() {
 
   const getRoleLabel = (role: string) => {
     switch (role) {
+      case 'superadmin': return 'Superadmin';
       case 'admin': return 'Admin';
       case 'manager': return 'Manager';
       case 'user': return 'Gebruiker';

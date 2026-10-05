@@ -33,6 +33,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { formatDistanceToNow } from "date-fns";
 import { nl } from "date-fns/locale";
 import { useAuth } from "@/hooks/useAuth";
+import type { Product } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -97,7 +98,7 @@ export default function Stories() {
   }, []);
 
   // Query products for linking
-  const { data: products } = useQuery({
+  const { data: products } = useQuery<Product[]>({
     queryKey: ["/api/products"],
     enabled: linkingStory !== null,
   });

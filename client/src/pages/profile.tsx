@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { useAuth } from "@/hooks/useAuth";
 import { queryClient } from "@/lib/queryClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -37,9 +38,7 @@ export default function Profile() {
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const { toast } = useToast();
 
-  const { data: user, isLoading } = useQuery({
-    queryKey: ["/api/users/me"],
-  });
+  const { user, isLoading } = useAuth();
 
   const passwordForm = useForm<PasswordFormData>({
     resolver: zodResolver(passwordSchema),
@@ -150,6 +149,7 @@ export default function Profile() {
 
   const getRoleBadgeVariant = (role: string) => {
     switch (role) {
+      case 'superadmin': return 'destructive';
       case 'admin': return 'destructive';
       case 'manager': return 'default';
       case 'user': return 'secondary';
@@ -159,6 +159,7 @@ export default function Profile() {
 
   const getRoleLabel = (role: string) => {
     switch (role) {
+      case 'superadmin': return 'Superadmin';
       case 'admin': return 'Administrator';
       case 'manager': return 'Manager';
       case 'user': return 'Gebruiker';
@@ -310,7 +311,7 @@ export default function Profile() {
                 <span className="text-sm">Lid sinds</span>
               </div>
               <span className="text-sm text-gray-600">
-                {new Date(user.createdAt).toLocaleDateString('nl-NL')}
+                {user.createdAt ? new Date(user.createdAt).toLocaleDateString('nl-NL') : "Niet beschikbaar"}
               </span>
             </div>
           </CardContent>

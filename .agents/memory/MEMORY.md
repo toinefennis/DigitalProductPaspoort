@@ -1,0 +1,3 @@
+- [External export boundaries](external-export-boundaries.md) — preserve external fields without a source counterpart; never replace them with invented defaults.
+- [API smoke checks](api-smoke-checks.md) — assert JSON responses, not just HTTP 200; the SPA fallback can hide missing API routes.
+- [Drive binary uploads](drive-binary-uploads.md) — use MIME base64 for the string-only proxy and verify uploaded bytes against the local checksum.

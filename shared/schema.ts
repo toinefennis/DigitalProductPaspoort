@@ -355,7 +355,48 @@ export const gtinRegistryRelations = relations(gtinRegistry, ({ one }) => ({
   }),
 }));
 
-export const insertProductSchema = createInsertSchema(products).omit({
+export const insertProductSchema = createInsertSchema(products, {
+  additionalPhotos: z.array(z.string()).nullable().optional(),
+  sourceGtins: z.array(z.string()).nullable().optional(),
+  materialProperties: z.object({
+    composition: z.string().optional(),
+    weight: z.string().optional(),
+    durability: z.string().optional(),
+    recyclability: z.string().optional(),
+    certifications: z.array(z.string()).optional(),
+  }).nullable().optional(),
+  careSymbols: z.array(z.object({
+    symbol: z.string(),
+    code: z.string(),
+    temperature: z.number().optional(),
+    allowed: z.boolean().optional(),
+    method: z.string().optional(),
+    description: z.string(),
+  })).nullable().optional(),
+  carbonFootprintDetailed: z.object({
+    totalKg: z.number().optional(),
+    materialPhase: z.number().optional(),
+    productionPhase: z.number().optional(),
+    transportPhase: z.number().optional(),
+    usePhase: z.number().optional(),
+    endOfLifePhase: z.number().optional(),
+    calculationMethod: z.string().optional(),
+    calculationDate: z.string().optional(),
+  }).nullable().optional(),
+  waterFootprintBreakdown: z.object({
+    fiber: z.number().optional(),
+    production: z.number().optional(),
+    dyeing: z.number().optional(),
+    washingEstimated: z.number().optional(),
+  }).nullable().optional(),
+  fiberSheddingTestResults: z.object({
+    testMethod: z.string().optional(),
+    testDate: z.string().optional(),
+    fibersPerWash: z.number().optional(),
+    labName: z.string().optional(),
+    reportUrl: z.string().optional(),
+  }).nullable().optional(),
+}).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
@@ -385,7 +426,14 @@ export const insertUserSchema = createInsertSchema(users).omit({
   updatedAt: true,
 });
 
-export const insertNotificationSchema = createInsertSchema(notifications).omit({
+export const insertNotificationSchema = createInsertSchema(notifications, {
+  metadata: z.object({
+    action: z.string().optional(),
+    oldValue: z.string().optional(),
+    newValue: z.string().optional(),
+    changedBy: z.string().optional(),
+  }).nullable().optional(),
+}).omit({
   id: true,
   createdAt: true,
 });

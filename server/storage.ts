@@ -21,6 +21,7 @@ import {
   type ProductWithEvents 
 } from "@shared/schema";
 import { db } from "./db";
+import { userNotificationFilter } from "./notification-filter";
 import { eq, desc, count, and, isNotNull } from "drizzle-orm";
 import bcrypt from "bcrypt";
 
@@ -53,7 +54,7 @@ export interface IStorage {
   // Notification operations
   createNotification(notification: InsertNotification): Promise<Notification>;
   getUserNotifications(userId: number, unreadOnly?: boolean): Promise<Notification[]>;
-  markNotificationAsRead(notificationId: number): Promise<void>;
+  markNotificationAsRead(notificationId: number, userId: number): Promise<boolean>;
   markAllNotificationsAsRead(userId: number): Promise<void>;
   
   // Dashboard statistics
@@ -99,6 +100,9 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createProduct(product: InsertProduct): Promise<Product> {
+    if (!product.gtin) {
+      throw new Error("GTIN must be generated or provided before storing a product");
+    }
     const [newProduct] = await db
       .insert(products)
       .values({
@@ -212,20 +216,18 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserNotifications(userId: number, unreadOnly?: boolean): Promise<Notification[]> {
-    let query = db.select().from(notifications).where(eq(notifications.userId, userId));
-    
-    if (unreadOnly) {
-      query = query.where(eq(notifications.isRead, false));
-    }
-    
-    return await query.orderBy(desc(notifications.createdAt));
+    return await db.select().from(notifications)
+      .where(userNotificationFilter(userId, unreadOnly))
+      .orderBy(desc(notifications.createdAt));
   }
 
-  async markNotificationAsRead(notificationId: number): Promise<void> {
-    await db
+  async markNotificationAsRead(notificationId: number, userId: number): Promise<boolean> {
+    const updated = await db
       .update(notifications)
       .set({ isRead: true })
-      .where(eq(notifications.id, notificationId));
+      .where(and(eq(notifications.id, notificationId), userNotificationFilter(userId)))
+      .returning({ id: notifications.id });
+    return updated.length > 0;
   }
 
   async markAllNotificationsAsRead(userId: number): Promise<void> {

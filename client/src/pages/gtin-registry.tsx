@@ -379,7 +379,7 @@ export default function GtinRegistry() {
       batchNumber: registry.batchNumber || "",
       serialNumber: registry.serialNumber || "",
       countryOfOrigin: registry.countryOfOrigin || "",
-      productionDate: registry.productionDate || "",
+      productionDate: registry.productionDate ? new Date(registry.productionDate).toISOString().slice(0, 10) : "",
       economicOperatorId: registry.economicOperatorId || "",
       productionFacilityId: registry.productionFacilityId || "",
       registrationId: registry.registrationId || "",
@@ -1323,7 +1323,7 @@ export default function GtinRegistry() {
                   </TabsContent>
 
                   <TabsContent value="materials" className="space-y-4">
-                    {selectedRegistry.fiberComposition && (
+                    {Boolean(selectedRegistry.fiberComposition) && (
                       <div>
                         <Label className="text-sm font-medium text-gray-500">Vezelsamenstelling</Label>
                         <pre className="text-xs bg-gray-50 p-2 rounded">
@@ -1332,7 +1332,7 @@ export default function GtinRegistry() {
                       </div>
                     )}
                     
-                    {selectedRegistry.recycledContent && (
+                    {Boolean(selectedRegistry.recycledContent) && (
                       <div>
                         <Label className="text-sm font-medium text-gray-500">Gerecycled Materiaal</Label>
                         <pre className="text-xs bg-gray-50 p-2 rounded">
@@ -1343,7 +1343,7 @@ export default function GtinRegistry() {
                   </TabsContent>
 
                   <TabsContent value="sustainability" className="space-y-4">
-                    {selectedRegistry.sustainabilityData && (
+                    {Boolean(selectedRegistry.sustainabilityData) && (
                       <div>
                         <Label className="text-sm font-medium text-gray-500">Duurzaamheidsdata</Label>
                         <pre className="text-xs bg-gray-50 p-2 rounded">
@@ -1361,7 +1361,7 @@ export default function GtinRegistry() {
                   </TabsContent>
 
                   <TabsContent value="compliance" className="space-y-4">
-                    {selectedRegistry.chemicalCompliance && (
+                    {Boolean(selectedRegistry.chemicalCompliance) && (
                       <div>
                         <Label className="text-sm font-medium text-gray-500">Chemische Compliance</Label>
                         <pre className="text-xs bg-gray-50 p-2 rounded">

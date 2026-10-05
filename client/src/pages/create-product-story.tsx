@@ -105,10 +105,7 @@ export default function CreateProductStory() {
         formData.append("productId", targetProduct.id.toString());
       }
 
-      return await apiRequest("/api/stories", {
-        method: "POST",
-        body: formData,
-      });
+      return await apiRequest("POST", "/api/stories", formData);
     },
     onSuccess: () => {
       toast({
@@ -190,7 +187,7 @@ export default function CreateProductStory() {
           <Button 
             variant="ghost" 
             size="sm"
-            onClick={() => navigate(-1)}
+            onClick={() => window.history.back()}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Terug
@@ -390,7 +387,7 @@ export default function CreateProductStory() {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => navigate(-1)}
+                  onClick={() => window.history.back()}
                 >
                   Annuleren
                 </Button>

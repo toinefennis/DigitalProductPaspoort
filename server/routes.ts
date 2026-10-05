@@ -10,6 +10,8 @@ import fs from "fs";
 import session from "express-session";
 import sharp from "sharp";
 import { generateAndSaveQRCode, generateProductDPPUrl } from "./qrcode-generator";
+import { MYSQL_PRODUCT_UPSERT, mysqlProductValues } from "./mysql-product-export";
+import { registerNotificationRoutes } from "./notification-routes";
 
 // Configure multer for file uploads
 const uploadDir = path.join(process.cwd(), "uploads");
@@ -59,6 +61,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   }));
 
   // Serve uploaded files
+  registerNotificationRoutes(app, storage);
   app.use("/uploads", express.static(uploadDir));
 
   // Load material care data
@@ -1276,12 +1279,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         await storage.createEvent({
           productId: productId,
           eventType: "verhaal_gekoppeld",
-          description: `Verhaal "${story.title}" gekoppeld aan product`,
-          metadata: {
-            storyId: storyId,
-            storyTitle: story.title,
-            authorName: story.authorName
-          }
+          description: `Verhaal "${story.title}" (ID: ${storyId}, auteur: ${story.authorName}) gekoppeld aan product`,
         });
       }
       
@@ -1425,7 +1423,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Access denied. Admin role required." });
       }
 
-      const mysql = require('mysql2/promise');
+      const mysql = await import('mysql2/promise');
       
       const connection = await mysql.createConnection({
         host: process.env.MYSQL_HOST,
@@ -1465,68 +1463,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       `);
 
       // Get all products from PostgreSQL
-      const products = await storage.getProducts();
+      const products = await storage.getAllProducts();
 
       let exported = 0;
       let errors: string[] = [];
 
       for (const product of products) {
         try {
-          await connection.execute(`
-            INSERT INTO products (
-              id, gtin, name, type, status, location, description, photo_url, owner_id,
-              materials, source_gtins, repair_history, sustainability_score,
-              repairability_index, durability_score, care_symbols, carbon_footprint,
-              carbon_footprint_breakdown, water_footprint_liters, energy_consumption_kwh,
-              renewable_energy_percentage, microplastic_shedding_estimated, created_at, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ON DUPLICATE KEY UPDATE
-              name = VALUES(name),
-              type = VALUES(type),
-              status = VALUES(status),
-              location = VALUES(location),
-              description = VALUES(description),
-              photo_url = VALUES(photo_url),
-              materials = VALUES(materials),
-              source_gtins = VALUES(source_gtins),
-              repair_history = VALUES(repair_history),
-              sustainability_score = VALUES(sustainability_score),
-              repairability_index = VALUES(repairability_index),
-              durability_score = VALUES(durability_score),
-              care_symbols = VALUES(care_symbols),
-              carbon_footprint = VALUES(carbon_footprint),
-              carbon_footprint_breakdown = VALUES(carbon_footprint_breakdown),
-              water_footprint_liters = VALUES(water_footprint_liters),
-              energy_consumption_kwh = VALUES(energy_consumption_kwh),
-              renewable_energy_percentage = VALUES(renewable_energy_percentage),
-              microplastic_shedding_estimated = VALUES(microplastic_shedding_estimated),
-              updated_at = VALUES(updated_at)
-          `, [
-            product.id,
-            product.gtin,
-            product.name,
-            product.type,
-            product.status,
-            product.location,
-            product.description,
-            product.photoUrl,
-            product.ownerId,
-            JSON.stringify(product.materials || []),
-            JSON.stringify(product.sourceGtins || []),
-            JSON.stringify(product.repairHistory || []),
-            product.sustainabilityScore,
-            product.repairabilityIndex,
-            product.durabilityScore,
-            JSON.stringify(product.careSymbols || []),
-            product.carbonFootprint,
-            JSON.stringify(product.carbonFootprintBreakdown || {}),
-            product.waterFootprintLiters,
-            product.energyConsumptionKwh,
-            product.renewableEnergyPercentage,
-            product.microplasticSheddingEstimated,
-            product.createdAt,
-            product.updatedAt
-          ]);
+          const productEvents = await storage.getEventsByProductId(product.id);
+          await connection.execute(MYSQL_PRODUCT_UPSERT, mysqlProductValues(product, productEvents));
           exported++;
         } catch (err: any) {
           errors.push(`Product ${product.gtin}: ${err.message}`);
@@ -1559,7 +1504,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      const mysql = require('mysql2/promise');
+      const mysql = await import('mysql2/promise');
       
       const connection = await mysql.createConnection({
         host: process.env.MYSQL_HOST,

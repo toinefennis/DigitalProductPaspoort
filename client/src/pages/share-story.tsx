@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import type { Product } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 
 const storySchema = z.object({
@@ -41,7 +42,7 @@ const storySchema = z.object({
 type StoryFormData = z.infer<typeof storySchema>;
 
 export default function ShareStory() {
-  const [location, navigate] = useLocation();
+  const [location, setLocation] = useLocation();
   const [selectedPhotos, setSelectedPhotos] = useState<File[]>([]);
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
   const [showShareOptions, setShowShareOptions] = useState(false);
@@ -55,7 +56,7 @@ export default function ShareStory() {
   const gtin = urlParams.get('gtin');
 
   // Fetch product data if productId is provided
-  const { data: product } = useQuery({
+  const { data: product } = useQuery<Product>({
     queryKey: [`/api/products/${productId}`],
     enabled: !!productId,
   });

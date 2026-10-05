@@ -16,6 +16,7 @@ import { registerGS1NLRoutes } from "./gs1-nl-routes";
 import { GS1NLClient } from "./gs1-nl-client";
 import { GS1NLRepository } from "./gs1-nl-repository";
 import { registerLegacyGS1Routes } from "./gs1-legacy-routes";
+import { registerLoginRoute } from "./auth-login-routes";
 
 // Configure multer for file uploads
 const uploadDir = path.join(process.cwd(), "uploads");
@@ -812,66 +813,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/auth/login", async (req, res) => {
-    try {
-      const { username, password } = req.body;
-      const bcrypt = await import("bcrypt");
-      
-      // Check database users first
-      let user = await storage.getUserByUsername(username);
-      let isValidPassword = false;
-      
-      if (user) {
-        // Verify password using bcrypt
-        isValidPassword = await bcrypt.compare(password, user.password);
-      } else {
-        // Fallback to demo users for backwards compatibility
-        const demoUsers = [
-          { id: 1, username: "admin", password: "admin123", role: "admin", fullName: "Admin Gebruiker", email: "admin@gwc.nl", firstName: "Admin", lastName: "Gebruiker", isActive: true, createdAt: new Date(), updatedAt: new Date() },
-          { id: 2, username: "manager", password: "manager123", role: "manager", fullName: "Manager Gebruiker", email: "manager@gwc.nl", firstName: "Manager", lastName: "Gebruiker", isActive: true, createdAt: new Date(), updatedAt: new Date() },
-          { id: 3, username: "user", password: "user123", role: "user", fullName: "Normale Gebruiker", email: "user@gwc.nl", firstName: "Normale", lastName: "Gebruiker", isActive: true, createdAt: new Date(), updatedAt: new Date() }
-        ];
-        
-        const demoUser = demoUsers.find(u => u.username === username && u.password === password);
-        if (demoUser) {
-          user = demoUser as any;
-          isValidPassword = true;
-        }
-      }
-      
-      if (!user || !isValidPassword) {
-        return res.status(401).json({ message: "Onjuiste gebruikersnaam of wachtwoord" });
-      }
-      
-      // Check if user is active
-      if (!user.isActive) {
-        return res.status(401).json({ message: "Account is gedeactiveerd" });
-      }
-      
-      // Set user in session
-      (req as any).session.user = {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-        fullName: user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.username
-      };
-      
-      res.json({ 
-        user: {
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          role: user.role,
-          fullName: user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.username
-        }, 
-        message: "Login successful" 
-      });
-    } catch (error) {
-      console.error("Login error:", error);
-      res.status(500).json({ message: "Login failed" });
-    }
-  });
+  registerLoginRoute(app, storage);
 
   app.get("/api/logout", async (req, res) => {
     try {

@@ -6,6 +6,12 @@ description: Product requirements and identity boundaries for the requested GS1 
 The user requires GS1 API support for retrieving and creating/assigning GTIN codes for DPPs, using all GS1 fields, and storing the code and reference in the app's own database. The intended public domain is dpp.gwcirculair.nl.
 
 The user confirmed having GS1 codes and API access, and supplied the GS1 Nederland acceptance documentation for Digital Link V2. Specific Basic/Master Product Data API grants require separate verification.
+The user identifies the codes in a supplied workbook as already registered at GS1.
+
+**Why:** Existing GS1 identifiers must not be mistaken for new-code assignments.
+
+**How to apply:** Treat these as existing identifiers for read-only lookup or import; do not submit them as new Basic IN auto-assignment requests.
+
 The user subsequently clarified: "Dit is de productieomgeving API". Use the production GS1 environment for this integration; do not infer acceptance credentials from an acceptance documentation link. API subscriptions must still be checked separately.
 
 **Why:** The documentation link was for acceptance, but the user confirmed that their API access is for production.

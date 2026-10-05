@@ -38,6 +38,12 @@ Een digitaal productpaspoort-platform voor Groningen Werkt Circulair, met duurza
 - **attached_assets/**: Bijgevoegde bestanden van gebruiker
 
 ## Database Schema
+### Wachtwoordherstel instellen
+- Resend wordt via de Replit-verbinding gebruikt; geen losse API-sleutel in de app plaatsen.
+- `PASSWORD_RESET_FROM`: een afzenderadres op een bij Resend geverifieerd domein.
+- `PASSWORD_RESET_BASE_URL`: de vertrouwde HTTPS-app-URL, afzonderlijk ingesteld voor development en productie. Gebruik nooit een onbevestigde request-host als hersteladres.
+- Pas schemawijzigingen alleen op de ontwikkeldatabase toe. Voor de beheerde Replit-productiedatabase worden deze bij opnieuw publiceren toegepast.
+
 - **users**: Gebruikersbeheer met rollen (admin, manager, user)
 - **products**: Productinformatie met GTIN codes
 - **events**: Productlevenscyclus events (reparatie, uitlening, etc.)

@@ -33,6 +33,8 @@ import Handleiding from "@/pages/handleiding";
 import Presentation from "@/pages/presentation";
 import Catalog from "@/pages/catalog";
 import { useAuth } from "@/hooks/useAuth";
+import ForgotPassword from "@/pages/forgot-password";
+import ResetPassword from "@/pages/reset-password";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -56,6 +58,8 @@ function Router() {
       <Route path="/producten" component={Catalog} />
       <Route path="/register" component={Register} />
       <Route path="/handleiding" component={Handleiding} />
+      <Route path="/forgot-password" component={ForgotPassword} />
+      <Route path="/reset-password" component={ResetPassword} />
       {!isAuthenticated && <Route component={Login} />}
       {isAuthenticated && (
         <>

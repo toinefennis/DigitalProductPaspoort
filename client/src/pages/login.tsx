@@ -122,6 +122,16 @@ export default function Login() {
                   required
                 />
               </div>
+              <div className="text-right">
+                <Button
+                  type="button"
+                  variant="link"
+                  onClick={() => setLocation("/forgot-password")}
+                  className="h-auto px-0 py-1 text-sm text-gwc-primary"
+                >
+                  Wachtwoord vergeten?
+                </Button>
+              </div>
             </div>
 
             <Button 

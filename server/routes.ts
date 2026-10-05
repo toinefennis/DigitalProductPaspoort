@@ -17,6 +17,9 @@ import { GS1NLClient } from "./gs1-nl-client";
 import { GS1NLRepository } from "./gs1-nl-repository";
 import { registerLegacyGS1Routes } from "./gs1-legacy-routes";
 import { registerLoginRoute } from "./auth-login-routes";
+import { PasswordResetRepository } from "./password-reset-repository";
+import { registerPasswordResetRoutes, registerResetSessionGuard } from "./password-reset-routes";
+import { resetEmailConfigured, sendPasswordResetEmail } from "./password-reset-email";
 
 // Configure multer for file uploads
 const uploadDir = path.join(process.cwd(), "uploads");
@@ -54,6 +57,7 @@ function isManagerOrAbove(role: string | undefined): boolean {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  app.set("trust proxy", 1);
   // Session middleware
   app.use(session({
     secret: process.env.SESSION_SECRET || 'demo-secret-key',
@@ -64,6 +68,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }
   }));
+
+  const passwordResetRepository = new PasswordResetRepository();
+  registerResetSessionGuard(app, passwordResetRepository);
+  registerPasswordResetRoutes(app, passwordResetRepository, {
+    configured: resetEmailConfigured,
+    send: sendPasswordResetEmail,
+  });
 
   // Serve uploaded files
   registerNotificationRoutes(app, storage);

@@ -39,3 +39,7 @@ externalPort = 80
 
 [userenv.development]
 GS1_ENVIRONMENT = "acceptance"
+PASSWORD_RESET_BASE_URL = "https://391cc0ff-9efa-4cc1-8e90-441cc67158d1-00-2lda5e2kz1axc.janeway.replit.dev"
+
+[userenv.production]
+PASSWORD_RESET_BASE_URL = "https://dpp.gwcirculair.nl"

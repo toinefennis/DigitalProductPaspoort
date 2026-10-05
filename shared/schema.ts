@@ -139,6 +139,14 @@ export const users = pgTable("users", {
 });
 
 // Notifications/Alerts table
+export const passwordResets = pgTable("password_resets", {
+  userId: integer("user_id").primaryKey().references(() => users.id, { onDelete: "cascade" }),
+  tokenHash: varchar("token_hash", { length: 64 }).unique(),
+  expiresAt: timestamp("expires_at", { withTimezone: true }),
+  requestedAt: timestamp("requested_at", { withTimezone: true }).notNull(),
+  lastResetAt: timestamp("last_reset_at", { withTimezone: true }),
+});
+
 export const notifications = pgTable("notifications", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id),

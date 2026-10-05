@@ -21,6 +21,7 @@ export function registerLoginRoute(app: Express, storage: LoginStorage) {
       return;
     }
     try {
+      const authenticatedAt = Date.now();
       const { username, password } = credentials.data;
       // Only persisted accounts can authenticate. No synthetic/demo user fallback.
       const user = await storage.getUserByUsername(username);
@@ -39,8 +40,9 @@ export function registerLoginRoute(app: Express, storage: LoginStorage) {
       };
       // Rotate the session ID on successful authentication; do not carry pre-login privileges.
       await new Promise<void>((resolve, reject) => req.session.regenerate(error => error ? reject(error) : resolve()));
-      const authenticatedSession = req.session as typeof req.session & { user?: LoginUser };
+      const authenticatedSession = req.session as typeof req.session & { user?: LoginUser; authenticatedAt?: number };
       authenticatedSession.user = publicUser;
+      authenticatedSession.authenticatedAt = authenticatedAt;
       try {
         await new Promise<void>((resolve, reject) => authenticatedSession.save(error => error ? reject(error) : resolve()));
       } catch {

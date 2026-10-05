@@ -1,4 +1,5 @@
-import { pgTable, text, varchar, serial, integer, boolean, timestamp, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, serial, integer, boolean, timestamp, jsonb, uniqueIndex } from "drizzle-orm/pg-core";
+import type { GS1Data, GS1Environment } from "./gs1";
 import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -239,6 +240,41 @@ export const gs1ProductMappings = pgTable("gs1_product_mappings", {
 });
 
 // Relations for GS1 tables
+// Official GS1 Nederland snapshots are isolated from the legacy partner-sync tables.
+export const gs1NlRecords = pgTable("gs1_nl_records", {
+  id: serial("id").primaryKey(),
+  gtin: varchar("gtin", { length: 14 }).notNull(),
+  environment: text("environment").$type<GS1Environment>().notNull(),
+  productId: integer("product_id").references(() => products.id, { onDelete: "set null" }),
+  registryId: integer("registry_id").references(() => gtinRegistry.id, { onDelete: "set null" }),
+  basicData: jsonb("basic_data").$type<GS1Data>(),
+  basicDraft: jsonb("basic_draft").$type<GS1Data>(),
+  digitalLinkData: jsonb("digital_link_data").$type<GS1Data>(),
+  digitalLinkDraft: jsonb("digital_link_draft").$type<GS1Data>(),
+  externalReference: text("external_reference"),
+  registrationStatus: text("registration_status").notNull().default("unverified"),
+  syncState: text("sync_state").notNull().default("draft"),
+  version: integer("version").notNull().default(1),
+  lastError: text("last_error"),
+  syncedAt: timestamp("synced_at"),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, table => [uniqueIndex("gs1_nl_records_gtin_environment").on(table.gtin, table.environment)]);
+
+export const gs1NlJobs = pgTable("gs1_nl_jobs", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  environment: text("environment").$type<GS1Environment>().notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  productId: integer("product_id").references(() => products.id, { onDelete: "set null" }),
+  registryId: integer("registry_id").references(() => gtinRegistry.id, { onDelete: "set null" }),
+  invocationId: text("invocation_id"),
+  status: text("status").notNull(),
+  request: jsonb("request").$type<GS1Data>().notNull(),
+  result: jsonb("result").$type<GS1Data>(),
+  lastError: text("last_error"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 export const gs1PartnersRelations = relations(gs1Partners, ({ many }) => ({
   syncEvents: many(gs1SyncEvents),
 }));

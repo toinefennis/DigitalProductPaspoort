@@ -38,9 +38,7 @@ export async function generateQRCode(
 }
 
 export async function generateProductDPPUrl(gtin: string): Promise<string> {
-  const baseUrl = process.env.REPLIT_DOMAINS 
-    ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}`
-    : 'http://localhost:5000';
+  const baseUrl = (process.env.PUBLIC_DPP_BASE_URL || 'https://dpp.gwcirculair.nl').replace(/\/$/, '');
   
   return `${baseUrl}/dpp/${gtin}`;
 }

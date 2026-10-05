@@ -12,6 +12,9 @@ import sharp from "sharp";
 import { generateAndSaveQRCode, generateProductDPPUrl } from "./qrcode-generator";
 import { MYSQL_PRODUCT_UPSERT, mysqlProductValues } from "./mysql-product-export";
 import { registerNotificationRoutes } from "./notification-routes";
+import { registerGS1NLRoutes } from "./gs1-nl-routes";
+import { GS1NLClient } from "./gs1-nl-client";
+import { GS1NLRepository } from "./gs1-nl-repository";
 
 // Configure multer for file uploads
 const uploadDir = path.join(process.cwd(), "uploads");
@@ -62,6 +65,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Serve uploaded files
   registerNotificationRoutes(app, storage);
+  const gs1NL = new GS1NLClient();
+  registerGS1NLRoutes(app, gs1NL, new GS1NLRepository(gs1NL.environment));
   app.use("/uploads", express.static(uploadDir));
 
   // Load material care data

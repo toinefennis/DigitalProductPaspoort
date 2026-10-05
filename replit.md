@@ -1,7 +1,7 @@
 # GWC DPP - Digital Product Passport App
 
 ## Project Overview
-Een uitgebreide digitale productpaspoort platform voor het Groningen Werkt Circulair project, gespecialiseerd in duurzame producttracking, community verhalen delen, en geavanceerde GS1 GDSN netwerk synchronisatie.
+Een digitaal productpaspoort-platform voor Groningen Werkt Circulair, met duurzame producttracking, community-verhalen en een officiële GS1 Nederland API-koppeling.
 
 ## Technische Stack
 - **Frontend**: React TypeScript met Vite
@@ -62,8 +62,18 @@ Een uitgebreide digitale productpaspoort platform voor het Groningen Werkt Circu
 4. **Story Sharing**: Community verhalen met foto's en social media integratie
 5. **User Management**: Rolengebaseerd toegangsbeheer
 6. **Camera Scanning**: Barcode/QR code scanning voor productidentificatie
-7. **GS1 Synchronization**: Automatische sync met GS1 partners
+7. **GS1 Nederland**: Basic Product Data OUT, Digital Link V2 en lokale concepten; Basic IN-registratie en officiële GTIN-toewijzing vereisen het juiste API-abonnement.
 8. **Lending System**: Uitleensysteem voor producten
 9. **Export Functionality**: Data export naar Excel
 10. **Notification System**: Real-time gebruikersnotificaties
 11. **Material Care**: Automatische verzorgingsinstructies met wassymbolen
+
+## Officiële GS1 Nederland-koppeling
+- Beheer via `/gs1-sync`, voor managers, admins en superadmins. Het GTIN-register verwijst naar dit beheer.
+- Server-Secrets: `GS1_CLIENT_ID` en `GS1_CLIENT_SECRET`; nooit via de browser of databasevelden voor API-sleutels versturen.
+- `GS1_ENVIRONMENT`: `production` (standaard, zoals door de gebruiker bevestigd) of `acceptance`. Endpoints zijn beperkt tot de officiële GS1-hosts.
+- `PUBLIC_DPP_BASE_URL`: standaard `https://dpp.gwcirculair.nl`; niet afleiden uit het Replit-previewdomein.
+- Volledige externe snapshots blijven bewaard naast bewerkbare lokale concepten. Concept opslaan is geen registratie bij GS1.
+- GTIN-toewijzing gebeurt door GS1 via Basic IN, niet door intern gegenereerde codes. Registraties zijn pas bevestigd na het officiële resultaat.
+- Externe schrijfacties vereisen expliciete bevestiging. Onzekere/time-outaanvragen worden niet automatisch opnieuw ingediend.
+- De oude partner-syncservice en API-routes zijn legacy en vormen geen officiële GS1 Nederland-integratie.

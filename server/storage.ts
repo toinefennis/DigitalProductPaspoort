@@ -22,7 +22,8 @@ import {
 } from "@shared/schema";
 import { db } from "./db";
 import { userNotificationFilter } from "./notification-filter";
-import { eq, desc, count, and, isNotNull } from "drizzle-orm";
+import { eq, desc, count, and, isNotNull, inArray } from "drizzle-orm";
+import { isValidGtin } from "../shared/gs1";
 import bcrypt from "bcrypt";
 
 export interface IStorage {
@@ -85,7 +86,13 @@ export class DatabaseStorage implements IStorage {
 
   async getProductByGtin(gtin: string): Promise<Product | undefined> {
     const [product] = await db.select().from(products).where(eq(products.gtin, gtin));
-    return product || undefined;
+    if (product || !isValidGtin(gtin)) return product || undefined;
+    // GS1 Digital Link uses zero-padded GTIN-14; existing local records may use GTIN-13/12/8.
+    const normalized = gtin.padStart(14, "0");
+    const variants = [14, 13, 12, 8].map(length => normalized.slice(-length))
+      .filter(value => value.padStart(14, "0") === normalized);
+    const [equivalent] = await db.select().from(products).where(inArray(products.gtin, variants));
+    return equivalent;
   }
 
   async getProductWithEvents(id: number): Promise<ProductWithEvents | undefined> {

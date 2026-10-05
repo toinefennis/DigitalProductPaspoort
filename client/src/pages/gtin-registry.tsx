@@ -444,6 +444,9 @@ export default function GtinRegistry() {
           <p className="text-gray-600">
             Uitgebreide productregistratie conform DPP vereisten voor textiel
           </p>
+          <a href="/gs1-sync" className="inline-block mt-2 text-sm text-gwc-primary underline">
+            Officiële GS1-gegevens en Digital Links beheren
+          </a>
         </div>
         <div className="flex space-x-2">
           <Dialog open={showScanner} onOpenChange={setShowScanner}>

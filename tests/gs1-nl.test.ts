@@ -109,6 +109,32 @@ test("token requests use official headers, are deduplicated and never return cre
   await Promise.all([client.authorization(), client.authorization()]);
   await client.authorization(); assert.equal(calls, 1);
 });
+test("Basic Product Data IN operations use the requested sandbox and production hosts", async () => {
+  const cases = [
+    { environment: "acceptance" as const, auth: "https://gs1nl-api-acc.gs1.nl", basicIn: "https://gs1nl.api.acc.gs1.nl" },
+    { environment: "production" as const, auth: "https://gs1nl-api.gs1.nl", basicIn: "https://gs1nl.api.gs1.nl" },
+  ];
+  for (const { environment, auth, basicIn } of cases) {
+    const urls: string[] = [];
+    const client = new GS1NLClient(() => ({ clientId: "fake-id", clientSecret: "fake-secret" }), (async url => {
+      urls.push(String(url));
+      return String(url) === `${auth}/authorization/token`
+        ? json({ access_token: "fake-token", expires_in: 3600, token_type: "Bearer" })
+        : json([]);
+    }) as typeof fetch, environment);
+
+    await client.ranges();
+    await client.registerProduct(product);
+    await client.registrationResults("fake-invocation");
+
+    assert.equal(urls[0], `${auth}/authorization/token`);
+    assert.deepEqual(urls.slice(1), [
+      `${basicIn}/basic-product-data-in/GtinCodeRanges`,
+      `${basicIn}/basic-product-data-in/RegistrateGtinProducts`,
+      `${basicIn}/basic-product-data-in/RegistrateProductResults/fake-invocation`,
+    ]);
+  }
+});
 test("upstream authentication errors do not leak raw secrets or response bodies", async () => {
   const client = new GS1NLClient(() => ({ clientId: "fake-id", clientSecret: "fake-secret" }),
     (async () => new Response("fake-secret and fake-token", { status: 400 })) as typeof fetch, "acceptance");

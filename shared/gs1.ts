@@ -4,6 +4,7 @@ export type GS1Environment = "production" | "acceptance";
 export type GS1Data = Record<string, any>;
 
 export const GS1_PRODUCTION_BASE_URL = "https://gs1nl-api.gs1.nl";
+export const GS1_ACCEPTANCE_BASE_URL = "https://gs1nl-api-acc.gs1.nl";
 
 export function gs1EnvironmentPresentation(config?: { environment?: GS1Environment; baseUrl?: string }) {
   if (config?.environment === "production") {

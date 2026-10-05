@@ -1,10 +1,9 @@
 import type { GS1ConnectionTest, GS1Data, GS1Environment } from "../shared/gs1";
-import { GS1_PRODUCTION_BASE_URL } from "../shared/gs1";
+import { GS1_ACCEPTANCE_BASE_URL, GS1_PRODUCTION_BASE_URL } from "../shared/gs1";
 
 const bases = {
   production: GS1_PRODUCTION_BASE_URL,
-  // The user explicitly requested that acceptance use the production host for every API family.
-  acceptance: GS1_PRODUCTION_BASE_URL,
+  acceptance: GS1_ACCEPTANCE_BASE_URL,
 };
 
 export class GS1ApiError extends Error {
@@ -14,14 +13,12 @@ export class GS1ApiError extends Error {
 export class GS1NLClient {
   readonly environment: GS1Environment;
   readonly baseUrl: string;
+  private credentials: () => { clientId?: string; clientSecret?: string };
   private token: { authorization: string; expiresAt: number } | undefined;
   private tokenRequest: Promise<string> | undefined;
 
   constructor(
-    private credentials = () => ({
-      clientId: process.env.GS1_CLIENT_ID,
-      clientSecret: process.env.GS1_CLIENT_SECRET,
-    }),
+    credentials?: () => { clientId?: string; clientSecret?: string },
     private fetcher: typeof fetch = fetch,
     environment = process.env.GS1_ENVIRONMENT || "production",
   ) {
@@ -30,6 +27,15 @@ export class GS1NLClient {
     }
     this.environment = environment;
     this.baseUrl = bases[environment];
+    this.credentials = credentials ?? (() => environment === "acceptance"
+      ? {
+          clientId: process.env.GS1_ACCEPTANCE_CLIENT_ID,
+          clientSecret: process.env.GS1_ACCEPTANCE_CLIENT_SECRET,
+        }
+      : {
+          clientId: process.env.GS1_CLIENT_ID,
+          clientSecret: process.env.GS1_CLIENT_SECRET,
+        });
   }
 
   get configured() {
@@ -65,7 +71,12 @@ export class GS1NLClient {
     if (this.tokenRequest) return this.tokenRequest;
     this.tokenRequest = (async () => {
       const { clientId, clientSecret } = this.credentials();
-      if (!clientId || !clientSecret) throw new GS1ApiError(503, "GS1_CLIENT_ID en GS1_CLIENT_SECRET ontbreken in de server-Secrets.");
+      if (!clientId || !clientSecret) {
+        const keys = this.environment === "acceptance"
+          ? "GS1_ACCEPTANCE_CLIENT_ID en GS1_ACCEPTANCE_CLIENT_SECRET"
+          : "GS1_CLIENT_ID en GS1_CLIENT_SECRET";
+        throw new GS1ApiError(503, `${keys} ontbreken in de server-Secrets.`);
+      }
       const response = await this.send("/authorization/token", {
         method: "POST", headers: { client_id: clientId, client_secret: clientSecret },
       });

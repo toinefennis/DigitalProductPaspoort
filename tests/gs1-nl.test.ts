@@ -120,9 +120,41 @@ test("token requests use official headers, are deduplicated and never return cre
   await Promise.all([client.authorization(), client.authorization()]);
   await client.authorization(); assert.equal(calls, 1);
 });
+test("production and acceptance use separate credential secrets", async () => {
+  const keys = ["GS1_CLIENT_ID", "GS1_CLIENT_SECRET", "GS1_ACCEPTANCE_CLIENT_ID", "GS1_ACCEPTANCE_CLIENT_SECRET"];
+  const previous = new Map(keys.map(key => [key, process.env[key]]));
+  const observed: Array<{ url: string; clientId: string; clientSecret: string }> = [];
+  try {
+    process.env.GS1_CLIENT_ID = "production-id";
+    process.env.GS1_CLIENT_SECRET = "production-secret";
+    process.env.GS1_ACCEPTANCE_CLIENT_ID = "sandbox-id";
+    process.env.GS1_ACCEPTANCE_CLIENT_SECRET = "sandbox-secret";
+    const fetcher = (async (url, init) => {
+      const requestHeaders = init?.headers as Record<string, string>;
+      observed.push({
+        url: String(url),
+        clientId: requestHeaders.client_id,
+        clientSecret: requestHeaders.client_secret,
+      });
+      return json({ access_token: "fake-token", expires_in: 3600, token_type: "Bearer" });
+    }) as typeof fetch;
+    await new GS1NLClient(undefined, fetcher, "acceptance").authorization();
+    await new GS1NLClient(undefined, fetcher, "production").authorization();
+    assert.deepEqual(observed, [
+      { url: "https://gs1nl-api-acc.gs1.nl/authorization/token", clientId: "sandbox-id", clientSecret: "sandbox-secret" },
+      { url: "https://gs1nl-api.gs1.nl/authorization/token", clientId: "production-id", clientSecret: "production-secret" },
+    ]);
+  } finally {
+    for (const key of keys) {
+      const value = previous.get(key);
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+  }
+});
 test("Basic Product Data IN operations use the configured environment hosts", async () => {
   const cases = [
-    { environment: "acceptance" as const, auth: "https://gs1nl-api.gs1.nl", basicIn: "https://gs1nl-api.gs1.nl" },
+    { environment: "acceptance" as const, auth: "https://gs1nl-api-acc.gs1.nl", basicIn: "https://gs1nl-api-acc.gs1.nl" },
     { environment: "production" as const, auth: "https://gs1nl-api.gs1.nl", basicIn: "https://gs1nl-api.gs1.nl" },
   ];
   for (const { environment, auth, basicIn } of cases) {
@@ -146,10 +178,10 @@ test("Basic Product Data IN operations use the configured environment hosts", as
     ]);
   }
 });
-test("both settings route every GS1 API family to the verified production host", async () => {
+test("each setting routes every GS1 API family to its own environment host", async () => {
   for (const environment of ["acceptance", "production"] as const) {
   const urls: string[] = [];
-  const productionHost = "https://gs1nl-api.gs1.nl";
+  const host = environment === "production" ? "https://gs1nl-api.gs1.nl" : "https://gs1nl-api-acc.gs1.nl";
   const client = new GS1NLClient(() => ({ clientId: "fake-id", clientSecret: "fake-secret" }), (async url => {
     urls.push(String(url));
     return String(url).endsWith("/authorization/token")
@@ -168,16 +200,16 @@ test("both settings route every GS1 API family to the verified production host",
   await client.registrationResults("fake-invocation");
 
   assert.deepEqual(urls, [
-    `${productionHost}/authorization/token`,
-    `${productionHost}/digitallinkv2/contracts`,
-    `${productionHost}/digitallinkv2/linktypes`,
-    `${productionHost}/digitallinkv2/mediatypes`,
-    `${productionHost}/basic-product-data-in/GtinCodeRanges`,
-    `${productionHost}/basic-product-data-out/gtins`,
-    `${productionHost}/digitallinkv2/v2/digitalLink/Gtin/${gtin}`,
-    `${productionHost}/digitallinkv2/v2/digitallink`,
-    `${productionHost}/basic-product-data-in/RegistrateGtinProducts`,
-    `${productionHost}/basic-product-data-in/RegistrateProductResults/fake-invocation`,
+    `${host}/authorization/token`,
+    `${host}/digitallinkv2/contracts`,
+    `${host}/digitallinkv2/linktypes`,
+    `${host}/digitallinkv2/mediatypes`,
+    `${host}/basic-product-data-in/GtinCodeRanges`,
+    `${host}/basic-product-data-out/gtins`,
+    `${host}/digitallinkv2/v2/digitalLink/Gtin/${gtin}`,
+    `${host}/digitallinkv2/v2/digitallink`,
+    `${host}/basic-product-data-in/RegistrateGtinProducts`,
+    `${host}/basic-product-data-in/RegistrateProductResults/fake-invocation`,
   ]);
   }
 });

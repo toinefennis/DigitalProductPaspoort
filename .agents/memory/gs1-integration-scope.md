@@ -18,11 +18,11 @@ The user subsequently clarified: "Dit is de productieomgeving API". Use the prod
 
 **How to apply:** Keep production and acceptance records and token caches separated. Never switch environments automatically after an authentication failure.
 
-The user explicitly chose to route every GS1 API call in both configurations—including authorization and write operations—to the verified production host `https://gs1nl-api.gs1.nl`. This makes acceptance-configured registration calls reach production and potentially assign real GTINs.
+The user now wants to test in the GS1 sandbox first. Keep production pointed at `https://gs1nl-api.gs1.nl` and acceptance pointed at `https://gs1nl-api-acc.gs1.nl`, using separate credentials.
 
-**Why:** The user confirmed this full scope after being told that acceptance-mode writes would target production and could create real GTIN assignments, then approved the hyphenated hostname after DNS verification.
+**Why:** The previous production credentials failed authentication against the sandbox. The user says they have a new sandbox secret and wants sandbox testing before proceeding with production.
 
-**How to apply:** Do not restore acceptance-specific GS1 hosts or redirect acceptance traffic without asking the user; don't infer that an acceptance label means sandbox writes.
+**How to apply:** Never overwrite production credentials with sandbox credentials. Keep acceptance traffic on the sandbox host for testing; get explicit confirmation before switching acceptance traffic back to production.
 
 Validate exact GS1 hostnames before changing endpoints: dotted and hyphenated names are not interchangeable, and removing `acc` alone does not prove a production address is valid.
 

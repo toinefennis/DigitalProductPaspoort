@@ -118,7 +118,7 @@ export class GS1SyncService {
 
       return isConnected;
     } catch (error) {
-      console.error(`Connection test failed for partner ${partner.name}:`, error);
+      console.error('GS1 partner connection test failed');
       await this.updatePartner(partnerId, { status: 'error' });
       return false;
     }
@@ -142,7 +142,7 @@ export class GS1SyncService {
       clearTimeout(timeoutId);
       return response.ok;
     } catch (error) {
-      console.error('GS1 connection test failed:', error);
+      console.error('GS1 connection test failed');
       return false;
     }
   }
@@ -190,13 +190,13 @@ export class GS1SyncService {
       console.log(`Sync completed for partner ${partner.name}: ${result.recordsProcessed} records processed`);
       
     } catch (error) {
-      console.error(`Sync failed for partner ${partner.name}:`, error);
+      console.error('GS1 partner synchronization failed');
       
       await db.update(gs1SyncEvents)
         .set({
           status: 'failed',
           completedAt: new Date(),
-          errorMessage: error instanceof Error ? error.message : 'Unknown error',
+          errorMessage: 'GS1 partner synchronization failed',
           details: 'Sync failed due to error',
         })
         .where(eq(gs1SyncEvents.id, eventId));
@@ -229,8 +229,8 @@ export class GS1SyncService {
         details: `Successfully synchronized ${recordsProcessed} products with ${partner.name} via GS1 sandbox`,
       };
     } catch (error) {
-      console.error('GS1 sync error:', error);
-      throw new Error(`GS1 sync failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error('GS1 sync error');
+      throw new Error('GS1 sync failed');
     }
   }
 
@@ -246,7 +246,7 @@ export class GS1SyncService {
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch product data: ${response.statusText}`);
+      throw new Error(`Failed to fetch product data (HTTP ${response.status})`);
     }
 
     return await response.json();
@@ -265,7 +265,7 @@ export class GS1SyncService {
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch inventory data: ${response.statusText}`);
+      throw new Error(`Failed to fetch inventory data (HTTP ${response.status})`);
     }
 
     return await response.json();
@@ -375,7 +375,7 @@ export class GS1SyncService {
         });
       }
     } catch (error) {
-      console.warn('Failed to send local updates to GS1:', error);
+      console.warn('Failed to send local updates to GS1');
       // Non-critical error, don't fail the entire sync
     }
   }
@@ -442,7 +442,7 @@ export class GS1SyncService {
     
     const syncPromises = partners.map(partner => 
       this.syncPartner(partner.id).catch(error => 
-        console.error(`Failed to sync partner ${partner.name}:`, error)
+        console.error('Failed to sync GS1 partner')
       )
     );
 

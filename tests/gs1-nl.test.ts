@@ -109,7 +109,7 @@ test("token requests use official headers, are deduplicated and never return cre
   await Promise.all([client.authorization(), client.authorization()]);
   await client.authorization(); assert.equal(calls, 1);
 });
-test("Basic Product Data IN operations use the requested sandbox and production hosts", async () => {
+test("Basic Product Data IN operations use the configured environment hosts", async () => {
   const cases = [
     { environment: "acceptance" as const, auth: "https://gs1nl.api.gs1.nl", basicIn: "https://gs1nl.api.gs1.nl" },
     { environment: "production" as const, auth: "https://gs1nl-api.gs1.nl", basicIn: "https://gs1nl.api.gs1.nl" },

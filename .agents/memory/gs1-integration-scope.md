@@ -12,11 +12,11 @@ The user subsequently clarified: "Dit is de productieomgeving API". Use the prod
 
 **How to apply:** Keep production and acceptance records and token caches separated. Never switch environments automatically after an authentication failure.
 
-The user specified separate Basic Product Data IN API hosts: production `https://gs1nl.api.gs1.nl`, acceptance `https://gs1nl.api.acc.gs1.nl`. Keep authorization, Basic OUT, and Digital Link on their existing GS1 API hosts.
+The user explicitly chose to route every GS1 API call made in the `acceptance` configuration—including authorization and write operations—to `https://gs1nl.api.gs1.nl`. This makes acceptance-configured registration calls reach production and potentially assign real GTINs.
 
-**Why:** The user supplied this exact production/sandbox host mapping for the GtinCodeRanges request; Basic IN must not force unrelated API calls onto the new host.
+**Why:** The user confirmed this full scope after being told that acceptance-mode writes would target production and could create real GTIN assignments.
 
-**How to apply:** Use the environment-matched Basic IN host for GTIN range retrieval, registration, and registration-result polling; keep credentials, environment configuration, and all other API endpoints unchanged.
+**How to apply:** Do not restore acceptance-specific GS1 hosts or redirect acceptance traffic without asking the user; don't infer that an acceptance label means sandbox writes.
 
 **Why:** The user explicitly requested complete GS1 data support and locally linked records for the public DPP app.
 

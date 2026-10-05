@@ -2,6 +2,7 @@ import type { GS1ConnectionTest, GS1Data, GS1Environment } from "../shared/gs1";
 
 const bases = {
   production: "https://gs1nl-api.gs1.nl",
+  // The user explicitly requested that acceptance use the production host for every API family.
   acceptance: "https://gs1nl.api.gs1.nl",
 };
 

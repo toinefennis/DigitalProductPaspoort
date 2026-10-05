@@ -32,9 +32,9 @@ The user now wants to test in the GS1 sandbox first. Keep production pointed at 
 
 Validate exact GS1 hostnames before changing endpoints: dotted and hyphenated names are not interchangeable, and removing `acc` alone does not prove a production address is valid.
 
-**Why:** A user-supplied dotted hostname did not exist in public DNS, while the hyphenated production hostname authenticated successfully. Reachability and Basic IN permissions are separate checks.
+**Why:** The proposed dotted sandbox hosts `gs1nl.api.acc.gs1.nl` and `gs1nl-api.acc.gs1.nl` returned DNS `ENOTFOUND`. `gs1nl-api-acc.gs1.nl` resolves and sandbox authentication succeeds, but Basic IN range access returns HTTP 403.
 
-**How to apply:** Verify DNS and authorization separately. Ask before substituting a different hostname, and obtain a valid account-owned GTIN range before any registration attempt.
+**How to apply:** Verify DNS, authentication, and API entitlement separately. Ask before substituting a different hostname, and obtain a valid account-owned GTIN range before any registration attempt.
 
 **Why:** The user explicitly requested complete GS1 data support and locally linked records for the public DPP app.
 

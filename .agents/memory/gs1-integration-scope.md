@@ -18,6 +18,12 @@ The user explicitly chose to route every GS1 API call made in the `acceptance` c
 
 **How to apply:** Do not restore acceptance-specific GS1 hosts or redirect acceptance traffic without asking the user; don't infer that an acceptance label means sandbox writes.
 
+Validate exact GS1 hostnames before changing endpoints: dotted and hyphenated names are not interchangeable, and removing `acc` alone does not prove a production address is valid.
+
+**Why:** A user-supplied dotted hostname did not exist in public DNS, while the hyphenated production hostname authenticated successfully. Reachability and Basic IN permissions are separate checks.
+
+**How to apply:** Verify DNS and authorization separately. Ask before substituting a different hostname, and obtain a valid account-owned GTIN range before any registration attempt.
+
 **Why:** The user explicitly requested complete GS1 data support and locally linked records for the public DPP app.
 
 **How to apply:** Preserve complete nested and multilingual GS1 data rather than flattening it into a few local fields. Distinguish GS1-licensed identifiers and confirmed external registration from internal app identifiers. Basic Product Data APIs cover basic registry data; extensive Master Product Data requires the applicable GS1 Data Source access. Never invent production endpoints or treat a locally generated code as an officially assigned GTIN.

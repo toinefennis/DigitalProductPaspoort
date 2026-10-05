@@ -12,9 +12,9 @@ The user subsequently clarified: "Dit is de productieomgeving API". Use the prod
 
 **How to apply:** Keep production and acceptance records and token caches separated. Never switch environments automatically after an authentication failure.
 
-The user explicitly chose to route every GS1 API call made in the `acceptance` configuration—including authorization and write operations—to `https://gs1nl.api.gs1.nl`. This makes acceptance-configured registration calls reach production and potentially assign real GTINs.
+The user explicitly chose to route every GS1 API call in both configurations—including authorization and write operations—to the verified production host `https://gs1nl-api.gs1.nl`. This makes acceptance-configured registration calls reach production and potentially assign real GTINs.
 
-**Why:** The user confirmed this full scope after being told that acceptance-mode writes would target production and could create real GTIN assignments.
+**Why:** The user confirmed this full scope after being told that acceptance-mode writes would target production and could create real GTIN assignments, then approved the hyphenated hostname after DNS verification.
 
 **How to apply:** Do not restore acceptance-specific GS1 hosts or redirect acceptance traffic without asking the user; don't infer that an acceptance label means sandbox writes.
 

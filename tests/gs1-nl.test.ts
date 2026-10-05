@@ -111,8 +111,8 @@ test("token requests use official headers, are deduplicated and never return cre
 });
 test("Basic Product Data IN operations use the configured environment hosts", async () => {
   const cases = [
-    { environment: "acceptance" as const, auth: "https://gs1nl.api.gs1.nl", basicIn: "https://gs1nl.api.gs1.nl" },
-    { environment: "production" as const, auth: "https://gs1nl-api.gs1.nl", basicIn: "https://gs1nl.api.gs1.nl" },
+    { environment: "acceptance" as const, auth: "https://gs1nl-api.gs1.nl", basicIn: "https://gs1nl-api.gs1.nl" },
+    { environment: "production" as const, auth: "https://gs1nl-api.gs1.nl", basicIn: "https://gs1nl-api.gs1.nl" },
   ];
   for (const { environment, auth, basicIn } of cases) {
     const urls: string[] = [];
@@ -135,17 +135,20 @@ test("Basic Product Data IN operations use the configured environment hosts", as
     ]);
   }
 });
-test("acceptance routes every GS1 API family to the production host", async () => {
+test("both settings route every GS1 API family to the verified production host", async () => {
+  for (const environment of ["acceptance", "production"] as const) {
   const urls: string[] = [];
-  const productionHost = "https://gs1nl.api.gs1.nl";
+  const productionHost = "https://gs1nl-api.gs1.nl";
   const client = new GS1NLClient(() => ({ clientId: "fake-id", clientSecret: "fake-secret" }), (async url => {
     urls.push(String(url));
     return String(url).endsWith("/authorization/token")
       ? json({ access_token: "fake-token", expires_in: 3600, token_type: "Bearer" })
       : json([]);
-  }) as typeof fetch, "acceptance");
+  }) as typeof fetch, environment);
 
   await client.contracts();
+  await client.linkTypes();
+  await client.mediaTypes();
   await client.ranges();
   await client.lookup(gtin);
   await client.getDigitalLink(gtin);
@@ -156,6 +159,8 @@ test("acceptance routes every GS1 API family to the production host", async () =
   assert.deepEqual(urls, [
     `${productionHost}/authorization/token`,
     `${productionHost}/digitallinkv2/contracts`,
+    `${productionHost}/digitallinkv2/linktypes`,
+    `${productionHost}/digitallinkv2/mediatypes`,
     `${productionHost}/basic-product-data-in/GtinCodeRanges`,
     `${productionHost}/basic-product-data-out/gtins`,
     `${productionHost}/digitallinkv2/v2/digitalLink/Gtin/${gtin}`,
@@ -163,6 +168,7 @@ test("acceptance routes every GS1 API family to the production host", async () =
     `${productionHost}/basic-product-data-in/RegistrateGtinProducts`,
     `${productionHost}/basic-product-data-in/RegistrateProductResults/fake-invocation`,
   ]);
+  }
 });
 test("upstream authentication errors do not leak raw secrets or response bodies", async () => {
   const client = new GS1NLClient(() => ({ clientId: "fake-id", clientSecret: "fake-secret" }),

@@ -3,12 +3,7 @@ import type { GS1ConnectionTest, GS1Data, GS1Environment } from "../shared/gs1";
 const bases = {
   production: "https://gs1nl-api.gs1.nl",
   // The user explicitly requested that acceptance use the production host for every API family.
-  acceptance: "https://gs1nl.api.gs1.nl",
-};
-
-const basicInBases = {
-  production: "https://gs1nl.api.gs1.nl",
-  acceptance: "https://gs1nl.api.gs1.nl",
+  acceptance: "https://gs1nl-api.gs1.nl",
 };
 
 export class GS1ApiError extends Error {
@@ -41,9 +36,9 @@ export class GS1NLClient {
     return Boolean(c.clientId && c.clientSecret);
   }
 
-  private async send(path: string, init: RequestInit, baseUrl = this.baseUrl) {
+  private async send(path: string, init: RequestInit) {
     try {
-      return await this.fetcher(baseUrl + path, {
+      return await this.fetcher(this.baseUrl + path, {
         ...init, redirect: "error", signal: AbortSignal.timeout(20_000),
       });
     } catch {
@@ -91,14 +86,14 @@ export class GS1NLClient {
     catch { throw new GS1ApiError(502, "GS1 gaf geen geldig JSON-antwoord terug."); }
   }
 
-  async request(path: string, method = "GET", body?: unknown, baseUrl = this.baseUrl) {
+  async request(path: string, method = "GET", body?: unknown) {
     let response: Response | undefined;
     for (let attempt = 0; attempt < 2; attempt++) {
       const authorization = await this.authorization();
       response = await this.send(path, {
         method, headers: { Authorization: authorization, Accept: "application/json", ...(body === undefined ? {} : { "Content-Type": "application/json" }) },
         ...(body === undefined ? {} : { body: JSON.stringify(body) }),
-      }, baseUrl);
+      });
       if (response.status !== 401 || attempt === 1) break;
       this.token = undefined;
     }
@@ -111,7 +106,7 @@ export class GS1NLClient {
   }
 
   async contracts() { return (await this.request("/digitallinkv2/contracts")).data; }
-  async ranges() { return (await this.request("/basic-product-data-in/GtinCodeRanges", "GET", undefined, basicInBases[this.environment])).data; }
+  async ranges() { return (await this.request("/basic-product-data-in/GtinCodeRanges")).data; }
   async linkTypes() { return (await this.request("/digitallinkv2/linktypes")).data; }
   async mediaTypes() { return (await this.request("/digitallinkv2/mediatypes")).data; }
   async lookup(gtin: string) { return (await this.request("/basic-product-data-out/gtins", "POST", [gtin])).data; }
@@ -122,10 +117,10 @@ export class GS1NLClient {
     return this.request("/digitallinkv2/v2/digitallink", "POST", data);
   }
   async registerProduct(data: GS1Data) {
-    return this.request("/basic-product-data-in/RegistrateGtinProducts", "POST", { registrationProducts: [data] }, basicInBases[this.environment]);
+    return this.request("/basic-product-data-in/RegistrateGtinProducts", "POST", { registrationProducts: [data] });
   }
   async registrationResults(invocationId: string) {
-    return this.request(`/basic-product-data-in/RegistrateProductResults/${encodeURIComponent(invocationId)}`, "GET", undefined, basicInBases[this.environment]);
+    return this.request(`/basic-product-data-in/RegistrateProductResults/${encodeURIComponent(invocationId)}`);
   }
 
   async testConnection(): Promise<GS1ConnectionTest> {

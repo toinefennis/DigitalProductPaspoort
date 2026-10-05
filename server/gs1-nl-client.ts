@@ -2,12 +2,12 @@ import type { GS1ConnectionTest, GS1Data, GS1Environment } from "../shared/gs1";
 
 const bases = {
   production: "https://gs1nl-api.gs1.nl",
-  acceptance: "https://gs1nl-api-acc.gs1.nl",
+  acceptance: "https://gs1nl.api.gs1.nl",
 };
 
 const basicInBases = {
   production: "https://gs1nl.api.gs1.nl",
-  acceptance: "https://gs1nl.api.acc.gs1.nl",
+  acceptance: "https://gs1nl.api.gs1.nl",
 };
 
 export class GS1ApiError extends Error {

@@ -111,7 +111,7 @@ test("token requests use official headers, are deduplicated and never return cre
 });
 test("Basic Product Data IN operations use the requested sandbox and production hosts", async () => {
   const cases = [
-    { environment: "acceptance" as const, auth: "https://gs1nl-api-acc.gs1.nl", basicIn: "https://gs1nl.api.acc.gs1.nl" },
+    { environment: "acceptance" as const, auth: "https://gs1nl.api.gs1.nl", basicIn: "https://gs1nl.api.gs1.nl" },
     { environment: "production" as const, auth: "https://gs1nl-api.gs1.nl", basicIn: "https://gs1nl.api.gs1.nl" },
   ];
   for (const { environment, auth, basicIn } of cases) {
@@ -134,6 +134,35 @@ test("Basic Product Data IN operations use the requested sandbox and production 
       `${basicIn}/basic-product-data-in/RegistrateProductResults/fake-invocation`,
     ]);
   }
+});
+test("acceptance routes every GS1 API family to the production host", async () => {
+  const urls: string[] = [];
+  const productionHost = "https://gs1nl.api.gs1.nl";
+  const client = new GS1NLClient(() => ({ clientId: "fake-id", clientSecret: "fake-secret" }), (async url => {
+    urls.push(String(url));
+    return String(url).endsWith("/authorization/token")
+      ? json({ access_token: "fake-token", expires_in: 3600, token_type: "Bearer" })
+      : json([]);
+  }) as typeof fetch, "acceptance");
+
+  await client.contracts();
+  await client.ranges();
+  await client.lookup(gtin);
+  await client.getDigitalLink(gtin);
+  await client.publishDigitalLink(draft);
+  await client.registerProduct(product);
+  await client.registrationResults("fake-invocation");
+
+  assert.deepEqual(urls, [
+    `${productionHost}/authorization/token`,
+    `${productionHost}/digitallinkv2/contracts`,
+    `${productionHost}/basic-product-data-in/GtinCodeRanges`,
+    `${productionHost}/basic-product-data-out/gtins`,
+    `${productionHost}/digitallinkv2/v2/digitalLink/Gtin/${gtin}`,
+    `${productionHost}/digitallinkv2/v2/digitallink`,
+    `${productionHost}/basic-product-data-in/RegistrateGtinProducts`,
+    `${productionHost}/basic-product-data-in/RegistrateProductResults/fake-invocation`,
+  ]);
 });
 test("upstream authentication errors do not leak raw secrets or response bodies", async () => {
   const client = new GS1NLClient(() => ({ clientId: "fake-id", clientSecret: "fake-secret" }),

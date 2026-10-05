@@ -12,6 +12,12 @@ The user identifies the codes in a supplied workbook as already registered at GS
 
 **How to apply:** Treat these as existing identifiers for read-only lookup or import; do not submit them as new Basic IN auto-assignment requests.
 
+The separate sandbox credentials authenticate successfully, but sandbox `GET /basic-product-data-in/GtinCodeRanges` returns HTTP 403.
+
+**Why:** A valid sandbox login does not establish a Basic IN entitlement.
+
+**How to apply:** Before sandbox registration, ask GS1 to enable Basic IN range access for the sandbox account; do not infer ranges or attempt writes without them.
+
 The user subsequently clarified: "Dit is de productieomgeving API". Use the production GS1 environment for this integration; do not infer acceptance credentials from an acceptance documentation link. API subscriptions must still be checked separately.
 
 **Why:** The documentation link was for acceptance, but the user confirmed that their API access is for production.

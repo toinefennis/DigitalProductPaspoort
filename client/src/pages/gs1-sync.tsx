@@ -13,7 +13,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { BasicDataEditor } from "@/components/gs1/basic-data-editor";
 import { DigitalLinkEditor, type DigitalLinkDraft } from "@/components/gs1/digital-link-editor";
 import { RegistrationForm } from "@/components/gs1/registration-form";
-import { digitalLinkSchema, isValidGtin, normalizeGtin, type GS1ConnectionTest, type GS1Job, type GS1Record } from "@shared/gs1";
+import { digitalLinkSchema, gs1EnvironmentPresentation, isValidGtin, normalizeGtin, type GS1ConnectionTest, type GS1Job, type GS1Record } from "@shared/gs1";
 import { AlertTriangle, ArrowDownToLine, ArrowUpRight, Check, CircleHelp, Clock3, Database, FileCheck2, Globe2, Link2, LockKeyhole, RefreshCw, Search, ShieldCheck, SlidersHorizontal, Unlink, Wifi } from "lucide-react";
 
 const ROOT = "/api/gs1/nl";
@@ -137,6 +137,7 @@ export default function GS1Sync() {
   const products = items<Record<string, unknown>>(productsQuery.data);
   const registry = items<Record<string, unknown>>(registryQuery.data);
   const record = detailQuery.data;
+  const environmentPresentation = gs1EnvironmentPresentation(configQuery.data);
   const digitalDraftValidation = digitalDraft ? digitalLinkSchema.safeParse(digitalDraft) : null;
   const canPublishDigital = !!record?.digitalLinkDraft && !!digitalDraftValidation?.success &&
     stableSerialize(record.digitalLinkDraft) === stableSerialize(digitalDraft);
@@ -328,7 +329,7 @@ export default function GS1Sync() {
             </div>
             <div className="relative flex flex-wrap gap-2">
               <Button variant="secondary" className="bg-white text-[#153d35] hover:bg-emerald-50" onClick={() => testMutation.mutate()} disabled={testMutation.isPending}>{testMutation.isPending ? <RefreshCw className="mr-2 h-4 w-4 animate-spin" /> : <Wifi className="mr-2 h-4 w-4" />}{testMutation.isPending ? "Testen…" : "Verbinding testen"}</Button>
-              <Badge className="self-center border border-white/20 bg-white/10 px-3 py-1.5 text-white hover:bg-white/10">{configQuery.data?.environment === "production" ? "Productie" : configQuery.data?.environment === "acceptance" ? "Acceptatie" : "Omgeving laden"}</Badge>
+              <Badge className="self-center border border-white/20 bg-white/10 px-3 py-1.5 text-white hover:bg-white/10">{environmentPresentation.label}</Badge>
             </div>
           </div>
         </header>
@@ -413,6 +414,7 @@ export default function GS1Sync() {
           </TabsContent>
 
           <TabsContent value="register">
+            {environmentPresentation.acceptanceUsesProduction && <Alert className="mb-4 border-red-300 bg-red-50 text-red-950"><AlertTriangle className="h-4 w-4" /><AlertTitle>Let op: GS1-productieomgeving</AlertTitle><AlertDescription>Deze verbinding gebruikt de GS1-productieomgeving. Verzoeken worden rechtstreeks daar verwerkt.</AlertDescription></Alert>}
             <Card className="border-slate-200 shadow-sm"><CardHeader><CardTitle className="text-xl">Productregistratie voorbereiden</CardTitle><p className="max-w-3xl text-sm leading-6 text-slate-500">Vul productdata in, sla een onvolledig concept lokaal op en verzend alleen na validatie en bevestiging.</p></CardHeader><CardContent><RegistrationForm contracts={contracts} jobs={jobs} draftToLoad={draftJobToLoad} onDraftLoaded={() => setDraftJobToLoad(null)} basicInReady={!!testResult?.basicIn?.ok} unresolvedJob={hasUnresolvedJob} pending={registrationMutation.isPending} savingDraft={registrationDraftMutation.isPending} onSaveDraft={async (requestId, registrationProduct) => await registrationDraftMutation.mutateAsync({ requestId, registrationProduct })} onSubmit={async (requestId, registrationProduct) => await registrationMutation.mutateAsync({ requestId, registrationProduct })} /></CardContent></Card>
             <div className="mt-4 flex flex-wrap gap-3 text-xs text-slate-500"><span className="inline-flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5" />Alleen expliciet bevestigde verzending</span><span className="inline-flex items-center gap-1.5"><LockKeyhole className="h-3.5 w-3.5" />Basic IN-toegang vereist</span></div>
           </TabsContent>

@@ -3,6 +3,28 @@ import { z } from "zod";
 export type GS1Environment = "production" | "acceptance";
 export type GS1Data = Record<string, any>;
 
+export const GS1_PRODUCTION_BASE_URL = "https://gs1nl-api.gs1.nl";
+
+export function gs1EnvironmentPresentation(config?: { environment?: GS1Environment; baseUrl?: string }) {
+  if (config?.environment === "production") {
+    return { label: "Productie", acceptanceUsesProduction: false };
+  }
+  if (config?.environment !== "acceptance") {
+    return { label: "Omgeving laden", acceptanceUsesProduction: false };
+  }
+
+  let acceptanceUsesProduction = false;
+  try {
+    acceptanceUsesProduction = new URL(config.baseUrl ?? "").origin === GS1_PRODUCTION_BASE_URL;
+  } catch {
+    // An unknown or malformed endpoint must not be presented as the verified production host.
+  }
+  return {
+    label: acceptanceUsesProduction ? "Acceptatie · productie-API" : "Acceptatie",
+    acceptanceUsesProduction,
+  };
+}
+
 export function isValidGtin(value: string): boolean {
   if (!/^(?:\d{8}|\d{12}|\d{13}|\d{14})$/.test(value)) return false;
   const digits = value.slice(0, -1).split("").reverse();

@@ -6,7 +6,7 @@ import type { AddressInfo } from "node:net";
 import { GS1NLClient, GS1ApiError } from "../server/gs1-nl-client";
 import { registerGS1NLRoutes } from "../server/gs1-nl-routes";
 import type { GS1Repository, RecordUpdates } from "../server/gs1-nl-repository";
-import { isValidGtin, normalizeGtin, registrationProductSchema, type GS1Job, type GS1Record } from "../shared/gs1";
+import { gs1EnvironmentPresentation, isValidGtin, normalizeGtin, registrationProductSchema, type GS1Job, type GS1Record } from "../shared/gs1";
 
 const gtin = "09506000134352";
 const json = (data: unknown, status = 200) => new Response(JSON.stringify(data), { status, headers: { "Content-Type": "application/json" } });
@@ -96,6 +96,17 @@ test("GTIN validation uses official lengths and check digits; normalizes equival
   assert.equal(normalizeGtin(gtin.slice(1)), gtin);
   assert.equal(registrationProductSchema.parse(product).gtin, "1");
   assert.throws(() => registrationProductSchema.parse({ ...product, status: "Active" }));
+});
+test("GS1 environment warning identifies production-routed acceptance without mislabeling production", () => {
+  const acceptanceOnProduction = gs1EnvironmentPresentation({ environment: "acceptance", baseUrl: "https://gs1nl-api.gs1.nl" });
+  assert.deepEqual(acceptanceOnProduction, { label: "Acceptatie · productie-API", acceptanceUsesProduction: true });
+  assert.deepEqual(gs1EnvironmentPresentation({ environment: "acceptance", baseUrl: "https://gs1nl-api-acc.gs1.nl" }), {
+    label: "Acceptatie", acceptanceUsesProduction: false,
+  });
+  assert.deepEqual(gs1EnvironmentPresentation({ environment: "production", baseUrl: "https://gs1nl-api.gs1.nl" }), {
+    label: "Productie", acceptanceUsesProduction: false,
+  });
+  assert.equal(gs1EnvironmentPresentation({ environment: "acceptance", baseUrl: "https://gs1nl-api.gs1.nl.attacker.example" }).acceptanceUsesProduction, false);
 });
 test("token requests use official headers, are deduplicated and never return credentials", async () => {
   let calls = 0;
@@ -265,6 +276,19 @@ test("missing Basic IN permissions prevent submitting or recording a registratio
   await withServer(fakeClient(() => new Response(null, { status: 403 })), repo, async base => {
     const response = await post(base, "/registrations", { requestId: "00000000-0000-4000-8000-000000000017", confirm: true, registrationProduct: product });
     assert.equal(response.status, 403); assert.equal((await repo.listJobs()).length, 0);
+  });
+});
+test("registration submissions require explicit confirmation before any GS1 request", async () => {
+  let upstreamRequests = 0;
+  const repo = fakeRepo();
+  await withServer(fakeClient(() => { upstreamRequests++; return json("unexpected", 202); }), repo, async base => {
+    const response = await post(base, "/registrations", {
+      requestId: "00000000-0000-4000-8000-000000000021",
+      registrationProduct: product,
+    });
+    assert.equal(response.status, 400);
+    assert.equal((await repo.listJobs()).length, 0);
+    assert.equal(upstreamRequests, 0);
   });
 });
 test("unfinished registration drafts persist locally without a GS1 call or Basic IN rights", async () => {

@@ -1,9 +1,10 @@
 import type { GS1ConnectionTest, GS1Data, GS1Environment } from "../shared/gs1";
+import { GS1_PRODUCTION_BASE_URL } from "../shared/gs1";
 
 const bases = {
-  production: "https://gs1nl-api.gs1.nl",
+  production: GS1_PRODUCTION_BASE_URL,
   // The user explicitly requested that acceptance use the production host for every API family.
-  acceptance: "https://gs1nl-api.gs1.nl",
+  acceptance: GS1_PRODUCTION_BASE_URL,
 };
 
 export class GS1ApiError extends Error {

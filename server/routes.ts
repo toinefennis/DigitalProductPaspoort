@@ -20,6 +20,8 @@ import { registerLoginRoute } from "./auth-login-routes";
 import { PasswordResetRepository } from "./password-reset-repository";
 import { registerPasswordResetRoutes, registerResetSessionGuard } from "./password-reset-routes";
 import { resetEmailConfigured, sendPasswordResetEmail } from "./password-reset-email";
+import { registerAdminAccessRequestRoutes } from "./admin-access-request-routes";
+import { sendAdminAccessRequestEmail } from "./admin-access-request-email";
 
 // Configure multer for file uploads
 const uploadDir = path.join(process.cwd(), "uploads");
@@ -74,6 +76,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   registerPasswordResetRoutes(app, passwordResetRepository, {
     configured: resetEmailConfigured,
     send: sendPasswordResetEmail,
+  });
+  registerAdminAccessRequestRoutes(app, {
+    getRequester: async (userId) => {
+      const user = await storage.getUserById(userId);
+      return user && { email: user.email, role: user.role, isActive: user.isActive === true };
+    },
+    getActiveAdmins: () => storage.getActiveAdminAccessRequestRecipients(),
+    getFallbackRecipient: () => process.env.ADMIN_ACCESS_REQUEST_FALLBACK_EMAIL,
+    send: sendAdminAccessRequestEmail,
   });
 
   // Serve uploaded files

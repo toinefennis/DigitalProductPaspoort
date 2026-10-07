@@ -49,6 +49,7 @@ export interface IStorage {
   getUserByUsername(username: string): Promise<User | undefined>;
   getLoginCandidates(identifier: string): Promise<User[]>;
   getAllUsers(): Promise<User[]>;
+  getActiveAdminAccessRequestRecipients(): Promise<Array<{ email: string }>>;
   updateUser(userId: number, updates: Partial<InsertUser>): Promise<User>;
   updateUserRole(userId: number, role: string): Promise<User>;
   changeUserPassword(userId: number, currentPassword: string, newPassword: string): Promise<boolean>;
@@ -281,6 +282,15 @@ export class DatabaseStorage implements IStorage {
 
   async getAllUsers(): Promise<User[]> {
     return await db.select().from(users).orderBy(desc(users.createdAt));
+  }
+
+  async getActiveAdminAccessRequestRecipients(): Promise<Array<{ email: string }>> {
+    return db.select({ email: users.email })
+      .from(users)
+      .where(and(
+        eq(users.isActive, true),
+        inArray(users.role, ["admin", "superadmin"]),
+      ));
   }
 
   async getUserById(userId: number): Promise<User | undefined> {

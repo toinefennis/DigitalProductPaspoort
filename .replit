@@ -50,3 +50,4 @@ PASSWORD_RESET_BASE_URL = "https://dpp.gwcirculair.nl"
 
 [userenv.shared]
 PASSWORD_RESET_FROM = "support@gwcirculair.nl"
+ADMIN_ACCESS_REQUEST_FALLBACK_EMAIL = "metawebservices@gmail.com"

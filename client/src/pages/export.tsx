@@ -1,12 +1,135 @@
 import { useState } from "react";
+import type { FormEvent } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Download, Database, FileText, Calendar, Lock, Upload, CheckCircle, XCircle, Loader2 } from "lucide-react";
+import { Download, Database, FileText, Calendar, Lock, Upload, CheckCircle, XCircle, Loader2, ShieldCheck, Phone, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { apiRequest } from "@/lib/queryClient";
+
+function AdminAccessRequestForm() {
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [fullName, setFullName] = useState(user?.fullName ?? "");
+  const [mobileNumber, setMobileNumber] = useState("");
+
+  const requestMutation = useMutation({
+    mutationFn: async (values: { fullName: string; mobileNumber: string }) => {
+      const response = await fetch("/api/admin/access-requests", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+      const result = await response.json().catch(() => null);
+      if (!response.ok) {
+        throw new Error(result?.message || "Je aanvraag kon niet worden verstuurd.");
+      }
+      return result as { message: string };
+    },
+    onSuccess: (result) => {
+      toast({ title: "Aanvraag verstuurd", description: result.message });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Aanvraag niet verstuurd",
+        description: error.message || "Probeer het later opnieuw.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    requestMutation.mutate({
+      fullName: fullName.trim(),
+      mobileNumber: mobileNumber.trim(),
+    });
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <ShieldCheck className="h-5 w-5 text-gwc-primary" />
+          Adminrechten aanvragen
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p className="mb-5 text-sm text-gray-600">
+          Vraag een admin of superadmin om je account te beoordelen. Je naam en mobiele nummer
+          worden per e-mail naar actieve admins en superadmins gestuurd. Als die niet beschikbaar
+          zijn, gaat de aanvraag naar de ingestelde beheerdersmailbox. Je krijgt niet automatisch een andere rol.
+        </p>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="admin-request-name">Naam</Label>
+            <Input
+              id="admin-request-name"
+              name="fullName"
+              autoComplete="name"
+              maxLength={120}
+              required
+              value={fullName}
+              onChange={(event) => {
+                setFullName(event.target.value);
+                requestMutation.reset();
+              }}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="admin-request-mobile" className="flex items-center gap-2">
+              <Phone className="h-4 w-4" />
+              Mobiel nummer
+            </Label>
+            <Input
+              id="admin-request-mobile"
+              name="mobileNumber"
+              type="tel"
+              inputMode="tel"
+              autoComplete="tel"
+              maxLength={32}
+              minLength={8}
+              placeholder="+31 6 12345678"
+              required
+              value={mobileNumber}
+              onChange={(event) => {
+                setMobileNumber(event.target.value);
+                requestMutation.reset();
+              }}
+            />
+          </div>
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={
+              requestMutation.isPending ||
+              requestMutation.isSuccess ||
+              !fullName.trim() ||
+              !mobileNumber.trim()
+            }
+          >
+            {requestMutation.isPending ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Send className="mr-2 h-4 w-4" />
+            )}
+            {requestMutation.isPending
+              ? "Aanvraag versturen..."
+              : requestMutation.isSuccess
+                ? "Aanvraag verstuurd"
+                : "Verzoek versturen"}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}
 
 export default function Export() {
   const [exportType, setExportType] = useState("products");
@@ -16,28 +139,6 @@ export default function Export() {
 
   // Check if user has permission to export data - Admin only
   const hasExportAccess = (currentUser as any)?.role === 'admin' || (currentUser as any)?.role === 'superadmin';
-
-  if (!hasExportAccess) {
-    return (
-      <div className="h-full flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardContent className="pt-6">
-            <div className="text-center">
-              <Lock className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h2 className="text-lg font-medium mb-2">Geen toegang</h2>
-              <p className="text-gray-600 mb-4">
-                Je hebt geen toestemming om gegevens te exporteren.
-                Alleen administrators hebben toegang tot deze functie.
-              </p>
-              <p className="text-xs text-gray-500">
-                Dit is ter bescherming van privacy gegevens volgens de AVG wetgeving.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   const exportMutation = useMutation({
     mutationFn: async ({ type, format }: { type: string; format: string }) => {
@@ -82,6 +183,34 @@ export default function Export() {
   const handleExport = () => {
     exportMutation.mutate({ type: exportType, format: exportFormat });
   };
+
+  if (!hasExportAccess) {
+    return (
+      <div className="h-full overflow-y-auto pb-20">
+        <div className="mx-auto max-w-2xl space-y-4 p-4 sm:p-6">
+          <div className="flex items-center gap-3">
+            <Download className="h-6 w-6 text-gwc-primary" />
+            <h1 className="text-xl font-medium">Database Export</h1>
+          </div>
+          <Card>
+            <CardContent className="pt-6">
+              <div className="text-center">
+                <Lock className="mx-auto mb-4 h-12 w-12 text-gray-400" />
+                <h2 className="mb-2 text-lg font-medium">Geen toegang tot exporteren</h2>
+                <p className="mb-4 text-gray-600">
+                  Alleen admins en superadmins kunnen gegevens exporteren.
+                </p>
+                <p className="text-xs text-gray-500">
+                  Dit beschermt persoonsgegevens en andere vertrouwelijke gegevens.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+          <AdminAccessRequestForm />
+        </div>
+      </div>
+    );
+  }
 
   const exportOptions = [
     { value: "products", label: "Alle producten", icon: Database },

@@ -1,7 +1,7 @@
 export function Footer() {
   return (
-    <footer className="mt-8 p-4 border-t bg-gray-50">
-      <div className="text-center text-xs text-gray-500">
+    <footer className="mt-8 border-t bg-gray-50 px-4 py-4">
+      <div className="mx-auto max-w-screen-2xl text-center text-xs text-gray-500">
         <p>
           Meer informatie:{" "}
           <a 

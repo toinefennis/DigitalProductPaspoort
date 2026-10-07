@@ -35,6 +35,8 @@ import Catalog from "@/pages/catalog";
 import { useAuth } from "@/hooks/useAuth";
 import ForgotPassword from "@/pages/forgot-password";
 import ResetPassword from "@/pages/reset-password";
+import { useAuth } from "@/hooks/useAuth";
+import { useLocation } from "wouter";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -90,19 +92,35 @@ function Router() {
   );
 }
 
+function AppShell() {
+  const { isAuthenticated } = useAuth();
+  const [location] = useLocation();
+  const isAuthenticationScreen = [
+    "/login",
+    "/register",
+    "/forgot-password",
+    "/reset-password",
+  ].includes(location);
+  const showMobileNavigation = !isAuthenticationScreen;
+
+  return (
+    <div className="relative flex min-h-dvh w-full min-w-0 flex-col overflow-x-clip bg-white">
+      <TopAppBar />
+      <main className="min-h-0 w-full min-w-0 flex-1 overflow-x-clip pb-[calc(4.5rem+env(safe-area-inset-bottom))] lg:pb-0">
+        <Router />
+      </main>
+      <Footer />
+      {showMobileNavigation && <BottomNavigation />}
+      {isAuthenticated && <FloatingActionButton />}
+    </div>
+  );
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <div className="min-h-screen flex flex-col max-w-md mx-auto bg-white relative">
-          <TopAppBar />
-          <main className="flex-1 overflow-hidden">
-            <Router />
-          </main>
-          <Footer />
-          <BottomNavigation />
-          <FloatingActionButton />
-        </div>
+        <AppShell />
         <Toaster />
       </TooltipProvider>
     </QueryClientProvider>

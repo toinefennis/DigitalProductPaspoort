@@ -53,11 +53,12 @@ export function UserNav() {
       <Button 
         variant="ghost" 
         size="sm"
-        onClick={() => window.location.href = "/api/login"}
-        className="flex items-center space-x-2"
+        onClick={() => setLocation("/login")}
+        aria-label="Inloggen"
+        className="flex h-10 items-center gap-2 px-2 text-white hover:bg-white/10 hover:text-white sm:px-3"
       >
-        <LogIn className="h-4 w-4" />
-        <span>Inloggen</span>
+        <LogIn aria-hidden="true" className="h-4 w-4 shrink-0" />
+        <span className="hidden sm:inline">Inloggen</span>
       </Button>
     );
   }
@@ -65,7 +66,7 @@ export function UserNav() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+        <Button variant="ghost" aria-label="Gebruikersmenu" className="relative h-10 w-10 rounded-full text-white hover:bg-white/10 hover:text-white">
           <Avatar className="h-9 w-9">
             <AvatarFallback className="bg-gwc-primary text-white">
               {user.fullName ? getInitials(user.fullName) : <User className="h-4 w-4" />}

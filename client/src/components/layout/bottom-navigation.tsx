@@ -21,8 +21,8 @@ export function BottomNavigation() {
       ];
 
   return (
-    <nav className="bg-white border-t border-gray-200 fixed bottom-0 left-0 right-0 max-w-md mx-auto">
-      <div className="flex">
+      <nav aria-label="Mobiele navigatie" className="fixed inset-x-0 bottom-0 z-40 mx-auto w-full border-t border-gray-200 bg-white/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_16px_rgba(15,23,42,0.06)] backdrop-blur lg:hidden">
+      <div className="mx-auto flex w-full max-w-screen-sm">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = location === item.path;
@@ -31,13 +31,14 @@ export function BottomNavigation() {
             <Button
               key={item.path}
               variant="ghost"
-              className={`flex-1 flex flex-col items-center py-2 px-1 h-auto ${
+              aria-current={isActive ? "page" : undefined}
+              className={`min-h-14 flex-1 flex flex-col items-center justify-center gap-1 px-1 py-2 ${
                 isActive ? "text-gwc-primary" : "text-gray-600"
               }`}
               onClick={() => setLocation(item.path)}
             >
-              <Icon className="h-5 w-5" />
-              <span className="text-xs mt-1">{item.label}</span>
+              <Icon aria-hidden="true" className="h-5 w-5" />
+              <span className="text-[11px] leading-tight sm:text-xs">{item.label}</span>
             </Button>
           );
         })}

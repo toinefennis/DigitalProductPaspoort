@@ -29,7 +29,7 @@ export function FloatingActionButton() {
 
       {/* Quick Action Menu */}
       {showMenu && (
-        <Card className="fixed bottom-20 right-4 bg-white shadow-material-3 z-20 p-2">
+        <Card className="fixed bottom-[calc(8rem+env(safe-area-inset-bottom))] right-4 z-20 bg-white p-2 shadow-material-3 sm:right-6 lg:bottom-24 lg:right-8">
           <div className="space-y-1">
             <Button
               variant="ghost"
@@ -54,7 +54,9 @@ export function FloatingActionButton() {
       {/* Floating Action Button */}
       <Button
         size="lg"
-        className="fixed bottom-20 right-4 bg-gwc-primary hover:bg-gwc-primary/90 text-white p-4 rounded-full shadow-material-3 z-30"
+        aria-label={showMenu ? "Snelle acties sluiten" : "Snelle acties openen"}
+        aria-expanded={showMenu}
+        className="fixed bottom-[calc(5.25rem+env(safe-area-inset-bottom))] right-4 z-30 rounded-full bg-gwc-primary p-4 text-white shadow-material-3 hover:bg-gwc-primary/90 sm:right-6 lg:bottom-8 lg:right-8"
         onClick={() => setShowMenu(!showMenu)}
       >
         <Plus className="h-6 w-6" />

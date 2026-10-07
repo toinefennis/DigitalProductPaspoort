@@ -90,10 +90,10 @@ export default function Catalog() {
   });
 
   return (
-    <div className="h-full overflow-y-auto pb-20">
+    <div className="h-full min-w-0 overflow-y-auto pb-20 lg:pb-8">
       {/* Login banner */}
       {!isAuthenticated && (
-        <div className="bg-gwc-primary text-white px-4 py-3 flex items-center justify-between gap-3">
+        <div className="bg-gwc-primary text-white px-4 py-3 flex items-center justify-between gap-3 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2 text-sm">
             <Info className="w-4 h-4 shrink-0" />
             <span>Log in voor beheer, uitlening en meer</span>
@@ -101,7 +101,7 @@ export default function Catalog() {
           <Button
             size="sm"
             variant="secondary"
-            className="shrink-0 h-8 text-gwc-primary font-semibold"
+            className="h-11 shrink-0 bg-white text-gwc-primary font-semibold hover:bg-white/90"
             onClick={() => setLocation("/login")}
           >
             <LogIn className="w-3.5 h-3.5 mr-1.5" />
@@ -110,13 +110,13 @@ export default function Catalog() {
         </div>
       )}
 
-      <div className="p-4 space-y-4">
+      <div className="min-w-0 space-y-4 p-4 sm:space-y-6 sm:p-6 lg:p-8">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
             <h1 className="text-xl font-bold text-gray-900">Product Catalogus</h1>
-            <p className="text-sm text-gray-500 mt-0.5 flex items-center gap-1">
-              <Leaf className="w-3.5 h-3.5 text-gwc-primary" />
+            <p className="text-sm text-gray-500 mt-0.5 flex items-start gap-1">
+              <Leaf className="mt-0.5 w-3.5 h-3.5 shrink-0 text-gwc-primary" />
               Groningen Werkt Circulair — Digitale Productpaspoorten
             </p>
           </div>
@@ -126,7 +126,7 @@ export default function Catalog() {
         </div>
 
         {/* Search */}
-        <div className="relative">
+        <div className="relative max-w-2xl">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
           <Input
             placeholder="Zoek op naam, GTIN, merk of materiaal..."
@@ -155,7 +155,7 @@ export default function Catalog() {
 
         {/* Products */}
         {isLoading ? (
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
             {[...Array(4)].map((_, i) => (
               <div key={i} className="bg-gray-100 rounded-2xl h-20 animate-pulse" />
             ))}
@@ -171,7 +171,7 @@ export default function Catalog() {
             )}
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
             {filtered.map((product) => (
               <ProductRow key={product.id} product={product} />
             ))}

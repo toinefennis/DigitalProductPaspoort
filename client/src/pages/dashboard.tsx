@@ -54,13 +54,13 @@ function ActivityCard({ activity, onDelete }: {
   const getEventColor = (eventType: string) => {
     switch (eventType) {
       case "reparatie":
-        return "bg-gwc-success bg-opacity-10";
+        return "bg-[hsl(var(--gwc-success)/0.1)]";
       case "uitleen":
-        return "bg-gwc-warning bg-opacity-10";
+        return "bg-[hsl(var(--gwc-warning)/0.1)]";
       case "retour":
-        return "bg-gwc-success bg-opacity-10";
+        return "bg-[hsl(var(--gwc-success)/0.1)]";
       default:
-        return "bg-gwc-secondary bg-opacity-10";
+        return "bg-[hsl(var(--gwc-secondary)/0.1)]";
     }
   };
 
@@ -146,8 +146,8 @@ export default function Dashboard() {
 
   if (statsLoading || activitiesLoading) {
     return (
-      <div className="h-full overflow-y-auto pb-20 p-4 space-y-4">
-        <div className="grid grid-cols-2 gap-4">
+      <div className="h-full overflow-y-auto space-y-4 p-4 sm:p-6 lg:p-8">
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[...Array(4)].map((_, i) => (
             <Card key={i} className="shadow-material-1">
               <CardContent className="p-4">
@@ -164,10 +164,10 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="h-full overflow-y-auto pb-20">
+    <div className="h-full min-w-0 overflow-y-auto pb-20 lg:pb-8">
       {/* Stats Cards */}
-      <div className="p-4 space-y-4">
-        <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4 p-4 sm:p-6 lg:grid-cols-4 lg:p-8">
+        <div className="contents">
           <StatsCard
             title="Producten"
             value={stats?.totalProducts || 0}
@@ -182,7 +182,7 @@ export default function Dashboard() {
           />
         </div>
         
-        <div className="grid grid-cols-2 gap-4">
+        <div className="contents">
           <StatsCard
             title="Uitgeleend"
             value={stats?.itemsOnLoan || 0}
@@ -199,10 +199,10 @@ export default function Dashboard() {
       </div>
 
       {/* Recent Activities */}
-      <div className="px-4 pb-4">
+      <div className="px-4 pb-4 sm:px-6 lg:px-8">
         <h2 className="text-lg font-medium mb-4">Recente Activiteiten</h2>
         {activities && activities.length > 0 ? (
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
             {activities.map((activity) => (
               <ActivityCard 
                 key={activity.id} 

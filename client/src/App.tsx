@@ -35,7 +35,6 @@ import Catalog from "@/pages/catalog";
 import { useAuth } from "@/hooks/useAuth";
 import ForgotPassword from "@/pages/forgot-password";
 import ResetPassword from "@/pages/reset-password";
-import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
 
 function Router() {
@@ -100,16 +99,20 @@ function AppShell() {
     "/register",
     "/forgot-password",
     "/reset-password",
-  ].includes(location);
+  ].includes(location) || (!isAuthenticated &&
+    !["/producten", "/handleiding", "/presentatie"].includes(location) &&
+    !location.startsWith("/dpp/"));
   const showMobileNavigation = !isAuthenticationScreen;
 
   return (
     <div className="relative flex min-h-dvh w-full min-w-0 flex-col overflow-x-clip bg-white">
       <TopAppBar />
-      <main className="min-h-0 w-full min-w-0 flex-1 overflow-x-clip pb-[calc(4.5rem+env(safe-area-inset-bottom))] lg:pb-0">
+      <main className={`mx-auto min-h-0 w-full min-w-0 max-w-[1440px] flex-1 ${
+        showMobileNavigation ? "pb-[calc(4.5rem+env(safe-area-inset-bottom))] lg:pb-0" : ""
+      }`}>
         <Router />
       </main>
-      <Footer />
+      <Footer withMobileNavigation={showMobileNavigation} />
       {showMobileNavigation && <BottomNavigation />}
       {isAuthenticated && <FloatingActionButton />}
     </div>

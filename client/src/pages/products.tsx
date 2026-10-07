@@ -26,8 +26,8 @@ export default function Products() {
 
   if (isLoading) {
     return (
-      <div className="p-4">
-        <div className="space-y-4">
+      <div className="p-4 sm:p-6 lg:p-8">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {[...Array(3)].map((_, i) => (
             <div key={i} className="bg-gray-200 rounded-lg h-24 animate-pulse" />
           ))}
@@ -37,11 +37,11 @@ export default function Products() {
   }
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="min-w-0 space-y-4 p-4 sm:space-y-6 sm:p-6 lg:p-8">
       <h1 className="text-2xl font-bold text-gwc-primary">Alle Producten</h1>
       
       {/* Search */}
-      <div className="relative">
+      <div className="relative max-w-2xl">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
         <Input
           placeholder="Zoek op naam, GTIN of merk..."
@@ -52,9 +52,9 @@ export default function Products() {
       </div>
 
       {/* Products */}
-      <div className="space-y-3">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
         {filteredProducts.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
+          <div className="col-span-full text-center py-8 text-gray-500">
             {searchTerm ? "Geen producten gevonden" : "Nog geen producten toegevoegd"}
           </div>
         ) : (

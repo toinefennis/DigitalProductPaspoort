@@ -3,3 +3,4 @@
 - [Drive binary uploads](drive-binary-uploads.md) — use MIME base64 for the string-only proxy and verify uploaded bytes against the local checksum.
 - [GS1 integration scope](gs1-integration-scope.md) — official GTIN workflows, complete GS1 field preservation, local references, and the production DPP domain.
 - [Resend sender permissions](resend-sender-permissions.md) — send-only keys cannot list domains; obtain a verified sender instead of treating this as expired authorization.
+- [Preview isolation](preview-isolation.md) — validate the main app and isolated previews independently; fixture rendering does not verify signed-in application states.

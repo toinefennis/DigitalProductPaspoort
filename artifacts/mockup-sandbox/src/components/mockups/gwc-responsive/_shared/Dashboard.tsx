@@ -1,0 +1,223 @@
+import { useQuery, useMutation, useQueryClient } from "./previewState";
+import { Card, CardContent } from "@/components/ui/card";
+import { Package, Wrench, Clock, RefreshCw, Trash2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { format } from "date-fns";
+import { nl } from "date-fns/locale";
+import { useAuth, useToast, apiRequest } from "./previewState";
+import type { DashboardStats, Event, Product } from "./previewState";
+
+function StatsCard({ title, value, icon: Icon, color }: {
+  title: string;
+  value: number;
+  icon: typeof Package;
+  color: string;
+}) {
+  return (
+    <Card className="shadow-material-1">
+      <CardContent className="p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm text-gray-600">{title}</p>
+            <p className={`text-2xl font-medium ${color}`}>{value}</p>
+          </div>
+          <Icon className={`h-8 w-8 ${color}`} />
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function ActivityCard({ activity, onDelete }: { 
+  activity: Event & { product: Product };
+  onDelete?: (eventId: number) => void;
+}) {
+  const { user: currentUser } = useAuth();
+  const isAdmin = (currentUser as any)?.role === 'admin' || (currentUser as any)?.role === 'superadmin';
+
+  const getEventIcon = (eventType: string) => {
+    switch (eventType) {
+      case "reparatie":
+        return <Wrench className="h-4 w-4 text-gwc-success" />;
+      case "uitleen":
+        return <Clock className="h-4 w-4 text-gwc-warning" />;
+      case "retour":
+        return <RefreshCw className="h-4 w-4 text-gwc-success" />;
+      default:
+        return <Package className="h-4 w-4 text-gwc-secondary" />;
+    }
+  };
+
+  const getEventColor = (eventType: string) => {
+    switch (eventType) {
+      case "reparatie":
+        return "bg-[hsl(var(--gwc-success)/0.1)]";
+      case "uitleen":
+        return "bg-[hsl(var(--gwc-warning)/0.1)]";
+      case "retour":
+        return "bg-[hsl(var(--gwc-success)/0.1)]";
+      default:
+        return "bg-[hsl(var(--gwc-secondary)/0.1)]";
+    }
+  };
+
+  return (
+    <Card className="shadow-material-1">
+      <CardContent className="p-4">
+        <div className="flex items-start justify-between">
+          <div className="flex items-start space-x-3 flex-1">
+            <div className={`flex-shrink-0 w-10 h-10 ${getEventColor(activity.eventType)} rounded-full flex items-center justify-center`}>
+              {getEventIcon(activity.eventType)}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-900">{activity.description}</p>
+              <p className="text-xs text-gray-500">
+                {format(new Date(activity.createdAt), "PPp", { locale: nl })}
+              </p>
+              <p className="text-xs text-gwc-primary">GTIN: {activity.product.gtin}</p>
+            </div>
+          </div>
+          {isAdmin && onDelete && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onDelete(activity.id)}
+              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+export default function Dashboard() {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const { data: stats, isLoading: statsLoading } = useQuery<DashboardStats>({
+    queryKey: ["/api/dashboard/stats"],
+  });
+
+  const { data: activities, isLoading: activitiesLoading } = useQuery<(Event & { product: Product })[]>({
+    queryKey: ["/api/dashboard/activities"],
+  });
+
+  const deleteEventMutation = useMutation({
+    mutationFn: async (eventId: number) => {
+      const response = await fetch(`/api/events/${eventId}`, {
+        method: "DELETE",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Event verwijderd",
+        description: "Het event is succesvol verwijderd uit de historie.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/activities"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/stats"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Fout bij verwijderen",
+        description: error.message || "Er is een fout opgetreden bij het verwijderen van het event.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleDeleteEvent = (eventId: number) => {
+    if (confirm("Weet je zeker dat je dit event wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.")) {
+      deleteEventMutation.mutate(eventId);
+    }
+  };
+
+  if (statsLoading || activitiesLoading) {
+    return (
+      <div className="h-full overflow-y-auto space-y-4 p-4 sm:p-6 lg:p-8">
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          {[...Array(4)].map((_, i) => (
+            <Card key={i} className="shadow-material-1">
+              <CardContent className="p-4">
+                <div className="animate-pulse">
+                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                  <div className="h-8 bg-gray-200 rounded w-1/2"></div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="h-full min-w-0 overflow-y-auto pb-20 lg:pb-8">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-2 gap-4 p-4 sm:p-6 lg:grid-cols-4 lg:p-8">
+        <div className="contents">
+          <StatsCard
+            title="Producten"
+            value={stats?.totalProducts || 0}
+            icon={Package}
+            color="text-gwc-primary"
+          />
+          <StatsCard
+            title="Reparaties"
+            value={stats?.totalRepairs || 0}
+            icon={Wrench}
+            color="text-gwc-success"
+          />
+        </div>
+        
+        <div className="contents">
+          <StatsCard
+            title="Uitgeleend"
+            value={stats?.itemsOnLoan || 0}
+            icon={Clock}
+            color="text-gwc-warning"
+          />
+          <StatsCard
+            title="Remakes"
+            value={stats?.remadeItems || 0}
+            icon={RefreshCw}
+            color="text-gwc-secondary"
+          />
+        </div>
+      </div>
+
+      {/* Recent Activities */}
+      <div className="px-4 pb-4 sm:px-6 lg:px-8">
+        <h2 className="text-lg font-medium mb-4">Recente Activiteiten</h2>
+        {activities && activities.length > 0 ? (
+          <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+            {activities.map((activity) => (
+              <ActivityCard 
+                key={activity.id} 
+                activity={activity} 
+                onDelete={handleDeleteEvent}
+              />
+            ))}
+          </div>
+        ) : (
+          <Card className="shadow-material-1">
+            <CardContent className="p-4 text-center text-gray-500">
+              <Package className="h-8 w-8 mx-auto mb-2 opacity-50" />
+              <p>Nog geen activiteiten</p>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+    </div>
+  );
+}

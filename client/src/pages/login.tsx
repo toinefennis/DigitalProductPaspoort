@@ -3,6 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { LogIn, User, Lock, QrCode, UserPlus, Package } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -66,7 +67,7 @@ export default function Login() {
     onError: (error: any) => {
       toast({
         title: "Inloggen mislukt",
-        description: error.message || "Onjuiste gebruikersnaam of wachtwoord",
+        description: error.message || "Onjuist e-mailadres, gebruikersnaam of wachtwoord",
         variant: "destructive",
       });
     },
@@ -75,7 +76,7 @@ export default function Login() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (username && password) {
-      loginMutation.mutate({ username, password });
+      loginMutation.mutate({ username: username.trim(), password });
     }
   };
 
@@ -93,13 +94,16 @@ export default function Login() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Gebruikersnaam</Label>
+              <Label htmlFor="username">E-mailadres of gebruikersnaam</Label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
                   id="username"
                   type="text"
-                  placeholder="Voer je gebruikersnaam in"
+                  placeholder="E-mailadres of gebruikersnaam"
+                  autoComplete="username"
+                  autoCapitalize="none"
+                  spellCheck={false}
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="pl-10"
@@ -111,10 +115,10 @@ export default function Login() {
             <div className="space-y-2">
               <Label htmlFor="password">Wachtwoord</Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
+                <Lock className="pointer-events-none absolute left-3 top-1/2 z-10 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <PasswordInput
                   id="password"
-                  type="password"
+                  autoComplete="current-password"
                   placeholder="Voer je wachtwoord in"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

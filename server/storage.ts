@@ -22,7 +22,7 @@ import {
 } from "@shared/schema";
 import { db } from "./db";
 import { userNotificationFilter } from "./notification-filter";
-import { eq, desc, count, and, isNotNull, inArray } from "drizzle-orm";
+import { eq, desc, count, and, isNotNull, inArray, or, sql } from "drizzle-orm";
 import { isValidGtin } from "../shared/gs1";
 import bcrypt from "bcrypt";
 
@@ -47,6 +47,7 @@ export interface IStorage {
   getUserById(userId: number): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
+  getLoginCandidates(identifier: string): Promise<User[]>;
   getAllUsers(): Promise<User[]>;
   updateUser(userId: number, updates: Partial<InsertUser>): Promise<User>;
   updateUserRole(userId: number, role: string): Promise<User>;
@@ -268,6 +269,14 @@ export class DatabaseStorage implements IStorage {
   async getUserByUsername(username: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.username, username));
     return user || undefined;
+  }
+
+  async getLoginCandidates(identifier: string): Promise<User[]> {
+    // Two results are sufficient to detect ambiguous email/username matches.
+    return db.select().from(users).where(or(
+      eq(users.username, identifier),
+      sql`lower(${users.email}) = ${identifier.toLowerCase()}`,
+    )).limit(2);
   }
 
   async getAllUsers(): Promise<User[]> {

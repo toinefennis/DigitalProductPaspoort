@@ -3,7 +3,7 @@ import { db } from "./db";
 import { passwordResets, users } from "../shared/schema";
 
 export interface ResetRepository {
-  issue(email: string, tokenHash: string, expiresAt: Date): Promise<{ email: string } | undefined>;
+  issue(email: string, tokenHash: string, expiresAt: Date): Promise<{ email: string; username: string } | undefined>;
   cancel(tokenHash: string): Promise<void>;
   complete(tokenHash: string, passwordHash: string): Promise<boolean>;
   sessionIsValid(userId: number, authenticatedAt?: number): Promise<boolean>;
@@ -26,7 +26,7 @@ export class PasswordResetRepository implements ResetRepository {
           target: passwordResets.userId,
           set: { tokenHash, expiresAt, requestedAt: now },
         });
-      return { email: user.email };
+      return { email: user.email, username: user.username };
     });
   }
 

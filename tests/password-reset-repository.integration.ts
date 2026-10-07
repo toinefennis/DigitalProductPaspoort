@@ -17,7 +17,8 @@ test("development repository: cooldown, expiration, atomic single use, and durab
   const repo = new PasswordResetRepository();
   const hash = "a".repeat(64);
   try {
-    assert.ok(await repo.issue(user.email.toUpperCase().toLowerCase(), hash, new Date(Date.now() + 60_000)));
+    assert.deepEqual(await repo.issue(user.email.toUpperCase().toLowerCase(), hash, new Date(Date.now() + 60_000)),
+      { email: user.email, username: user.username });
     assert.equal(await repo.issue(user.email, "b".repeat(64), new Date(Date.now() + 60_000)), undefined);
     assert.equal(await repo.sessionIsValid(user.id), true);
     await db.update(passwordResets).set({ expiresAt: new Date(Date.now() - 1000) }).where(eq(passwordResets.userId, user.id));

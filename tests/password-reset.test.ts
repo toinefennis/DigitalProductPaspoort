@@ -25,7 +25,7 @@ async function withFixture(run: (base: string, fixture: {
       if (email !== user.email || !user.isActive) return;
       tokenHash = hash; expiresAt = expires.getTime();
       assert.equal(hash.length, 64);
-      return { email: user.email };
+      return { email: user.email, username: user.username };
     },
     cancel: async () => { tokenHash = null; canceled++; },
     complete: async (hash, passwordHash) => {
@@ -38,11 +38,13 @@ async function withFixture(run: (base: string, fixture: {
   const store = new session.MemoryStore();
   app.use(session({ secret: "isolated-reset-test", saveUninitialized: false, resave: false, store }));
   registerResetSessionGuard(app, repo);
-  registerLoginRoute(app, { getUserByUsername: async name => name === user.username ? user : undefined });
+  registerLoginRoute(app, { getLoginCandidates: async name =>
+    name === user.username || name.toLowerCase() === user.email.toLowerCase() ? [user] : [] });
   registerPasswordResetRoutes(app, repo, {
     configured: () => options.configured !== false,
-    send: async (email, token) => {
+    send: async (email, token, username) => {
       assert.equal(email, user.email);
+      assert.equal(username, user.username);
       if (options.failMail) throw new Error("private provider response");
       assert.equal(hashResetToken(token), tokenHash);
       sent.push(token);
@@ -75,6 +77,7 @@ test("unknown, inactive and active accounts get identical responses; tokens are 
     assert.equal(await unknown.text(), response); assert.equal(await inactive.text(), response);
     assert.equal(f.sent.length, 1); assert.match(f.sent[0], /^[A-Za-z0-9_-]{43}$/);
     assert.ok(!response.includes(f.sent[0]));
+    assert.ok(!response.includes(f.user.username));
   });
 });
 test("single-use reset hashes the password, preserves role, revokes old sessions and doesn't auto-login", async () => {
@@ -91,6 +94,7 @@ test("single-use reset hashes the password, preserves role, revokes old sessions
     assert.equal((await post(base, completePath, { token: f.sent[0], password: "another-valid-fixture-password" })).status, 400);
     assert.equal((await post(base, "/api/auth/login", { username: f.user.username, password: "original-fixture-password" })).status, 401);
     assert.equal((await post(base, "/api/auth/login", { username: f.user.username, password: "new-isolated-fixture-password" })).status, 200);
+    assert.equal((await post(base, "/api/auth/login", { username: f.user.email.toUpperCase(), password: "new-isolated-fixture-password" })).status, 200);
   });
 });
 test("invalid/expired tokens, short passwords and bcrypt-truncated Unicode passwords are rejected", async () => {

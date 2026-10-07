@@ -4,11 +4,13 @@ import { z } from "zod";
 import type { User } from "../shared/schema";
 
 export interface LoginStorage {
-  getUserByUsername(username: string): Promise<User | undefined>;
+  getLoginCandidates(identifier: string): Promise<User[]>;
 }
 type LoginUser = Pick<User, "id" | "username" | "email" | "role"> & { fullName: string };
 const credentialsSchema = z.object({
-  username: z.string().min(1).max(100),
+  // Keep the request field compatible with existing clients; it accepts either identifier.
+  username: z.string().trim().min(1).max(255)
+    .refine(value => value.length <= 100 || z.string().email().safeParse(value).success),
   password: z.string().min(1),
 });
 const bcryptHash = /^\$2[aby]\$(?:0[4-9]|[12]\d|3[01])\$[./A-Za-z0-9]{53}$/;
@@ -17,17 +19,19 @@ export function registerLoginRoute(app: Express, storage: LoginStorage) {
   app.post("/api/auth/login", async (req, res) => {
     const credentials = credentialsSchema.safeParse(req.body);
     if (!credentials.success) {
-      res.status(400).json({ message: "Gebruikersnaam en wachtwoord zijn verplicht en moeten tekst zijn." });
+      res.status(400).json({ message: "E-mailadres of gebruikersnaam en wachtwoord zijn verplicht en moeten tekst zijn." });
       return;
     }
     try {
       const authenticatedAt = Date.now();
       const { username, password } = credentials.data;
       // Only persisted accounts can authenticate. No synthetic/demo user fallback.
-      const user = await storage.getUserByUsername(username);
+      const candidates = await storage.getLoginCandidates(username);
+      // Never choose arbitrarily between duplicate emails or email/username collisions.
+      const user = candidates.length === 1 ? candidates[0] : undefined;
       if (!user || typeof user.password !== "string" || !bcryptHash.test(user.password) ||
           !await bcrypt.compare(password, user.password)) {
-        res.status(401).json({ message: "Onjuiste gebruikersnaam of wachtwoord" });
+        res.status(401).json({ message: "Onjuist e-mailadres, gebruikersnaam of wachtwoord" });
         return;
       }
       if (user.isActive !== true) {

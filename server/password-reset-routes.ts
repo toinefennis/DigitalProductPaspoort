@@ -14,7 +14,7 @@ const genericMessage = "Als er een actief account met dit e-mailadres bestaat, o
 
 export function registerPasswordResetRoutes(app: Express, repo: ResetRepository, mail: {
   configured(): boolean;
-  send(email: string, token: string): Promise<void>;
+  send(email: string, token: string, username: string): Promise<void>;
 }) {
   // Per-process IP throttling plus persistent per-account cooldown in the repository.
   const attempts = new Map<string, { count: number; until: number }>();
@@ -38,7 +38,7 @@ export function registerPasswordResetRoutes(app: Express, repo: ResetRepository,
       const tokenHash = hashResetToken(token);
       const account = await repo.issue(input.data.email, tokenHash, new Date(Date.now() + 30 * 60_000));
       if (account) {
-        try { await mail.send(account.email, token); }
+        try { await mail.send(account.email, token, account.username); }
         catch {
           try { await repo.cancel(tokenHash); }
           catch { console.error("Password reset token revocation storage failed."); }

@@ -4,7 +4,7 @@ import { ArrowLeft, LockKeyhole, Save } from "lucide-react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 
 type ApiMessage = { message?: string };
@@ -107,10 +107,9 @@ export default function ResetPassword() {
               <div className="space-y-2">
                 <Label htmlFor="new-password">Nieuw wachtwoord</Label>
                 <div className="relative">
-                  <LockKeyhole aria-hidden="true" className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                  <Input
+                  <LockKeyhole aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                  <PasswordInput
                     id="new-password"
-                    type="password"
                     autoComplete="new-password"
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
@@ -124,10 +123,9 @@ export default function ResetPassword() {
               <div className="space-y-2">
                 <Label htmlFor="confirm-password">Herhaal nieuw wachtwoord</Label>
                 <div className="relative">
-                  <LockKeyhole aria-hidden="true" className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                  <Input
+                  <LockKeyhole aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                  <PasswordInput
                     id="confirm-password"
-                    type="password"
                     autoComplete="new-password"
                     value={confirmation}
                     onChange={(event) => setConfirmation(event.target.value)}

@@ -36,7 +36,10 @@ async function withServer(
   app.use(session({ secret: "isolated-test-session-secret", resave: false, saveUninitialized: false, store }));
   const lookedUp: string[] = [], protectedCalls: string[] = [];
   registerLoginRoute(app, options.storage ?? {
-    getUserByUsername: async name => { lookedUp.push(name); return user?.username === name ? user : undefined; },
+    getLoginCandidates: async name => {
+      lookedUp.push(name);
+      return user && (user.username === name || user.email.toLowerCase() === name.toLowerCase()) ? [user] : [];
+    },
   });
   app.get("/test/session", (req, res) => {
     const data = req.session as typeof req.session & { user?: unknown };
@@ -66,7 +69,7 @@ test("missing database accounts, including historical demo names, never authenti
     for (const username of ["admin", "manager", "user", "superadmin", "unknown-test-user"]) {
       const response = await login(base, { username, password: testPassword, role: "superadmin", id: 1 });
       assert.equal(response.status, 401); assert.match(response.headers.get("content-type")!, /json/);
-      assert.deepEqual(await response.json(), { message: "Onjuiste gebruikersnaam of wachtwoord" });
+      assert.deepEqual(await response.json(), { message: "Onjuist e-mailadres, gebruikersnaam of wachtwoord" });
       assert.equal(cookieFor(response), "");
     }
     assert.equal(lookedUp.length, 5); assert.deepEqual(protectedCalls, []);
@@ -148,7 +151,7 @@ test("database failures cannot authenticate or expose private error contents", a
     const response = await login(base, { username: storedUser.username, password: testPassword });
     assert.equal(response.status, 500); assert.equal(cookieFor(response), "");
     assert.deepEqual(await response.json(), { message: "Login failed" });
-  }, { storage: { getUserByUsername: async () => { throw new Error(`fake SQL credentials ${testHash}`); } } });
+  }, { storage: { getLoginCandidates: async () => { throw new Error(`fake SQL credentials ${testHash}`); } } });
 });
 test("failed session persistence never reports successful login or retains authenticated access", async () => {
   await withServer(storedUser, async base => {
@@ -157,4 +160,51 @@ test("failed session persistence never reports successful login or retains authe
     const cookie = cookieFor(response);
     assert.equal((await fetch(base + "/test/session", { headers: { cookie } })).status, 401);
   }, { failSessionSave: true });
+});
+
+test("email login is case-insensitive, trims the identifier and preserves every stored role", async () => {
+  for (const role of ["user", "manager", "admin", "superadmin"]) {
+    const user = { ...storedUser, email: "Fixture@Example.invalid", role };
+    await withServer(user, async (base, lookedUp) => {
+      const response = await login(base, { username: "  FIXTURE@example.INVALID  ", password: testPassword });
+      assert.equal(response.status, 200);
+      const data = await response.json();
+      assert.equal(data.user.id, user.id); assert.equal(data.user.role, role);
+      assert.equal(data.user.username, user.username); assert.equal("password" in data.user, false);
+      const cookie = cookieFor(response);
+      assert.equal((await fetch(base + "/test/session", { headers: { cookie } })).status, 200);
+      assert.deepEqual(lookedUp, ["FIXTURE@example.INVALID"]);
+    });
+  }
+});
+
+test("email login allows addresses longer than the username limit", async () => {
+  const user = { ...storedUser, email: `${"a".repeat(60)}@${"b".repeat(55)}.invalid` };
+  await withServer(user, async base => {
+    assert.equal((await login(base, { username: user.email, password: testPassword })).status, 200);
+  });
+});
+
+test("email login rejects unknown accounts, wrong passwords and inactive accounts", async () => {
+  for (const user of [undefined, storedUser, { ...storedUser, isActive: false }]) {
+    await withServer(user, async base => {
+      const response = await login(base, {
+        username: storedUser.email, password: user === storedUser ? "wrong-password" : testPassword,
+      });
+      assert.equal(response.status, 401); assert.equal(cookieFor(response), "");
+    });
+  }
+});
+
+test("ambiguous email matches and email/username collisions cannot authenticate", async () => {
+  for (const second of [
+    { ...storedUser, id: 18, username: "other", email: storedUser.email.toUpperCase() },
+    { ...storedUser, id: 18, username: storedUser.email, email: "other@example.invalid" },
+  ]) {
+    await withServer(storedUser, async base => {
+      const response = await login(base, { username: storedUser.email, password: testPassword });
+      assert.equal(response.status, 401); assert.equal(cookieFor(response), "");
+      assert.deepEqual(await response.json(), { message: "Onjuist e-mailadres, gebruikersnaam of wachtwoord" });
+    }, { storage: { getLoginCandidates: async () => [storedUser, second] } });
+  }
 });

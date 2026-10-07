@@ -9,8 +9,8 @@ The authorized Resend connection has a restricted, send-only API key. Domain-lis
 
 **How to apply:** Do not automatically reconnect or request broader credentials for this response. Obtain a verified sender address from the operator using the non-secret environment-variable form. Do not assume the demo Resend sender can deliver to arbitrary account addresses. Do not send test emails without authorization.
 
-The operator reports adding gwcirculair.nl to Resend domains and authorizes using its support mailbox for recovery emails.
+The operator confirms gwcirculair.nl is verified in Resend and authorizes using its support mailbox for recovery emails.
 
-**Why:** This is the operator-approved sending domain; adding it is not proof that Resend has completed DNS verification.
+**Why:** This is the operator-approved sending domain, with verification explicitly confirmed by the operator.
 
-**How to apply:** Use the configured sender, but distinguish valid app configuration from verified domain status and successful delivery. Do not claim delivery was tested without actually sending an authorized email.
+**How to apply:** Use the configured sender, but distinguish operator-confirmed domain verification from successful delivery. Do not claim delivery was tested without actually sending an authorized email.

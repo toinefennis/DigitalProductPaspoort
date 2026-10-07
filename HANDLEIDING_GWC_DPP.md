@@ -455,4 +455,4 @@ Voor technische vragen of problemen met de app, neem contact op met je beheerder
 ---
 
 *Laatste update: Januari 2025*  
-*Versie: 1.0*
+*Versie: 1.05*

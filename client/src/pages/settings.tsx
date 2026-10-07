@@ -143,7 +143,7 @@ export default function SettingsPage() {
         <CardContent className="space-y-2">
           <div className="flex justify-between">
             <span className="text-sm text-gray-600">Versie</span>
-            <span className="text-sm">1.0.0</span>
+            <span className="text-sm">1.05</span>
           </div>
           <div className="flex justify-between">
             <span className="text-sm text-gray-600">Laatste Update</span>

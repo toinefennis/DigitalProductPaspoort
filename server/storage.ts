@@ -3,6 +3,7 @@ import {
   events, 
   users, 
   notifications,
+  gs1ProductMappings,
   stories,
   gtinRegistry,
   type Product, 
@@ -33,6 +34,7 @@ export interface IStorage {
   getProductWithEvents(id: number): Promise<ProductWithEvents | undefined>;
   createProduct(product: InsertProduct): Promise<Product>;
   updateProduct(id: number, updates: Partial<InsertProduct>): Promise<Product>;
+  deleteProduct(id: number): Promise<boolean>;
   getAllProducts(): Promise<Product[]>;
   
   // Event operations
@@ -147,6 +149,26 @@ export class DatabaseStorage implements IStorage {
       .returning();
     
     return updatedProduct;
+  }
+
+  async deleteProduct(id: number): Promise<boolean> {
+    return db.transaction(async (tx) => {
+      const [product] = await tx
+        .select({ id: products.id })
+        .from(products)
+        .where(eq(products.id, id))
+        .for("update");
+
+      if (!product) return false;
+
+      await tx.delete(events).where(eq(events.productId, id));
+      await tx.delete(notifications).where(eq(notifications.productId, id));
+      await tx.delete(gs1ProductMappings).where(eq(gs1ProductMappings.productId, id));
+      await tx.update(stories).set({ productId: null }).where(eq(stories.productId, id));
+      await tx.delete(products).where(eq(products.id, id));
+
+      return true;
+    });
   }
 
   async getAllProducts(): Promise<Product[]> {

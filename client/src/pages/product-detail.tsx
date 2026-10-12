@@ -67,6 +67,7 @@ export default function ProductDetail() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  const canEditProduct = user?.role === "admin" || user?.role === "superadmin";
   
   const productId = params.id;
   const gtin = params.gtin;
@@ -452,24 +453,26 @@ export default function ProductDetail() {
 
       {/* Action Buttons */}
       <div className="px-4 pt-4 space-y-2">
-        <Button
-          variant="outline"
-          size="sm"
-          className="w-full"
-          onClick={() => setIsEditing(!isEditing)}
-        >
-          {isEditing ? (
-            <>
-              <X className="h-4 w-4 mr-2" />
-              Annuleren
-            </>
-          ) : (
-            <>
-              <Edit3 className="h-4 w-4 mr-2" />
-              Product Bewerken
-            </>
-          )}
-        </Button>
+        {canEditProduct && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full"
+            onClick={() => setIsEditing(!isEditing)}
+          >
+            {isEditing ? (
+              <>
+                <X className="h-4 w-4 mr-2" />
+                Annuleren
+              </>
+            ) : (
+              <>
+                <Edit3 className="h-4 w-4 mr-2" />
+                Product Bewerken
+              </>
+            )}
+          </Button>
+        )}
         
         {/* Share Product Story Button */}
         <Button

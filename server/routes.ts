@@ -22,6 +22,7 @@ import { registerPasswordResetRoutes, registerResetSessionGuard } from "./passwo
 import { resetEmailConfigured, sendPasswordResetEmail } from "./password-reset-email";
 import { registerAdminAccessRequestRoutes } from "./admin-access-request-routes";
 import { sendAdminAccessRequestEmail } from "./admin-access-request-email";
+import { registerProductAdminRoutes } from "./product-admin-routes";
 
 // Configure multer for file uploads
 const uploadDir = path.join(process.cwd(), "uploads");
@@ -85,6 +86,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     getActiveAdmins: () => storage.getActiveAdminAccessRequestRecipients(),
     getFallbackRecipient: () => process.env.ADMIN_ACCESS_REQUEST_FALLBACK_EMAIL,
     send: sendAdminAccessRequestEmail,
+  });
+  registerProductAdminRoutes(app, {
+    getUser: async (userId) => {
+      const user = await storage.getUserById(userId);
+      return user && { role: user.role, isActive: user.isActive === true };
+    },
+    deleteProduct: (productId) => storage.deleteProduct(productId),
   });
 
   // Serve uploaded files
@@ -417,6 +425,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Update product
   app.patch("/api/products/:id", async (req, res) => {
     try {
+      const sessionUser = (req as any).session?.user as { id?: number } | undefined;
+      if (!Number.isSafeInteger(sessionUser?.id) || sessionUser!.id! <= 0) {
+        return res.status(401).json({ message: "Log in om producten te bewerken." });
+      }
+      const persistedUser = await storage.getUserById(sessionUser!.id!);
+      if (!persistedUser?.isActive) {
+        return res.status(401).json({ message: "Log opnieuw in met een actief account." });
+      }
+      if (!isAdmin(persistedUser.role)) {
+        return res.status(403).json({ message: "Alleen admins en superadmins kunnen producten bewerken." });
+      }
+
       console.log("Update product request:", req.body);
       const productId = parseInt(req.params.id);
       if (isNaN(productId)) {

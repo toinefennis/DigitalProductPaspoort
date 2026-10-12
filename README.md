@@ -19,6 +19,10 @@ Het GWC Digital Product Passport (DPP) is een platform van Groningen Werkt Circu
 
 Welke GS1-acties beschikbaar zijn, hangt af van de ingestelde omgeving en de rechten van het GS1-account.
 
+## Contact
+
+Groningen Werkt Circulair: [info@groningenwerktcirculair.info](mailto:info@groningenwerktcirculair.info).
+
 ## Techniek
 
 - React, TypeScript en Vite voor de webinterface.

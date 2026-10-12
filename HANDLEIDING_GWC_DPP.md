@@ -446,7 +446,7 @@ A: Ja, via de GS1 Sync functie of neem contact op met support voor bulk-import o
 ## Contact & Support
 
 **Groningen Werkt Circulair**  
-📧 E-mail: [contact@gwc.nl]  
+📧 E-mail: [info@groningenwerktcirculair.info](mailto:info@groningenwerktcirculair.info)<br>
 🌐 Website: [www.groningenwerktcirculair.nl]  
 
 **App Ondersteuning**  

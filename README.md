@@ -23,6 +23,8 @@ Welke GS1-acties beschikbaar zijn, hangt af van de ingestelde omgeving en de rec
 
 Groningen Werkt Circulair: [info@groningenwerktcirculair.info](mailto:info@groningenwerktcirculair.info).
 
+Website: [www.groningenwerktcirculair.info](https://www.groningenwerktcirculair.info).
+
 ## Techniek
 
 - React, TypeScript en Vite voor de webinterface.

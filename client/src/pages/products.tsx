@@ -3,7 +3,7 @@ import { ProductCard } from "@/components/product-card";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { Search, Pencil, Trash2 } from "lucide-react";
+import { Search, Pencil, Archive } from "lucide-react";
 import type { Product } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,27 +34,27 @@ export default function Products() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
+  const [productToArchive, setProductToArchive] = useState<Product | null>(null);
   const isSuperadmin = user?.role === "superadmin";
 
   const { data: products, isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
   });
 
-  const deleteProductMutation = useMutation({
+  const archiveProductMutation = useMutation({
     mutationFn: async (productId: number) => {
-      const response = await apiRequest("DELETE", `/api/products/${productId}`);
+      const response = await apiRequest("PATCH", `/api/products/${productId}/archive`);
       return response.json() as Promise<{ message: string }>;
     },
     onSuccess: async (result) => {
-      toast({ title: "Product verwijderd", description: result.message });
-      setProductToDelete(null);
+      toast({ title: "Product gearchiveerd", description: result.message });
+      setProductToArchive(null);
       await queryClient.invalidateQueries({ queryKey: ["/api/products"] });
     },
     onError: (error: Error) => {
       toast({
-        title: "Verwijderen mislukt",
-        description: error.message || "Het product kon niet worden verwijderd.",
+        title: "Archiveren mislukt",
+        description: error.message || "Het product kon niet worden gearchiveerd.",
         variant: "destructive",
       });
     },
@@ -140,13 +140,13 @@ export default function Products() {
                         <Button
                           type="button"
                           size="sm"
-                          variant="destructive"
-                          onClick={() => setProductToDelete(product)}
-                          aria-label={`Product ${product.name} verwijderen`}
-                          disabled={deleteProductMutation.isPending}
+                          variant="outline"
+                          onClick={() => setProductToArchive(product)}
+                          aria-label={`Product ${product.name} archiveren`}
+                          disabled={archiveProductMutation.isPending}
                         >
-                          <Trash2 className="mr-1.5 h-4 w-4" />
-                          Verwijderen
+                          <Archive className="mr-1.5 h-4 w-4" />
+                          Archiveren
                         </Button>
                       </div>
                     </TableCell>
@@ -175,36 +175,34 @@ export default function Products() {
       )}
 
       <AlertDialog
-        open={productToDelete !== null}
+        open={productToArchive !== null}
         onOpenChange={(open) => {
-          if (!open && !deleteProductMutation.isPending) setProductToDelete(null);
+          if (!open && !archiveProductMutation.isPending) setProductToArchive(null);
         }}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Product definitief verwijderen?</AlertDialogTitle>
+            <AlertDialogTitle>Product archiveren?</AlertDialogTitle>
             <AlertDialogDescription>
-              {productToDelete && (
+              {productToArchive && (
                 <>
-                  <span className="font-medium text-gray-900">{productToDelete.name}</span>
-                  {" "}en de gekoppelde productgebeurtenissen en meldingen worden permanent verwijderd.
-                  Gekoppelde verhalen en GS1-snapshots blijven bewaard; externe GS1-gegevens worden niet aangepast.
-                  {" "}Deze actie kan niet ongedaan worden gemaakt.
+                  <span className="font-medium text-gray-900">{productToArchive.name}</span>
+                  {" "}verdwijnt uit de productlijsten en productpagina’s. De productgegevens, historie,
+                  meldingen, verhalen en GS1-koppelingen blijven bewaard.
                 </>
               )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={deleteProductMutation.isPending}>Annuleren</AlertDialogCancel>
+            <AlertDialogCancel disabled={archiveProductMutation.isPending}>Annuleren</AlertDialogCancel>
             <AlertDialogAction
-              disabled={!productToDelete || deleteProductMutation.isPending}
+              disabled={!productToArchive || archiveProductMutation.isPending}
               onClick={(event) => {
                 event.preventDefault();
-                if (productToDelete) deleteProductMutation.mutate(productToDelete.id);
+                if (productToArchive) archiveProductMutation.mutate(productToArchive.id);
               }}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {deleteProductMutation.isPending ? "Verwijderen..." : "Definitief verwijderen"}
+              {archiveProductMutation.isPending ? "Archiveren..." : "Archiveren"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

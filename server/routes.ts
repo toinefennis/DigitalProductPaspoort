@@ -92,7 +92,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = await storage.getUserById(userId);
       return user && { role: user.role, isActive: user.isActive === true };
     },
-    deleteProduct: (productId) => storage.deleteProduct(productId),
+    archiveProduct: (productId) => storage.archiveProduct(productId),
   });
 
   // Serve uploaded files
@@ -382,7 +382,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const productGtin = validatedProduct.gtin || gtin;
       
       // Check if GTIN already exists
-      const existingProduct = await storage.getProductByGtin(productGtin);
+      const existingProduct = await storage.getProductByGtinIncludingArchived(productGtin);
       if (existingProduct) {
         return res.status(400).json({ message: "Product with this GTIN already exists" });
       }
@@ -471,6 +471,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (updateData.microplasticSheddingEstimated !== undefined) {
         updateData.microplasticSheddingEstimated = updateData.microplasticSheddingEstimated ? parseInt(updateData.microplasticSheddingEstimated) : null;
       }
+      delete updateData.archivedAt;
 
       // Handle photo URL
       if (updateData.photo) {
@@ -480,6 +481,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log("Processed update data:", updateData);
       const updatedProduct = await storage.updateProduct(productId, updateData);
+      if (!updatedProduct) {
+        return res.status(404).json({ message: "Product niet gevonden of gearchiveerd." });
+      }
       console.log("Update successful:", updatedProduct.id);
       res.json(updatedProduct);
     } catch (error) {
@@ -544,7 +548,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/validate-gtin/:gtin", async (req, res) => {
     try {
       const gtin = req.params.gtin;
-      const existingProduct = await storage.getProductByGtin(gtin);
+      const existingProduct = await storage.getProductByGtinIncludingArchived(gtin);
       
       res.json({
         available: !existingProduct,

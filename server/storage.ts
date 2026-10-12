@@ -3,7 +3,6 @@ import {
   events, 
   users, 
   notifications,
-  gs1ProductMappings,
   stories,
   gtinRegistry,
   type Product, 
@@ -23,7 +22,7 @@ import {
 } from "@shared/schema";
 import { db } from "./db";
 import { userNotificationFilter } from "./notification-filter";
-import { eq, desc, count, and, isNotNull, inArray, or, sql } from "drizzle-orm";
+import { eq, desc, count, and, isNotNull, isNull, inArray, or, sql } from "drizzle-orm";
 import { isValidGtin } from "../shared/gs1";
 import bcrypt from "bcrypt";
 
@@ -31,10 +30,11 @@ export interface IStorage {
   // Product operations
   getProduct(id: number): Promise<Product | undefined>;
   getProductByGtin(gtin: string): Promise<Product | undefined>;
+  getProductByGtinIncludingArchived(gtin: string): Promise<Product | undefined>;
   getProductWithEvents(id: number): Promise<ProductWithEvents | undefined>;
   createProduct(product: InsertProduct): Promise<Product>;
-  updateProduct(id: number, updates: Partial<InsertProduct>): Promise<Product>;
-  deleteProduct(id: number): Promise<boolean>;
+  updateProduct(id: number, updates: Partial<InsertProduct>): Promise<Product | undefined>;
+  archiveProduct(id: number): Promise<boolean>;
   getAllProducts(): Promise<Product[]>;
   
   // Event operations
@@ -84,18 +84,35 @@ export interface IStorage {
 
 export class DatabaseStorage implements IStorage {
   async getProduct(id: number): Promise<Product | undefined> {
-    const [product] = await db.select().from(products).where(eq(products.id, id));
+    const [product] = await db.select().from(products).where(and(
+      eq(products.id, id),
+      isNull(products.archivedAt),
+    ));
     return product || undefined;
   }
 
   async getProductByGtin(gtin: string): Promise<Product | undefined> {
-    const [product] = await db.select().from(products).where(eq(products.gtin, gtin));
+    return this.findProductByGtin(gtin, false);
+  }
+
+  async getProductByGtinIncludingArchived(gtin: string): Promise<Product | undefined> {
+    return this.findProductByGtin(gtin, true);
+  }
+
+  private async findProductByGtin(gtin: string, includeArchived: boolean): Promise<Product | undefined> {
+    const exactFilter = includeArchived
+      ? eq(products.gtin, gtin)
+      : and(eq(products.gtin, gtin), isNull(products.archivedAt));
+    const [product] = await db.select().from(products).where(exactFilter);
     if (product || !isValidGtin(gtin)) return product || undefined;
     // GS1 Digital Link uses zero-padded GTIN-14; existing local records may use GTIN-13/12/8.
     const normalized = gtin.padStart(14, "0");
     const variants = [14, 13, 12, 8].map(length => normalized.slice(-length))
       .filter(value => value.padStart(14, "0") === normalized);
-    const [equivalent] = await db.select().from(products).where(inArray(products.gtin, variants));
+    const variantFilter = includeArchived
+      ? inArray(products.gtin, variants)
+      : and(inArray(products.gtin, variants), isNull(products.archivedAt));
+    const [equivalent] = await db.select().from(products).where(variantFilter);
     return equivalent;
   }
 
@@ -141,38 +158,28 @@ export class DatabaseStorage implements IStorage {
     return newProduct;
   }
 
-  async updateProduct(id: number, updates: Partial<InsertProduct>): Promise<Product> {
+  async updateProduct(id: number, updates: Partial<InsertProduct>): Promise<Product | undefined> {
     const [updatedProduct] = await db
       .update(products)
       .set(updates)
-      .where(eq(products.id, id))
+      .where(and(eq(products.id, id), isNull(products.archivedAt)))
       .returning();
-    
-    return updatedProduct;
+    return updatedProduct || undefined;
   }
 
-  async deleteProduct(id: number): Promise<boolean> {
-    return db.transaction(async (tx) => {
-      const [product] = await tx
-        .select({ id: products.id })
-        .from(products)
-        .where(eq(products.id, id))
-        .for("update");
-
-      if (!product) return false;
-
-      await tx.delete(events).where(eq(events.productId, id));
-      await tx.delete(notifications).where(eq(notifications.productId, id));
-      await tx.delete(gs1ProductMappings).where(eq(gs1ProductMappings.productId, id));
-      await tx.update(stories).set({ productId: null }).where(eq(stories.productId, id));
-      await tx.delete(products).where(eq(products.id, id));
-
-      return true;
-    });
+  async archiveProduct(id: number): Promise<boolean> {
+    const [archivedProduct] = await db
+      .update(products)
+      .set({ archivedAt: new Date(), updatedAt: new Date() })
+      .where(and(eq(products.id, id), isNull(products.archivedAt)))
+      .returning({ id: products.id });
+    return Boolean(archivedProduct);
   }
 
   async getAllProducts(): Promise<Product[]> {
-    return await db.select().from(products).orderBy(desc(products.updatedAt));
+    return await db.select().from(products)
+      .where(isNull(products.archivedAt))
+      .orderBy(desc(products.updatedAt));
   }
 
   async createEvent(event: InsertEvent): Promise<Event> {
@@ -206,6 +213,7 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(events)
       .leftJoin(products, eq(events.productId, products.id))
+      .where(isNull(products.archivedAt))
       .orderBy(desc(events.createdAt))
       .limit(limit);
     
@@ -227,7 +235,8 @@ export class DatabaseStorage implements IStorage {
       .where(and(
         eq(events.eventType, "uitleen"),
         isNotNull(events.borrowerName),
-        isNotNull(events.borrowerEmail)
+        isNotNull(events.borrowerEmail),
+        isNull(products.archivedAt)
       ))
       .orderBy(desc(events.createdAt));
     
@@ -357,22 +366,24 @@ export class DatabaseStorage implements IStorage {
   async getDashboardStats(): Promise<DashboardStats> {
     const totalProductsResult = await db
       .select({ count: count() })
-      .from(products);
+      .from(products)
+      .where(isNull(products.archivedAt));
     
     const totalRepairsResult = await db
       .select({ count: count() })
       .from(events)
-      .where(eq(events.eventType, "reparatie"));
+      .innerJoin(products, eq(events.productId, products.id))
+      .where(and(eq(events.eventType, "reparatie"), isNull(products.archivedAt)));
     
     const itemsOnLoanResult = await db
       .select({ count: count() })
       .from(products)
-      .where(eq(products.status, "uitgeleend"));
+      .where(and(eq(products.status, "uitgeleend"), isNull(products.archivedAt)));
     
     const remadeItemsResult = await db
       .select({ count: count() })
       .from(products)
-      .where(eq(products.type, "remake"));
+      .where(and(eq(products.type, "remake"), isNull(products.archivedAt)));
     
     return {
       totalProducts: totalProductsResult[0]?.count || 0,
@@ -398,7 +409,10 @@ export class DatabaseStorage implements IStorage {
         product: products
       })
       .from(stories)
-      .leftJoin(products, eq(stories.productId, products.id))
+      .leftJoin(products, and(
+        eq(stories.productId, products.id),
+        isNull(products.archivedAt),
+      ))
       .orderBy(desc(stories.createdAt));
     
     return results.map(result => ({

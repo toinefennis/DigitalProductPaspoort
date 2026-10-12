@@ -18,7 +18,7 @@ async function withFixture(
   });
   registerProductAdminRoutes(app, {
     getUser: async id => id === sessionUser?.id ? persistedUser : undefined,
-    deleteProduct: async id => {
+    archiveProduct: async id => {
       deletedIds.push(id);
       return id === 8;
     },
@@ -33,42 +33,42 @@ async function withFixture(
   }
 }
 
-const removeProduct = (base: string, id: string) =>
-  fetch(`${base}/api/products/${id}`, { method: "DELETE" });
+const archiveProduct = (base: string, id: string) =>
+  fetch(`${base}/api/products/${id}/archive`, { method: "PATCH" });
 
-test("product deletion requires an active persisted superadmin", async () => {
+test("product archiving requires an active persisted superadmin", async () => {
   await withFixture(null, undefined, async base => {
-    assert.equal((await removeProduct(base, "8")).status, 401);
+    assert.equal((await archiveProduct(base, "8")).status, 401);
   });
   await withFixture({ id: 24, role: "superadmin" }, { role: "admin", isActive: true }, async (base, deletedIds) => {
-    assert.equal((await removeProduct(base, "8")).status, 403);
+    assert.equal((await archiveProduct(base, "8")).status, 403);
     assert.deepEqual(deletedIds, []);
   });
   await withFixture({ id: 24 }, { role: "superadmin", isActive: false }, async (base, deletedIds) => {
-    assert.equal((await removeProduct(base, "8")).status, 401);
+    assert.equal((await archiveProduct(base, "8")).status, 401);
     assert.deepEqual(deletedIds, []);
   });
   await withFixture({ id: 24 }, { role: "admin", isActive: true }, async (base, deletedIds) => {
-    assert.equal((await removeProduct(base, "8")).status, 403);
+    assert.equal((await archiveProduct(base, "8")).status, 403);
     assert.deepEqual(deletedIds, []);
   });
 });
 
-test("only a valid product ID is passed to deletion and missing products return 404", async () => {
+test("only a valid product ID is passed to archiving and missing products return 404", async () => {
   await withFixture({ id: 24 }, { role: "superadmin", isActive: true }, async (base, deletedIds) => {
-    assert.equal((await removeProduct(base, "invalid")).status, 400);
+    assert.equal((await archiveProduct(base, "invalid")).status, 400);
     assert.deepEqual(deletedIds, []);
 
-    assert.equal((await removeProduct(base, "9")).status, 404);
+    assert.equal((await archiveProduct(base, "9")).status, 404);
     assert.deepEqual(deletedIds, [9]);
   });
 });
 
-test("active superadmins can permanently delete a product", async () => {
+test("active superadmins can archive products without deleting their records", async () => {
   await withFixture({ id: 24 }, { role: "superadmin", isActive: true }, async (base, deletedIds) => {
-    const response = await removeProduct(base, "8");
+    const response = await archiveProduct(base, "8");
     assert.equal(response.status, 200);
     assert.deepEqual(deletedIds, [8]);
-    assert.match((await response.json()).message, /historie en meldingen zijn verwijderd/);
+    assert.match((await response.json()).message, /historie, meldingen en GS1-data zijn bewaard/);
   });
 });

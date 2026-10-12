@@ -87,6 +87,7 @@ export const products = pgTable("products", {
     reportUrl?: string;
   }>().default({}),
   
+  archivedAt: timestamp("archived_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -442,6 +443,7 @@ export const insertProductSchema = createInsertSchema(products, {
   }).nullable().optional(),
 }).omit({
   id: true,
+  archivedAt: true,
   createdAt: true,
   updatedAt: true,
 }).extend({
